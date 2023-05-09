@@ -17,16 +17,18 @@ from torch.utils.tensorboard import SummaryWriter
 import wandb
 import argparse
 from distutils.util import strtobool
+from collections import deque
 import os
 import math
 import pulp
 import warnings
+from cvxpy import Variable, Problem, Minimize
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
-PATH_DATASETS = os.environ.get("PATH_DATASETS", ".")
+# os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
+# PATH_DATASETS = os.environ.get("PATH_DATASETS", ".")
 
 os.chdir = ("")
 
@@ -143,40 +145,58 @@ class DQL:
     # In addition we have to make sure that the transfer of information is completed after every timestep instead of consecutively
     # It insures the each individual agent's calculated correlated equilibrium is the same
 
+    def correlated_equilibrium(self, epsilon_thres):
+        # Note: Number of action given to all the agent in our case equals to NUM_UAV
+
+        # Use linear programming to find a correlated equilibria 
+        policy = pulp.LpProblem("CorrelatedEquilibrium", pulp.LpMaximize)
+        # Defining the descision variable for each state s ; x
+        # Each agent has joint action and state valyes 
+        x = [[[[pulp.LpVariable(f"x_{s_1}_{s_2}_{a}_{i}", cat=pulp.LpBinary)
+                    for i in range(NUM_UAV)] for a in range(NUM_UAV)]
+                    for s_2 in range(self.Q.shape[0])] for s_1 in range(self.Q.shape[1])]
+        # Expected joint//global Q-value (J) using linear combination of Q-values and the decision variable 
+        # (probability of taking the action by agent )
+        J = pulp.lpSum(self.Q[s_1][s_2][a][i] * x[s_1][a][i] for s_1 in range(self.Q.shape[0])
+                                    for s_2 in range(self.Q.shape[1])
+                                    for a in range(NUM_UAV)
+                                    for i in range(NUM_UAV))
+
+        # Adding the objective function to the LP problem 
+        policy += J 
+
+        # Addition of constraint for the optimization problem 
+        # Constraint 1 - Sum of Probabilities Equal to 1 for all agents - should follow for all possible states
+        # Add each constraint to the problem 
+        for s_1 in range(self.Q.shape[0]):
+            for s_2 in range(self.Q.shaper[1]):
+                prob += pulp.lpSum(x[s_1][s_2][a][i] for a in range(NUM_UAV)
+                                            for i in range(NUM_UAV)) == 1
+                
+        ## New Try 
+    def correlated_quilibrium(self, shared_q_values):
+        # Since the size of action space for all the agents is same // only can use one variable to define the variable
+        # Joint action size = number of agents x action size
+        # Optimizing the joint action so setting as a variable for ce optimization 
+        joint_action_size = self.NUM_UAV * self.action_size
+        prob_weight = Variable(joint_action_size)
+        # Collect Q values for the corresponding states of each individual agents
+        # Using negate value to use Minimize function for solving 
+        for k in NUM_UAV:
+            q_complete = q_complete.append(shared_q_values[k])
+        q_complete = q_complete.reshape(1, joint_action_size)
+        object_vec = -np.copy(q_complete)
+
+        # Constraints // Sum of the Probabilities equate to 1
+        object_func = object_vec * prob_weight
+        sum_func = np.sum(object_func)
+
+        
+            
+
+
+
     def epsilon_greedy(self, state):
-
-        def correlated_equilibrium(self, epsilon_thres):
-            # Note: Number of action given to all the agent in our case equals to NUM_UAV
-
-            # Use linear programming to find a correlated equilibria 
-            policy = pulp.LpProblem("CorrelatedEquilibrium", pulp.LpMaximize)
-            # Defining the descision variable for each state s ; x
-            # Each agent has joint action and state valyes 
-            x = [[[[pulp.LpVariable(f"x_{s_1}_{s_2}_{a}_{i}", cat=pulp.LpBinary)
-                        for i in range(NUM_UAV)] for a in range(NUM_UAV)]
-                        for s_2 in range(self.Q.shape[0])] for s_1 in range(self.Q.shape[1])]
-            # Expected joint//global Q-value (J) using linear combination of Q-values and the decision variable 
-            # (probability of taking the action by agent )
-            J = pulp.lpSum(self.Q[s_1][s_2][a][i] * x[s_1][a][i] for s_1 in range(self.Q.shape[0])
-                                        for s_2 in range(self.Q.shape[1])
-                                        for a in range(NUM_UAV)
-                                        for i in range(NUM_UAV))
-
-            # Adding the objective function to the LP problem 
-            policy += J 
-
-            # Addition of constraint for the optimization problem 
-            # Constraint 1 - Sum of Probabilities Equal to 1 for all agents - should follow for all possible states
-            # Add each constraint to the problem 
-            for s_1 in range(self.Q.shape[0]):
-                for s_2 in range(self.Q.shaper[1]):
-                    prob += pulp.lpSum(x[s_1][s_2][a][i] for a in range(NUM_UAV)
-                                                for i in range(NUM_UAV)) == 1
-
-
-
-
-
         temp = random.random()
         # Epsilon decay policy is employed for faster convergence
         epsilon_thres = self.epsilon_min + (self.epsilon - self.epsilon_min) * math.exp(-1*self.steps_done/self.epsilon_decay)
