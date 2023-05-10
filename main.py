@@ -143,74 +143,90 @@ class DQL:
     # It is also assumed that the UAV takes action following a specific order of social convention from higher priority to lower
 
     # In addition we have to make sure that the transfer of information is completed after every timestep instead of consecutively
-    # It insures the each individual agent's calculated correlated equilibrium is the same
+    # It insures the each individual agent's calculated correlated equilibrium is the same 
 
-    def correlated_equilibrium(self, epsilon_thres):
-        # Note: Number of action given to all the agent in our case equals to NUM_UAV
+    def correlated_equilibrium(self, shared_q_values, agent_idx):
 
-        # Use linear programming to find a correlated equilibria 
-        policy = pulp.LpProblem("CorrelatedEquilibrium", pulp.LpMaximize)
-        # Defining the descision variable for each state s ; x
-        # Each agent has joint action and state valyes 
-        x = [[[[pulp.LpVariable(f"x_{s_1}_{s_2}_{a}_{i}", cat=pulp.LpBinary)
-                    for i in range(NUM_UAV)] for a in range(NUM_UAV)]
-                    for s_2 in range(self.Q.shape[0])] for s_1 in range(self.Q.shape[1])]
-        # Expected joint//global Q-value (J) using linear combination of Q-values and the decision variable 
-        # (probability of taking the action by agent )
-        J = pulp.lpSum(self.Q[s_1][s_2][a][i] * x[s_1][a][i] for s_1 in range(self.Q.shape[0])
-                                    for s_2 in range(self.Q.shape[1])
-                                    for a in range(NUM_UAV)
-                                    for i in range(NUM_UAV))
+        def get_additional_matrix(self, shared_q_values):
+            additional_mat = []
+            for k in range(NUM_UAV):
+                for l in range(NUM_UAV):
+                    if k != self.agent_idx and l != self.agent_idx:
+                        for v in range(self.action_size):
+                            additional_mat.append(shared_q_values[k][v])
+                additional_mat = np.array(additional_mat)
+                additional_mat = additional_mat.reshape(NUM_UAV**(self.action_size-1), NUM_UAV)
+            return additional_mat
 
-        # Adding the objective function to the LP problem 
-        policy += J 
-
-        # Addition of constraint for the optimization problem 
-        # Constraint 1 - Sum of Probabilities Equal to 1 for all agents - should follow for all possible states
-        # Add each constraint to the problem 
-        for s_1 in range(self.Q.shape[0]):
-            for s_2 in range(self.Q.shaper[1]):
-                prob += pulp.lpSum(x[s_1][s_2][a][i] for a in range(NUM_UAV)
-                                            for i in range(NUM_UAV)) == 1
-                
-        ## New Try 
-    def correlated_quilibrium(self, shared_q_values):
         # Since the size of action space for all the agents is same // only can use one variable to define the variable
         # Joint action size = number of agents x action size
         # Optimizing the joint action so setting as a variable for ce optimization 
-        joint_action_size = self.NUM_UAV * self.action_size
+        joint_action_size = NUM_UAV ** self.action_size
         prob_weight = Variable(joint_action_size)
+        
         # Collect Q values for the corresponding states of each individual agents
         # Using negate value to use Minimize function for solving 
-        for k in NUM_UAV:
-            q_complete = q_complete.append(shared_q_values[k])
-        q_complete = q_complete.reshape(1, joint_action_size)
-        object_vec = -np.copy(q_complete)
-
-        # Constraints // Sum of the Probabilities equate to 1
-        object_func = object_vec * prob_weight
-        sum_func = np.sum(object_func)
-
+        q_complete = -np.vstack([shared_q_values[k].ravel() for k in range(NUM_UAV)])
+        q_i = shared_q_values[self.idx].ravel()
         
-            
+        # Generate additional Q matrix
+        additional_mat = get_additional_matrix(self, shared_q_values, self.idx)
+        
+        # Objective function
+        object_vec = q_complete
+        object_func = Minimize(sum(object_vec * prob_weight))
+
+        # Constraint 1 // Sum of the Probabilities equate to 1
+        sum_func = sum(prob_weight) == 1
+        
+        # Constraint 2 // Total Func should be less than or equal to 0
+        total_func = (additional_mat - q_i) @ prob_weight >= 0
+
+        # Constraint 3 // All the prob weight should be between 0 and 1
+        # Included in the optimization problem itself
+        prob_const = all(prob_weight) <= 1 and all(prob_weight) >= 0
+
+        # Define the problem with constraints
+        opt_problem = Problem(object_func, [sum_func, total_func, prob_const])
+
+        # Solve the optimization problem using LP
+        try:
+            opt_problem.solve()
+            weights = prob_weight.value
+            if np.isnan(weights).sum() > 0 or np.abs(weights.sum() - 1) > 0.00001:
+                weights = None
+                print("Fails to find a optimal solution")
+        except:
+            weights = None
+            print("Fails to find a solution")
+        return weights
+    
+
+    def update_probs(self, shared_q_values, agent_idx):
+        return self.correlated_equilibrium(shared_q_values, agent_idx)
 
 
-
-    def epsilon_greedy(self, state):
+    def epsilon_greedy(self, pi, shared_state, agent_idx):
         temp = random.random()
         # Epsilon decay policy is employed for faster convergence
         epsilon_thres = self.epsilon_min + (self.epsilon - self.epsilon_min) * math.exp(-1*self.steps_done/self.epsilon_decay)
         self.steps_done += 1 
+        # Each agents possible state space is same so, prob varible // joining all index
+        prob_ind = np.concatenate(agent_idx, shared_state)
+        self.prob = pi[prob_ind]
+        self.prob = np.abs(self.prob) / np.sum(np.abs(self.prob))
         # Compare against a epsilon threshold to either explore or exploit
         if temp <= epsilon_thres:
             # If less than threshold action choosen randomly
-            action = np.random.randint(0, 4)
+            # Each iteration will generate action list from individual correlation device 
+            actions = np.random.randint(0, 4, size=(NUM_UAV))
         else:
             # Else (high prob) choosing the action based correlated equilibrium 
             # Action choosen based on joint state and action and using linear programming to find a solution
-            action = correlated_equilibrium(epsilon_thres)
-        return action
-        
+            # Action index and action correspond to each other so
+            actions = np.random.choice(0, 4, size=(NUM_UAV), p=self.prob)
+        return actions
+       
 
     # Training of the DNN 
     def train(self,batch_size, dnn_epoch):
@@ -248,6 +264,7 @@ class DQL:
             # Gradient descent
             self.optimizer.step()
             
+
 if __name__ == "__main__":
     args = parse_args()
     u_env = UAVenv(args)
@@ -343,17 +360,18 @@ if __name__ == "__main__":
             for k in range(NUM_UAV):
                 if t % update_rate == 0:
                     UAV_OB[k].target_network.load_state_dict(UAV_OB[k].main_network.state_dict())
+
                     
-            # Determining the actions for all drones
+            # Determining the actions for all drones // states are shared among UAVs
+            # Sharing of Q-values is also completed in this loop
+            shared_q_values = np.zeros()
             states_ten = torch.from_numpy(states)
             for k in range(NUM_UAV):
-                if args.info_exchange_lvl in [1, 2, 3]:
-                    state = states_ten[k, :]
-                elif args.info_exchange_lvl == 4:
-                    state = states_ten.flatten()
-                action = UAV_OB[k].epsilon_greedy(state.float())
-                drone_act_list.append(action)
+                state = states_ten[k, :]
+                q_values = 
 
+                action = UAV_OB[k].epsilon_greedy()
+                drone_act_list.append(action)
 
             # Find the global reward for the combined set of actions for the UAV
             temp_data = u_env.step(drone_act_list, args.info_exchange_lvl)
