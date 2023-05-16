@@ -109,7 +109,7 @@ class UAVenv(gym.Env):
         self.flag = np.zeros((args.num_uav), dtype=np.int32)
         print(self.coverage_radius)
 
-    def step(self, action, info_exchange_lvl):
+    def step(self, action):
         # Take the action
         # Assignment of sub carrier band to users
         # Reshape of actions
@@ -291,9 +291,9 @@ class UAVenv(gym.Env):
         return self.state
 
     def get_state(self):
-        state_loc = np.zeros((self.NUM_UAV, 3))
+        state_loc = np.zeros((self.NUM_UAV, 2))
         for k in range(self.NUM_UAV):
             state_loc[k, 0] = self.state[k, 0]
             state_loc[k, 1] = self.state[k, 1]
-            state_loc[k, 2] = self.state[k, 2]
+            # state_loc[k, 2] = self.state[k, 2]
         return state_loc
