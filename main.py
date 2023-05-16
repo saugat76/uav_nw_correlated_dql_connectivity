@@ -8,7 +8,6 @@ from collections import defaultdict
 from matplotlib.gridspec import GridSpec
 import matplotlib.pyplot as plt
 from scipy.io import savemat
-from scipy.signal import savgol_filter
 from uav_env import UAVenv
 from misc import final_render
 import torch
@@ -20,11 +19,11 @@ from distutils.util import strtobool
 from collections import deque
 import os
 import math
-import pulp
 import warnings
 from cvxpy import Variable, Problem, Minimize
+import time
 
-warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore")
 
 # os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 # os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
@@ -60,7 +59,6 @@ def parse_args():
     parser.add_argument("--epsilon-decay-steps", type=int, default=1, help="set the rate at which is the epsilon is deacyed, set value equates number of steps at which the epsilon reaches minimum")
 
     # Environment specific arguments 
-    parser.add_argument("--info-exchange-lvl", type=int, default=1, help="information exchange level between UAVs: 1 -> implicit, 2 -> reward, 3 -> position with distance penalty, 4 -> state")
     # Arguments for used inside the wireless UAV based enviornment  
     parser.add_argument("--num-user", type=int, default=100, help="number of user in defined environment")
     parser.add_argument("--num-uav", type=int, default=5, help="number of uav for the defined environment")
@@ -105,11 +103,8 @@ class NeuralNetwork(nn.Module):
 class DQL:
     # Initializing a Deep Neural Network
     def __init__(self):
-        # lvl 1-3 info exchange only their respective state for lvl 4 all agents states 
-        if args.info_exchange_lvl in [1, 2, 3]: 
-            self.state_size = 2
-        elif args.info_exchange_lvl == 4:
-            self.state_size = 10
+        self.state_space = 10
+        self.state_size = 2
         self.action_size = 5
         self.replay_buffer = deque(maxlen = 125000)
         self.gamma = discount_factor
@@ -147,30 +142,29 @@ class DQL:
 
     def correlated_equilibrium(self, shared_q_values, agent_idx):
 
-        def get_additional_matrix(self, shared_q_values):
+        def get_additional_matrix(self, shared_q_values, agent_idx):
             additional_mat = []
-            for k in range(NUM_UAV):
+            for y in range(UAV_OB[agent_idx].action_size):
                 for l in range(NUM_UAV):
-                    if k != self.agent_idx and l != self.agent_idx:
-                        for v in range(self.action_size):
-                            additional_mat.append(shared_q_values[k][v])
-                additional_mat = np.array(additional_mat)
-                additional_mat = additional_mat.reshape(NUM_UAV**(self.action_size-1), NUM_UAV)
+                    for m in range(UAV_OB[l].action_size):
+                        additional_mat.append(shared_q_values[agent_idx][y] -shared_q_values[agent_idx][m])
+            additional_mat = np.array(additional_mat)
+            # additional_mat = additional_mat.reshape(NUM_UAV**(self.action_size-1), NUM_UAV)
             return additional_mat
 
-        # Since the size of action space for all the agents is same // only can use one variable to define the variable
-        # Joint action size = number of agents x action size
+        # Joint action size = number of agents ^ action size // for a state 
         # Optimizing the joint action so setting as a variable for ce optimization 
-        joint_action_size = NUM_UAV ** self.action_size
+        joint_action_size = NUM_UAV ** UAV_OB[agent_idx].action_size
         prob_weight = Variable(joint_action_size)
         
         # Collect Q values for the corresponding states of each individual agents
         # Using negate value to use Minimize function for solving 
-        q_complete = -np.vstack([shared_q_values[k].ravel() for k in range(NUM_UAV)])
-        q_i = shared_q_values[self.idx].ravel()
+        print(shared_q_values)
+        q_complete = np.vstack(-np.vstack([shared_q_values[k].ravel() for k in range(NUM_UAV)])).ravel()
+        print(q_complete)
         
-        # Generate additional Q matrix
-        additional_mat = get_additional_matrix(self, shared_q_values, self.idx)
+        # Generate additional Q matrix for the constraint
+        additional_mat = get_additional_matrix(self, shared_q_values, agent_idx)
         
         # Objective function
         object_vec = q_complete
@@ -180,7 +174,8 @@ class DQL:
         sum_func = sum(prob_weight) == 1
         
         # Constraint 2 // Total Func should be less than or equal to 0
-        total_func = (additional_mat - q_i) @ prob_weight >= 0
+        
+        total_func = (additional_mat) @ prob_weight >= 0
 
         # Constraint 3 // All the prob weight should be between 0 and 1
         # Included in the optimization problem itself
@@ -206,14 +201,14 @@ class DQL:
         return self.correlated_equilibrium(shared_q_values, agent_idx)
 
 
-    def epsilon_greedy(self, pi, shared_state, agent_idx):
+    def epsilon_greedy(self, shared_state, agent_idx):
         temp = random.random()
         # Epsilon decay policy is employed for faster convergence
         epsilon_thres = self.epsilon_min + (self.epsilon - self.epsilon_min) * math.exp(-1*self.steps_done/self.epsilon_decay)
         self.steps_done += 1 
         # Each agents possible state space is same so, prob varible // joining all index
         prob_ind = np.concatenate(agent_idx, shared_state)
-        self.prob = pi[prob_ind]
+        self.prob = UAV_OB[agent_idx].pi
         self.prob = np.abs(self.prob) / np.sum(np.abs(self.prob))
         # Compare against a epsilon threshold to either explore or exploit
         if temp <= epsilon_thres:
@@ -224,6 +219,7 @@ class DQL:
             # Else (high prob) choosing the action based correlated equilibrium 
             # Action choosen based on joint state and action and using linear programming to find a solution
             # Action index and action correspond to each other so
+            print(self.prob.size())
             actions = np.random.choice(0, 4, size=(NUM_UAV), p=self.prob)
         return actions
        
@@ -283,7 +279,7 @@ if __name__ == "__main__":
     dnn_epoch = 1
 
     # Set the run id name to tack all the runs 
-    run_id = f"{args.exp_name}__lvl{args.info_exchange_lvl}__{u_env.NUM_UAV}__{args.seed}__{int(time.time())}"
+    run_id = f"{args.exp_name}__{u_env.NUM_UAV}__{args.seed}__{int(time.time())}"
 
     # Set the seed value from arg parser to ensure reproducibility 
     random.seed(args.seed)
@@ -342,6 +338,24 @@ if __name__ == "__main__":
                 UAV_OB.append(DQL())
     best_result = 0
 
+    # Initializing probability distribution for all the agents 
+    # Individually calculation of the correlated equilibrium // Individual prob dist for all agent
+    # Set the dimention for the variable initialization
+    dimension = []
+    for k in range(NUM_UAV):
+        if dimension == []:
+            # Each agent need to track with all other agents
+            dimension.append(NUM_UAV)
+            # Assumes all the agent have equal state size // won't work with different state sizes for differentiated with their observation
+            dimension.append(UAV_OB[k].state_space)
+            dimension.append(UAV_OB[k].state_space)
+        dimension.append(UAV_OB[k].action_size)
+    dimension = tuple(dimension)
+    for k in range(NUM_UAV):
+        # Each agent is tracking possible probabilites by themself // so each agent has pi variable
+        # Setting the probabilities to equal value // each combination of action has same probability
+        UAV_OB[k].pi = torch.ones(dimension) * (1/(UAV_OB[k].action_size ** UAV_OB[k].action_size))
+
     # Start of the episode
     for i_episode in range(num_episode):
         print(i_episode)
@@ -352,7 +366,6 @@ if __name__ == "__main__":
         # Get the initial states
         states = u_env.get_state()
         reward = np.zeros(NUM_UAV)
-
         
         for t in range(num_epochs):
             drone_act_list = []
@@ -361,20 +374,33 @@ if __name__ == "__main__":
                 if t % update_rate == 0:
                     UAV_OB[k].target_network.load_state_dict(UAV_OB[k].main_network.state_dict())
 
-                    
             # Determining the actions for all drones // states are shared among UAVs
             # Sharing of Q-values is also completed in this loop
-            shared_q_values = np.zeros()
+            
+            # Intialization of shared_q_value variable 
+            shared_q_values = torch.zeros(NUM_UAV, UAV_OB[1].action_size)
+
             states_ten = torch.from_numpy(states)
+            shared_state = states_ten.numpy().flatten()
+            # To simplify is programming calculating once and sharing among UAVs
             for k in range(NUM_UAV):
                 state = states_ten[k, :]
-                q_values = 
+                state = state.float()
+                state = torch.unsqueeze(torch.FloatTensor(state), 0)
+                q_values = UAV_OB[k].main_network(state)
+                shared_q_values[k, :]= q_values.detach()
 
-                action = UAV_OB[k].epsilon_greedy()
+            print(shared_q_values.size())
+
+            for k in range(NUM_UAV):
+                UAV_OB[k].correlated_equilibrium(shared_q_values, k)
+                actions = UAV_OB[k].epsilon_greedy(shared_state, UAV_OB[k].pi, k)
+                print(f"Correlated action for agent {k} is {action}")
+                action = actions[k]
                 drone_act_list.append(action)
 
             # Find the global reward for the combined set of actions for the UAV
-            temp_data = u_env.step(drone_act_list, args.info_exchange_lvl)
+            temp_data = u_env.step(drone_act_list)
             reward = temp_data[1]
             done = temp_data[2]
             next_state = u_env.get_state()
@@ -382,15 +408,8 @@ if __name__ == "__main__":
             # Store the transition information
             for k in range(NUM_UAV):
                 ## Storing of the information on the individual UAV and it's reward value in itself.
-                # If the lvl of info exchange is 1/2/3 - implicit/reward/position -> store only respective state
-                # Else if lvl info exchnage is 4 - state -> share and store states of other agents
-                # Currently in lvl 4 all agents exchange their states
-                if args.info_exchange_lvl in [1, 2, 3]:
-                    state = states_ten[k, :].numpy()
-                    next_sta = next_state[k, :]
-                elif args.info_exchange_lvl == 4:
-                    state = states_ten.numpy().flatten()
-                    next_sta = next_state.flatten()
+                state = states_ten[k, :].numpy()
+                next_sta = next_state[k, :]
                 action = drone_act_list[k].cpu().numpy()
                 reward_ind = reward[k]
                 UAV_OB[k].store_transition(state, action, reward_ind, next_sta, done)
@@ -413,6 +432,10 @@ if __name__ == "__main__":
                 if len(UAV_OB[k].replay_buffer) > batch_size:
                     UAV_OB[k].train(batch_size, dnn_epoch)
 
+        # Update the probabilities for all the agents 
+        for k in range(NUM_UAV):
+            UAV_OB[k].update_probs(shared_q_values, k)
+
         #############################
         ####   Tensorboard logs  ####
         #############################
@@ -432,6 +455,7 @@ if __name__ == "__main__":
         writer.add_scalar("params/learning_rate", UAV_OB[1].learning_rate, i_episode )
         writer.add_scalar("params/epsilon", UAV_OB[1].epsilon_thres, i_episode)
 
+        
         if i_episode % 10 == 0:
             # Reset of the environment
             u_env.reset()
@@ -441,16 +465,12 @@ if __name__ == "__main__":
             for t in range(100):
                 drone_act_list = []
                 for k in range(NUM_UAV):
-                    if args.info_exchange_lvl in [1, 2, 3]:
-                        state = states[k, :]
-                    elif args.info_exchange_lvl == 4:
-                        state = states.flatten()
+                    state = states[k, :]
                     state = torch.unsqueeze(torch.FloatTensor(state),0)
-                    Q_values = UAV_OB[k].main_network.forward(state.float())
-                    best_next_action = torch.max(Q_values.cpu(), 1)[1].data.numpy()
-                    best_next_action = best_next_action[0]
+                    correlated_actions = np.random.choice(0, 4, size=(NUM_UAV), p=UAV_OB[k].prob)
+                    best_next_action = correlated_actions[k]
                     drone_act_list.append(best_next_action)
-                temp_data = u_env.step(drone_act_list, args.info_exchange_lvl)
+                temp_data = u_env.step(drone_act_list)
                 states = u_env.get_state()
                 states_fin = states
                 if best_result < sum(temp_data[4]):
@@ -458,7 +478,7 @@ if __name__ == "__main__":
                     best_state = states    
 
             # Custom logs and figures save / 
-            custom_dir = f'custom_logs\lvl_{args.info_exchange_lvl}\{run_id}'
+            custom_dir = f'custom_logs\{run_id}'
             if not os.path.exists(custom_dir):
                 os.makedirs(custom_dir)
                 
