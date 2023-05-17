@@ -82,3 +82,28 @@
     #         weights = None
     #         print("cant find solution")
     #     return weights 
+
+
+
+
+
+## Some portion of the code for the dimension calculation of the pi
+
+    
+   # Initializing probability distribution for all the agents 
+    # Individually calculation of the correlated equilibrium // Individual prob dist for all agent
+    # Set the dimention for the variable initialization
+    dimension = []
+    for k in range(NUM_UAV):
+        if dimension == []:
+            # Each agent need to track with all other agents
+            dimension.append(NUM_UAV)
+            # Assumes all the agent have equal state size // won't work with different state sizes for differentiated with their observation
+            dimension.append(UAV_OB[k].state_space)
+            dimension.append(UAV_OB[k].state_space)
+        dimension.append(UAV_OB[k].action_size)
+    dimension = tuple(dimension)
+    for k in range(NUM_UAV):
+        # Each agent is tracking possible probabilites by themself // so each agent has pi variable
+        # Setting the probabilities to equal value // each combination of action has same probability
+        UAV_OB[k].pi = torch.ones(dimension) * (1/(UAV_OB[k].action_size ** UAV_OB[k].action_size))
