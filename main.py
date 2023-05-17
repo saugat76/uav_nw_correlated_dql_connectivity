@@ -106,14 +106,16 @@ class DQL:
         self.state_space = 10
         self.state_size = 2
         self.action_size = 5
+        self.combined_action_size = NUM_UAV ** self.action_size
+        self.combined_state_size = NUM_UAV * self.state_size
         self.replay_buffer = deque(maxlen = 125000)
         self.gamma = discount_factor
         self.epsilon = epsilon        
         self.epsilon_min = epsilon_min
         self.epsilon_decay = epsilon_decay
         self.learning_rate = alpha
-        self.main_network = NeuralNetwork(self.state_size, self.action_size).to(device)
-        self.target_network = NeuralNetwork(self.state_size, self.action_size).to(device)
+        self.main_network = NeuralNetwork(self.state_size, self.combined_action_size).to(device)
+        self.target_network = NeuralNetwork(self.state_size, self.combined_action_size).to(device)
         self.target_network.load_state_dict(self.main_network.state_dict())
         self.optimizer = torch.optim.Adam(self.main_network.parameters(), lr = self.learning_rate)
         self.loss_func = nn.SmoothL1Loss()      # Huber Loss // Combines MSE and MAE
@@ -133,7 +135,7 @@ class DQL:
     # Another approach can be to share the state and action information which is used to create a joint Q-Matrix/Q-Table
     # which is then used for determining the joint policy based on the linear programming optimization 
 
-    # In out case, we are sharing the whole Q-table at every time step, this is used to find correlated equilibrium
+    # In out case, we are sharing the partial Q-values at every time step, this is used to find correlated equilibrium
 
     # It is also assumed that the UAV takes action following a specific order of social convention from higher priority to lower
 
@@ -142,58 +144,52 @@ class DQL:
 
     def correlated_equilibrium(self, shared_q_values, agent_idx):
 
-        def get_additional_matrix(self, shared_q_values, agent_idx):
-            additional_mat = []
-            for y in range(UAV_OB[agent_idx].action_size):
-                for l in range(NUM_UAV):
-                    for m in range(UAV_OB[l].action_size):
-                        additional_mat.append(shared_q_values[agent_idx][y] -shared_q_values[agent_idx][m])
-            additional_mat = np.array(additional_mat)
-            # additional_mat = additional_mat.reshape(NUM_UAV**(self.action_size-1), NUM_UAV)
-            return additional_mat
+        # Additional constraint function // Generating constraint used for solving the optimization equation
+        def generate_add_constraint(shared_q_values, prob_weight):
+            add_constr = []
+            for k in range(NUM_UAV):
+                for l in range(UAV_OB[k].action_size):
+                    for m in range(UAV_OB[k].action_size):
+                        if l != m:
+
+
 
         # Joint action size = number of agents ^ action size // for a state 
-        # Optimizing the joint action so setting as a variable for ce optimization 
+        # Optimizing the joint action so setting as a variable for CE optimization 
         joint_action_size = NUM_UAV ** UAV_OB[agent_idx].action_size
         prob_weight = Variable(joint_action_size)
         
         # Collect Q values for the corresponding states of each individual agents
         # Using negate value to use Minimize function for solving 
-        print(shared_q_values)
-        q_complete = np.vstack(-np.vstack([shared_q_values[k].ravel() for k in range(NUM_UAV)])).ravel()
-        print(q_complete)
-        
-        # Generate additional Q matrix for the constraint
-        additional_mat = get_additional_matrix(self, shared_q_values, agent_idx)
-        
+        q_complete = -np.vstack([shared_q_values[k].ravel() for k in range(NUM_UAV)])
+
         # Objective function
-        object_vec = q_complete
+        object_vec = q_complete.reshape((NUM_UAV, joint_action_size))
         object_func = Minimize(sum(object_vec * prob_weight))
 
-        # Constraint 1 // Sum of the Probabilities equate to 1
-        sum_func = sum(prob_weight) == 1
+        # Constraint 1: Sum of the Probabilities should be equal to 1 // should follow for all agents
+        sum_func_constr = all(np.sum(prob_weight, 1)) == 1
         
-        # Constraint 2 // Total Func should be less than or equal to 0
-        
-        total_func = (additional_mat) @ prob_weight >= 0
+        # Constraint 2: Each probability value should be grater than 1 // should follow for all agents
+        prob_constr = all(prob_weight) >= 0
 
-        # Constraint 3 // All the prob weight should be between 0 and 1
-        # Included in the optimization problem itself
-        prob_const = all(prob_weight) <= 1 and all(prob_weight) >= 0
+        # Constraint 3: Total function should be less than or equal to 0
+        add_constraint = generate_add_constraint(shared_q_values, prob_weight)
+        total_func_constr = add_constraint
 
         # Define the problem with constraints
-        opt_problem = Problem(object_func, [sum_func, total_func, prob_const])
+        opt_problem = Problem(object_func, [sum_func_constr, prob_constr, total_func_constr])
 
-        # Solve the optimization problem using LP
+        # Solve the optimization problem using linear programming
         try:
             opt_problem.solve()
             weights = prob_weight.value
             if np.isnan(weights).sum() > 0 or np.abs(weights.sum() - 1) > 0.00001:
                 weights = None
-                print("Fails to find a optimal solution")
+                print("Failed to find an optimal solution")
         except:
             weights = None
-            print("Fails to find a solution")
+            print("Failed to find a solution")
         return weights
     
 
@@ -201,26 +197,28 @@ class DQL:
         return self.correlated_equilibrium(shared_q_values, agent_idx)
 
 
-    def epsilon_greedy(self, shared_state, agent_idx):
+    def epsilon_greedy(self, shared_state, pi):
         temp = random.random()
         # Epsilon decay policy is employed for faster convergence
         epsilon_thres = self.epsilon_min + (self.epsilon - self.epsilon_min) * math.exp(-1*self.steps_done/self.epsilon_decay)
         self.steps_done += 1 
         # Each agents possible state space is same so, prob varible // joining all index
-        prob_ind = np.concatenate(agent_idx, shared_state)
-        self.prob = UAV_OB[agent_idx].pi
-        self.prob = np.abs(self.prob) / np.sum(np.abs(self.prob))
+        prob = pi[shared_state]
+        prob = np.abs(prob) / np.sum(prob)
         # Compare against a epsilon threshold to either explore or exploit
         if temp <= epsilon_thres:
             # If less than threshold action choosen randomly
             # Each iteration will generate action list from individual correlation device 
             actions = np.random.randint(0, 4, size=(NUM_UAV))
+            print(actions)
         else:
             # Else (high prob) choosing the action based correlated equilibrium 
             # Action choosen based on joint state and action and using linear programming to find a solution
             # Action index and action correspond to each other so
-            print(self.prob.size())
-            actions = np.random.choice(0, 4, size=(NUM_UAV), p=self.prob)
+            print(prob.size())
+            print(prob)
+            actions = np.random.choice(0, 4, size=(NUM_UAV), p=prob)
+            print(actions)
         return actions
        
 
@@ -340,20 +338,10 @@ if __name__ == "__main__":
 
     # Initializing probability distribution for all the agents 
     # Individually calculation of the correlated equilibrium // Individual prob dist for all agent
-    # Set the dimention for the variable initialization
-    dimension = []
-    for k in range(NUM_UAV):
-        if dimension == []:
-            # Each agent need to track with all other agents
-            dimension.append(NUM_UAV)
-            # Assumes all the agent have equal state size // won't work with different state sizes for differentiated with their observation
-            dimension.append(UAV_OB[k].state_space)
-            dimension.append(UAV_OB[k].state_space)
-        dimension.append(UAV_OB[k].action_size)
-    dimension = tuple(dimension)
     for k in range(NUM_UAV):
         # Each agent is tracking possible probabilites by themself // so each agent has pi variable
         # Setting the probabilities to equal value // each combination of action has same probability
+        dimension = [(UAV_OB[k].combined_action_size, 1)]
         UAV_OB[k].pi = torch.ones(dimension) * (1/(UAV_OB[k].action_size ** UAV_OB[k].action_size))
 
     # Start of the episode
@@ -378,19 +366,18 @@ if __name__ == "__main__":
             # Sharing of Q-values is also completed in this loop
             
             # Intialization of shared_q_value variable 
-            shared_q_values = torch.zeros(NUM_UAV, UAV_OB[1].action_size)
+            shared_q_values = torch.zeros(NUM_UAV, UAV_OB[1].combined_action_size)
 
             states_ten = torch.from_numpy(states)
             shared_state = states_ten.numpy().flatten()
             # To simplify is programming calculating once and sharing among UAVs
+            # Sharing of the Q-values
             for k in range(NUM_UAV):
                 state = states_ten[k, :]
                 state = state.float()
                 state = torch.unsqueeze(torch.FloatTensor(state), 0)
                 q_values = UAV_OB[k].main_network(state)
                 shared_q_values[k, :]= q_values.detach()
-
-            print(shared_q_values.size())
 
             for k in range(NUM_UAV):
                 UAV_OB[k].correlated_equilibrium(shared_q_values, k)
