@@ -141,17 +141,34 @@ class DQL:
 
     # In addition we have to make sure that the transfer of information is completed after every timestep instead of consecutively
     # It insures the each individual agent's calculated correlated equilibrium is the same 
+    # Joint action are indexed in the order: [0,0,0,0,0], [0,0,0,0,1],... [1,0,0,0,0]...[4,4,4,4,4]
+    # Where, the indexes of joint actions of the joint action represents the agents index
 
     def correlated_equilibrium(self, shared_q_values, agent_idx):
 
         # Additional constraint function // Generating constraint used for solving the optimization equation
-        def generate_add_constraint(shared_q_values, prob_weight):
-            add_constr = []
-            for k in range(NUM_UAV):
-                for l in range(UAV_OB[k].action_size):
-                    for m in range(UAV_OB[k].action_size):
-                        if l != m:
-
+        def generate_add_constraint(NUM_UAV, shared_q_values, prob_weight):
+            add_constraint = []
+            for v in range(NUM_UAV):
+                # Computing probability of individual agents action space from joint action probability distribution
+                # prob_individual.append(sum(prob_individual_complete
+                #                            [v*(UAV_OB[v].action_size)**(NUM_UAV-1): (v+1)*(UAV_OB[v].action_size)**(NUM_UAV-1) - 1]))
+                # Using this individual probability, defining a constraint
+                # Extracting individual Q value
+                # Q values arraged as positions defiend [0,0,0,0,0],[0,0,0,0,1]...//[1,0,0,0,0],[1,0,0,0,1]...//...[4,0,0,0,0]...[4,4,4,4,4]
+                Q_ind = shared_q_values[v, :].reshape(UAV_OB[v].action_size, (UAV_OB[v].action_size)**(NUM_UAV-1))  
+                temp_cumulative = 0
+                for l in range(Q_ind.size(0)):
+                    for m in range(Q_ind.size(1)):
+                        for n in range(Q_ind.size(0)):
+                            for b in range(Q_ind.size(1)):
+                                # Only computing only for the agents action other than currently selected
+                                if l != n:
+                                    temp_sum = Q_ind[l, m] - Q_ind[n, b]
+                                    temp_prod = prob_weight[l* Q_ind.size(0) + m]*temp_sum
+                                    temp_cumulative += temp_prod
+                # Adding constraint corresponding to each individual agent
+                add_constraint.append(temp_cumulative >= 0)
 
 
         # Joint action size = number of agents ^ action size // for a state 
@@ -168,17 +185,18 @@ class DQL:
         object_func = Minimize(sum(object_vec * prob_weight))
 
         # Constraint 1: Sum of the Probabilities should be equal to 1 // should follow for all agents
-        sum_func_constr = all(np.sum(prob_weight, 1)) == 1
+        sum_func_constr = all(sum(prob_weight)) == 1
         
         # Constraint 2: Each probability value should be grater than 1 // should follow for all agents
-        prob_constr = all(prob_weight) >= 0
+        # prob_constr = all(prob_weight) >= 0 and all(prob_weight) <= 1
 
         # Constraint 3: Total function should be less than or equal to 0
-        add_constraint = generate_add_constraint(shared_q_values, prob_weight)
+        add_constraint = generate_add_constraint(NUM_UAV, shared_q_values, prob_weight)
         total_func_constr = add_constraint
+        print(total_func_constr)
 
         # Define the problem with constraints
-        opt_problem = Problem(object_func, [sum_func_constr, prob_constr, total_func_constr])
+        opt_problem = Problem(object_func, [sum_func_constr, total_func_constr])
 
         # Solve the optimization problem using linear programming
         try:
@@ -341,7 +359,7 @@ if __name__ == "__main__":
     for k in range(NUM_UAV):
         # Each agent is tracking possible probabilites by themself // so each agent has pi variable
         # Setting the probabilities to equal value // each combination of action has same probability
-        dimension = [(UAV_OB[k].combined_action_size, 1)]
+        dimension = [UAV_OB[k].combined_action_size, 1]
         UAV_OB[k].pi = torch.ones(dimension) * (1/(UAV_OB[k].action_size ** UAV_OB[k].action_size))
 
     # Start of the episode
