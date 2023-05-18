@@ -22,6 +22,7 @@ import math
 import warnings
 from cvxpy import Variable, Problem, Minimize
 import time
+import nashpy as nash
 
 warnings.filterwarnings("ignore")
 
@@ -155,20 +156,20 @@ class DQL:
                 #                            [v*(UAV_OB[v].action_size)**(NUM_UAV-1): (v+1)*(UAV_OB[v].action_size)**(NUM_UAV-1) - 1]))
                 # Using this individual probability, defining a constraint
                 # Extracting individual Q value
-                # Q values arraged as positions defiend [0,0,0,0,0],[0,0,0,0,1]...//[1,0,0,0,0],[1,0,0,0,1]...//...[4,0,0,0,0]...[4,4,4,4,4]
-                Q_ind = shared_q_values[v, :].reshape(UAV_OB[v].action_size, (UAV_OB[v].action_size)**(NUM_UAV-1))  
+                # Q values arraged as positions defiend [0,0,0,0,0],[0,0,0,0,1]...//[1,0,0,0,0],[1,0,0,0,1]...//...[4,0,0,0,0]...[4,4,4,4,4]  
                 temp_cumulative = 0
+                Q_ind = shared_q_values[v, :].reshape(UAV_OB[v].action_size, (UAV_OB[v].action_size)**(NUM_UAV-1))
                 for l in range(Q_ind.size(0)):
-                    for m in range(Q_ind.size(1)):
-                        for n in range(Q_ind.size(0)):
-                            for b in range(Q_ind.size(1)):
+                    for n in range(Q_ind.size(1)):
+                        for m in range(Q_ind.size(0)):
                                 # Only computing only for the agents action other than currently selected
-                                if l != n:
-                                    temp_sum = Q_ind[l, m] - Q_ind[n, b]
-                                    temp_prod = prob_weight[l* Q_ind.size(0) + m]*temp_sum
+                                if l != m:
+                                    temp_sum = Q_ind[l, n] - Q_ind[m, n]
+                                    temp_prod = prob_weight[l* Q_ind.size(0) + n]*temp_sum
                                     temp_cumulative += temp_prod
                 # Adding constraint corresponding to each individual agent
                 add_constraint.append(temp_cumulative >= 0)
+            return add_constraint
 
 
         # Joint action size = number of agents ^ action size // for a state 
@@ -188,15 +189,15 @@ class DQL:
         sum_func_constr = all(sum(prob_weight)) == 1
         
         # Constraint 2: Each probability value should be grater than 1 // should follow for all agents
-        # prob_constr = all(prob_weight) >= 0 and all(prob_weight) <= 1
+        prob_constr = all(prob_weight) >= 0 and all(prob_weight) <= 1
 
         # Constraint 3: Total function should be less than or equal to 0
         add_constraint = generate_add_constraint(NUM_UAV, shared_q_values, prob_weight)
         total_func_constr = add_constraint
-        print(total_func_constr)
 
         # Define the problem with constraints
-        opt_problem = Problem(object_func, [sum_func_constr, total_func_constr])
+        complete_constraint = [sum_func_constr, prob_constr] + total_func_constr
+        opt_problem = Problem(object_func, complete_constraint)
 
         # Solve the optimization problem using linear programming
         try:
@@ -210,33 +211,54 @@ class DQL:
             print("Failed to find a solution")
         return weights
     
+    # def correlated_equilibrium(self, shared_q_values, agent_idx):
+    #     # Create the game using the payoff matrices
+    #     q_complete = np.vstack([shared_q_values[k].ravel() for k in range(NUM_UAV)])
+    #     game = nash.Game(q_complete)
+
+    #     # Find the all equilibrium using the Lemke-Howson algorithm
+    #     equilibria = game.lemke_howson_enumeration()
+
+    #     # Iterate over the equilibria and find the correlated equilibrium
+    #     correlated_eq = None
+    #     for eqs in equilibria:
+    #         eq_satisfies = True
+    #         for eq in eqs:
+    #             if None in eq or any(val == None for val in eq) or any(val < 0 for val in eq):
+    #                 eq_satisfies = False
+    #                 break
+    #         if eq_satisfies:
+    #             correlated_eq = eqs
+    #             print("correlated_eq", eqs)
+    #             break
+         
+    #     print(correlated_eq[0].shape)
+    #     self.prob = correlated_eq
+        
 
     def update_probs(self, shared_q_values, agent_idx):
         return self.correlated_equilibrium(shared_q_values, agent_idx)
 
-
-    def epsilon_greedy(self, shared_state, pi):
+    def epsilon_greedy(self, agent_idx):
         temp = random.random()
         # Epsilon decay policy is employed for faster convergence
         epsilon_thres = self.epsilon_min + (self.epsilon - self.epsilon_min) * math.exp(-1*self.steps_done/self.epsilon_decay)
         self.steps_done += 1 
         # Each agents possible state space is same so, prob varible // joining all index
-        prob = pi[shared_state]
-        prob = np.abs(prob) / np.sum(prob)
+        prob = self.pi
+        # prob = np.abs(prob) / sum(prob)
         # Compare against a epsilon threshold to either explore or exploit
         if temp <= epsilon_thres:
             # If less than threshold action choosen randomly
             # Each iteration will generate action list from individual correlation device 
-            actions = np.random.randint(0, 4, size=(NUM_UAV))
-            print(actions)
+            # Action here is representing joint action so has a size of (1, 3125)
+            actions = np.random.randint(0, UAV_OB[agent_idx].action_size ** NUM_UAV)
         else:
             # Else (high prob) choosing the action based correlated equilibrium 
             # Action choosen based on joint state and action and using linear programming to find a solution
             # Action index and action correspond to each other so
-            print(prob.size())
-            print(prob)
-            actions = np.random.choice(0, 4, size=(NUM_UAV), p=prob)
-            print(actions)
+            choices = np.arange(0, UAV_OB[agent_idx].action_size ** NUM_UAV, dtype=int)
+            actions = np.random.choice(choices, p=prob)
         return actions
        
 
@@ -359,8 +381,8 @@ if __name__ == "__main__":
     for k in range(NUM_UAV):
         # Each agent is tracking possible probabilites by themself // so each agent has pi variable
         # Setting the probabilities to equal value // each combination of action has same probability
-        dimension = [UAV_OB[k].combined_action_size, 1]
-        UAV_OB[k].pi = torch.ones(dimension) * (1/(UAV_OB[k].action_size ** UAV_OB[k].action_size))
+        dimension = UAV_OB[k].combined_action_size
+        UAV_OB[k].pi = np.ones(dimension) * (1/(UAV_OB[k].action_size ** UAV_OB[k].action_size))
 
     # Start of the episode
     for i_episode in range(num_episode):
@@ -398,10 +420,11 @@ if __name__ == "__main__":
                 shared_q_values[k, :]= q_values.detach()
 
             for k in range(NUM_UAV):
-                UAV_OB[k].correlated_equilibrium(shared_q_values, k)
-                actions = UAV_OB[k].epsilon_greedy(shared_state, UAV_OB[k].pi, k)
+                weights = UAV_OB[k].correlated_equilibrium(shared_q_values, k)
+                if weights is not None:
+                    UAV_OB[k].pi = weights
+                action = UAV_OB[k].epsilon_greedy(k)
                 print(f"Correlated action for agent {k} is {action}")
-                action = actions[k]
                 drone_act_list.append(action)
 
             # Find the global reward for the combined set of actions for the UAV
