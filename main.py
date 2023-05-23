@@ -442,6 +442,7 @@ if __name__ == "__main__":
                 # Correlated joint action // computed by individual agent
                 action_selected = np.copy(UAV_OB[k].action_profile[action])
                 #########################################################
+                # Only one equilibria calculation // Can change if want a actually full distributed system
                 # print(action_selected)
                 # Trying a shortcut // Since the correlated action selection gives same results for all agents
                 # Instead of computing in loop using the same value to see faster output
