@@ -209,8 +209,8 @@ class DQL:
                 # print("Found solution")
                 weights = prob_weight.value
                 # print(weights)
-                # print('Max Weight:', np.max(weights))
-                print("Best Joint Action:", np.argmax(weights))
+                print('Max Weight:', np.max(weights))
+                # print("Best Joint Action:", np.argmax(weights))
             else:
                 weights = None
         except:

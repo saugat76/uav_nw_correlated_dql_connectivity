@@ -39,7 +39,7 @@ def parse_args():
     parser.add_argument("--torch-deterministic", type= lambda x:bool(strtobool(x)), default=True, nargs="?", const=True, help="if toggeled, 'torch-backends.cudnn.deterministic=False'")
     parser.add_argument("--cuda", type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True, help="if toggled, cuda will be enabled by default")
     parser.add_argument("--wandb-track", type=lambda x: bool(strtobool(x)), default=False, help="if toggled, this experiment will be tracked with Weights and Biases project")
-    parser.add_argument("--wandb-name", type=str, default="uav_nw_correlated_dql_connectivity", help="project name in Weight and Biases")
+    parser.add_argument("--wandb-name", type=str, default="UAV_Subband_Allocation_DQN_Pytorch", help="project name in Weight and Biases")
     parser.add_argument("--wandb-entity", type=str, default= None, help="entity(team) for Weights and Biases project")
 
     # Arguments specific to the Algotithm used 
@@ -172,7 +172,7 @@ class DQL:
         # Joint action size = number of agents ^ action size // for a state 
         # Optimizing the joint action so setting as a variable for CE optimization 
         joint_action_size = NUM_UAV ** UAV_OB[agent_idx].action_size
-        prob_weight = Variable(joint_action_size, boolean = True)
+        prob_weight = Variable(joint_action_size, pos = True)
         
         # Collect Q values for the corresponding states of each individual agents
         # Using negate value to use Minimize function for solving  // removed
@@ -210,7 +210,7 @@ class DQL:
                 weights = prob_weight.value
                 # print(weights)
                 # print('Max Weight:', np.max(weights))
-                print("Best Joint Action:", np.argmax(weights))
+                # print("Best Joint Action:", np.argmax(weights))
             else:
                 weights = None
         except:
