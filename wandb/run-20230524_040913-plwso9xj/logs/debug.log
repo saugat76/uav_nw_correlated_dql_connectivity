@@ -26,3 +26,10 @@ config: {'exp_name': 'correlated_madql_uav', 'seed': 1, 'torch_deterministic': T
 2023-05-24 04:09:14,393 INFO    MainThread:25880 [wandb_run.py:_redirect():2103] Redirects installed.
 2023-05-24 04:09:14,393 INFO    MainThread:25880 [wandb_init.py:init():829] run started, returning control to user process
 2023-05-24 04:09:14,393 INFO    MainThread:25880 [wandb_run.py:_tensorboard_callback():1433] tensorboard callback: runs/correlated_madql_uav__5__1__1684915749, True
+2023-05-24 13:51:43,548 INFO    MainThread:25880 [wandb_run.py:_finish():1893] finishing run saugat76/uav_nw_correlated_dql_connectivity/plwso9xj
+2023-05-24 13:51:43,548 INFO    MainThread:25880 [wandb_run.py:_atexit_cleanup():2127] got exitcode: 0
+2023-05-24 13:51:43,553 INFO    MainThread:25880 [wandb_run.py:_restore():2110] restore
+2023-05-24 13:51:43,553 INFO    MainThread:25880 [wandb_run.py:_restore():2116] restore done
+2023-05-24 13:51:55,774 INFO    MainThread:25880 [wandb_run.py:_footer_history_summary_info():3469] rendering history
+2023-05-24 13:51:55,774 INFO    MainThread:25880 [wandb_run.py:_footer_history_summary_info():3501] rendering summary
+2023-05-24 13:51:55,774 INFO    MainThread:25880 [wandb_run.py:_footer_sync_info():3428] logging synced files
