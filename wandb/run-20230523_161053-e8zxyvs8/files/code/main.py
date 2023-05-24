@@ -186,8 +186,8 @@ class DQL:
         sum_func_constr = sum(prob_weight) == 1
         
         # Constraint 2: Each probability value should be grater than 1 // should follow for all agents
-        prob_constr_1 = all(prob_weight) >= 0
-        prob_constr_2 = all(prob_weight) <= 1
+        # prob_constr_1 = all(prob_weight) >= 0
+        # prob_constr_2 = all(prob_weight) <= 1
         # Deterministic probability instead of stochastic // either 0 or 1 value
         # Migth be able to incorporate in variable defination
         # prob_constr = all(prob_weight) in [0, 1]
@@ -198,19 +198,19 @@ class DQL:
         total_func_constr = add_constraint
 
         # Define the problem with constraints
-        complete_constraint = [sum_func_constr, prob_constr_1, prob_constr_2] + total_func_constr
+        complete_constraint = [sum_func_constr] + total_func_constr
         opt_problem = Problem(object_func, complete_constraint)
 
         # Solve the optimization problem using linear programming
         try:
             opt_problem.solve()
-            # print(opt_problem.status)
+            print(opt_problem.status)
             if opt_problem.status == "optimal":
                 # print("Found solution")
                 weights = prob_weight.value
                 # print(weights)
                 # print('Max Weight:', np.max(weights))
-                print("Best Joint Action:", np.argmax(weights))
+                # print("Best Joint Action:", np.argmax(weights))
             else:
                 weights = None
         except:

@@ -172,7 +172,7 @@ class DQL:
         # Joint action size = number of agents ^ action size // for a state 
         # Optimizing the joint action so setting as a variable for CE optimization 
         joint_action_size = NUM_UAV ** UAV_OB[agent_idx].action_size
-        prob_weight = Variable(joint_action_size, boolean = True)
+        prob_weight = Variable(joint_action_size, pos = True)
         
         # Collect Q values for the corresponding states of each individual agents
         # Using negate value to use Minimize function for solving  // removed
@@ -186,8 +186,8 @@ class DQL:
         sum_func_constr = sum(prob_weight) == 1
         
         # Constraint 2: Each probability value should be grater than 1 // should follow for all agents
-        prob_constr_1 = all(prob_weight) >= 0
-        prob_constr_2 = all(prob_weight) <= 1
+        # prob_constr_1 = all(prob_weight) >= 0
+        # prob_constr_2 = all(prob_weight) <= 1
         # Deterministic probability instead of stochastic // either 0 or 1 value
         # Migth be able to incorporate in variable defination
         # prob_constr = all(prob_weight) in [0, 1]
@@ -198,7 +198,7 @@ class DQL:
         total_func_constr = add_constraint
 
         # Define the problem with constraints
-        complete_constraint = [sum_func_constr, prob_constr_1, prob_constr_2] + total_func_constr
+        complete_constraint = [sum_func_constr] + total_func_constr
         opt_problem = Problem(object_func, complete_constraint)
 
         # Solve the optimization problem using linear programming
@@ -210,7 +210,7 @@ class DQL:
                 weights = prob_weight.value
                 # print(weights)
                 # print('Max Weight:', np.max(weights))
-                print("Best Joint Action:", np.argmax(weights))
+                # print("Best Joint Action:", np.argmax(weights))
             else:
                 weights = None
         except:
@@ -435,7 +435,7 @@ if __name__ == "__main__":
     
                 weights = UAV_OB[k].correlated_equilibrium(shared_q_values, k)
                 if weights is not None:
-                    UAV_OB[k].pi = weights
+                    UAV_OB[k].pi = round(weights)
                 action = UAV_OB[k].epsilon_greedy(k)
                 correlated_action_list.append(action)
                 # Action of the individual agent from the correlated action list

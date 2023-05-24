@@ -1,0 +1,23 @@
+C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\torch\functional.py:478: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at  C:\cb\pytorch_1000000000000\work\aten\src\ATen\native\TensorShape.cpp:2895.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+0
+optimal
+optimal
+optimal
+optimal
+optimal
+optimal
+Traceback (most recent call last):
+  File "C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\main.py", line 436, in <module>
+    weights = UAV_OB[k].correlated_equilibrium(shared_q_values, k)
+  File "C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\main.py", line 186, in correlated_equilibrium
+    sum_func_constr = sum(prob_weight) == 1
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\cvxpy\expressions\expression.py", line 50, in cast_op
+    return binary_op(self, other)
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\cvxpy\expressions\expression.py", line 560, in __add__
+    self, other = self.broadcast(self, other)
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\cvxpy\expressions\expression.py", line 534, in broadcast
+    if lh_expr.is_scalar() and not rh_expr.is_scalar():
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\cvxpy\expressions\expression.py", line 450, in is_scalar
+    return all(d == 1 for d in self.shape)
+KeyboardInterrupt

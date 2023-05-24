@@ -172,7 +172,7 @@ class DQL:
         # Joint action size = number of agents ^ action size // for a state 
         # Optimizing the joint action so setting as a variable for CE optimization 
         joint_action_size = NUM_UAV ** UAV_OB[agent_idx].action_size
-        prob_weight = Variable(joint_action_size, boolean = True)
+        prob_weight = Variable(joint_action_size, pos = True)
         
         # Collect Q values for the corresponding states of each individual agents
         # Using negate value to use Minimize function for solving  // removed
@@ -210,7 +210,7 @@ class DQL:
                 weights = prob_weight.value
                 # print(weights)
                 # print('Max Weight:', np.max(weights))
-                print("Best Joint Action:", np.argmax(weights))
+                # print("Best Joint Action:", np.argmax(weights))
             else:
                 weights = None
         except:
