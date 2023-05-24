@@ -23,8 +23,8 @@ import warnings
 from cvxpy import Variable, Problem, Minimize, Maximize, multiply, matmul
 import time
 import sys
-# from joblib import Parallel, delayed
-# from multiprocessing import Pool
+from joblib import Parallel, delayed
+from multiprocessing import Pool
 
 
 
@@ -148,26 +148,28 @@ class DQL:
     # Joint action are indexed in the order: [0,0,0,0,0], [0,0,0,0,1],... [1,0,0,0,0]...[4,4,4,4,4]
     # Where, the indexes of joint actions of the joint action represents the agents index
 
-    # Additional constraint function // Generating constraint used for solving the optimization equation
-    def generate_add_constraint(self, NUM_UAV, shared_q_values, prob_weight):
-        add_constraint = []
-        for v in range(NUM_UAV):
-            temp_cumulative = 0
-            Q_ind = shared_q_values[v, :].reshape(UAV_OB[v].action_size, (UAV_OB[v].action_size)**(NUM_UAV-1))
-            for l in range(Q_ind.size(1)):
-                temp_compute = torch.zeros((UAV_OB[v].action_size, UAV_OB[v].action_size))
-                for n in range(Q_ind.size(0)):
-                    for m in range(Q_ind.size(0)):
-                        if n != m:
-                            temp_compute[m, n] = Q_ind[n, l] - Q_ind[m, l]
-                temp_mul = prob_weight[(n * Q_ind.size(0) + l): ((n + 1) * Q_ind.size(0) + l)]
-                temp_prod = temp_mul @ temp_compute
-                temp_cumulative += temp_prod
-            add_constraint.append(temp_cumulative >= 0)
-        return add_constraint
-
-
     def correlated_equilibrium(self, shared_q_values, agent_idx):
+
+        # Additional constraint function // Generating constraint used for solving the optimization equation
+        def generate_add_constraint(NUM_UAV, shared_q_values, prob_weight):
+            add_constraint = []
+            for v in range(NUM_UAV):
+                temp_cumulative = 0
+                temp_cat = torch.zeros(UAV_OB[v].action_size**NUM_UAV, UAV_OB[v].action_size)
+                Q_ind = shared_q_values[v, :].reshape(UAV_OB[v].action_size, (UAV_OB[v].action_size)**(NUM_UAV-1))
+                for l in range(Q_ind.size(1)):
+                    temp_compute = torch.zeros((UAV_OB[v].action_size, UAV_OB[v].action_size))
+                    for n in range(Q_ind.size(0)):
+                        for m in range(Q_ind.size(0)):
+                            if n != m:
+                                temp_compute[m, n] = Q_ind[n, l] - Q_ind[m, l]
+                    temp_cat[(n * Q_ind.size(0) + l): (n + 1) * Q_ind.size(0) + l, :] = temp_compute
+                    # temp_mul = prob_weight[(n * Q_ind.size(0) + l): ((n + 1) * Q_ind.size(0) + l)]
+                # temp_prod = temp_mul @ temp_compute
+                # temp_cumulative += temp_prod
+                temp_cumulative = prob_weight @ temp_cat 
+                add_constraint.append(temp_cumulative >= 0)
+            return add_constraint
 
         # Joint action size = number of agents ^ action size // for a state 
         # Optimizing the joint action so setting as a variable for CE optimization 
@@ -192,9 +194,8 @@ class DQL:
         # Migth be able to incorporate in variable defination
         # prob_constr = all(prob_weight) in [0, 1]
 
-
         # Constraint 3: Total function should be less than or equal to 0
-        add_constraint = self.generate_add_constraint(NUM_UAV, shared_q_values, prob_weight)
+        add_constraint = generate_add_constraint(NUM_UAV, shared_q_values, prob_weight)
         total_func_constr = add_constraint
 
         # Define the problem with constraints
@@ -202,20 +203,20 @@ class DQL:
         opt_problem = Problem(object_func, complete_constraint)
 
         # Solve the optimization problem using linear programming
-        try:
-            opt_problem.solve()
-            # print(opt_problem.status)
-            if opt_problem.status == "optimal":
-                # print("Found solution")
-                weights = prob_weight.value
-                # print(weights)
-                # print('Max Weight:', np.max(weights))
-                print("Best Joint Action:", np.argmax(weights))
-            else:
-                weights = None
-        except:
+        # try:
+        opt_problem.solve()
+        # print(opt_problem.status)
+        if opt_problem.status == "optimal":
+            # print("Found solution")
+            weights = prob_weight.value
+            # print(weights)
+            # print('Max Weight:', np.max(weights))
+            print("Best Joint Action:", np.argmax(weights))
+        else:
             weights = None
-            print("Failed to find an optimal solution")
+        # except:
+        #     weights = None
+        #     print("Failed to find an optimal solution")
         return weights
         
 
