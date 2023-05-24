@@ -164,9 +164,6 @@ class DQL:
                             if n != m:
                                 temp_compute[m, n] = Q_ind[n, l] - Q_ind[m, l]
                     temp_cat[(n * Q_ind.size(0) + l): (n + 1) * Q_ind.size(0) + l, :] = temp_compute
-                    # temp_mul = prob_weight[(n * Q_ind.size(0) + l): ((n + 1) * Q_ind.size(0) + l)]
-                # temp_prod = temp_mul @ temp_compute
-                # temp_cumulative += temp_prod
                 temp_cumulative = prob_weight @ temp_cat 
                 add_constraint.append(temp_cumulative >= 0)
             return add_constraint
