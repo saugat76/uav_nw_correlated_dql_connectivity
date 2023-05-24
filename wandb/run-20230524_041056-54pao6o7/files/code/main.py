@@ -56,8 +56,6 @@ def parse_args():
     parser.add_argument("--epsilon-min", type=float, default=0.1, help="maximum value of exploration-exploitation paramter, only used when epsilon deacay is set to True")
     parser.add_argument("--epsilon-decay", type=lambda x: bool(strtobool(x)), default=False, help="epsilon decay is used, explotation is prioritized at early episodes and on later epsidoe exploitation is prioritized, by default set to False")
     parser.add_argument("--epsilon-decay-steps", type=int, default=1, help="set the rate at which is the epsilon is deacyed, set value equates number of steps at which the epsilon reaches minimum")
-    parser.add_argument("--layers", type=int, default=2, help="set the number of layers for the target and main neural network")
-    parser.add_argument("--nodes", type=int, default=400, help="set the number of nodes for the target and main neural network layers")
 
     # Environment specific arguments 
     # Arguments for used inside the wireless UAV based enviornment  
@@ -88,23 +86,12 @@ class NeuralNetwork(nn.Module):
         super(NeuralNetwork, self).__init__()
         self.state_size = state_size
         self.combined_action_size = combined_action_size
-        if args.num_layers == 2:
-            self.linear_stack = model = nn.Sequential(
-                nn.Linear(self.state_size, args.nodes),
-                nn.ReLU(),
-                nn.Linear(args.nodes, args.nodes),
-                nn.ReLU(),
-                nn.Linear(args.nodes, self.combined_action_size)
-            ).to(device=device)
-        elif args.num_layers == 3:
-            self.linear_stack = model = nn.Sequential(
-            nn.Linear(self.state_size, args.nodes),
+        self.linear_stack = model = nn.Sequential(
+            nn.Linear(self.state_size,400),
             nn.ReLU(),
-            nn.Linear(args.nodes, args.nodes),
+            nn.Linear(400,400),
             nn.ReLU(),
-            nn.Linear(args.nodes, args.nodes),
-            nn.ReLU(),
-            nn.Linear(args.nodes, self.combined_action_size)
+            nn.Linear(400, self.combined_action_size)
         ).to(device=device)
 
     def forward(self, x):
