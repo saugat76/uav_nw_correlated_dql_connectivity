@@ -1,0 +1,7 @@
+C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\torch\functional.py:478: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at  C:\cb\pytorch_1000000000000\work\aten\src\ATen\native\TensorShape.cpp:2895.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+0
+Traceback (most recent call last):
+  File "C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\main.py", line 438, in <module>
+    UAV_OB[k].pi = round(weights)
+TypeError: type numpy.ndarray doesn't define __round__ method

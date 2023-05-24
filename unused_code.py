@@ -82,3 +82,56 @@
     #         weights = None
     #         print("cant find solution")
     #     return weights 
+
+
+
+
+
+## Some portion of the code for the dimension calculation of the pi
+
+    
+   # Initializing probability distribution for all the agents 
+    # Individually calculation of the correlated equilibrium // Individual prob dist for all agent
+    # Set the dimention for the variable initialization
+    dimension = []
+    for k in range(NUM_UAV):
+        if dimension == []:
+            # Each agent need to track with all other agents
+            dimension.append(NUM_UAV)
+            # Assumes all the agent have equal state size // won't work with different state sizes for differentiated with their observation
+            dimension.append(UAV_OB[k].state_space)
+            dimension.append(UAV_OB[k].state_space)
+        dimension.append(UAV_OB[k].action_size)
+    dimension = tuple(dimension)
+    for k in range(NUM_UAV):
+        # Each agent is tracking possible probabilites by themself // so each agent has pi variable
+        # Setting the probabilities to equal value // each combination of action has same probability
+        UAV_OB[k].pi = torch.ones(dimension) * (1/(UAV_OB[k].action_size ** UAV_OB[k].action_size))
+
+
+
+
+# nashpy based code 
+    # def correlated_equilibrium(self, shared_q_values, agent_idx):
+    #     # Create the game using the payoff matrices
+    #     q_complete = np.vstack([shared_q_values[k].ravel() for k in range(NUM_UAV)])
+    #     game = nash.Game(q_complete)
+
+    #     # Find the all equilibrium using the Lemke-Howson algorithm
+    #     equilibria = game.lemke_howson_enumeration()
+
+    #     # Iterate over the equilibria and find the correlated equilibrium
+    #     correlated_eq = None
+    #     for eqs in equilibria:
+    #         eq_satisfies = True
+    #         for eq in eqs:
+    #             if None in eq or any(val == None for val in eq) or any(val < 0 for val in eq):
+    #                 eq_satisfies = False
+    #                 break
+    #         if eq_satisfies:
+    #             correlated_eq = eqs
+    #             print("correlated_eq", eqs)
+    #             break
+         
+    #     print(correlated_eq[0].shape)
+    #     self.prob = correlated_eq

@@ -1,0 +1,54 @@
+diff --git a/main.py b/main.py
+index e738df3..da61cfe 100644
+--- a/main.py
++++ b/main.py
+@@ -39,7 +39,7 @@ def parse_args():
+     parser.add_argument("--torch-deterministic", type= lambda x:bool(strtobool(x)), default=True, nargs="?", const=True, help="if toggeled, 'torch-backends.cudnn.deterministic=False'")
+     parser.add_argument("--cuda", type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True, help="if toggled, cuda will be enabled by default")
+     parser.add_argument("--wandb-track", type=lambda x: bool(strtobool(x)), default=False, help="if toggled, this experiment will be tracked with Weights and Biases project")
+-    parser.add_argument("--wandb-name", type=str, default="UAV_Subband_Allocation_DQN_Pytorch", help="project name in Weight and Biases")
++    parser.add_argument("--wandb-name", type=str, default="uav_nw_correlated_dql_connectivity", help="project name in Weight and Biases")
+     parser.add_argument("--wandb-entity", type=str, default= None, help="entity(team) for Weights and Biases project")
+ 
+     # Arguments specific to the Algotithm used 
+@@ -186,11 +186,11 @@ class DQL:
+         sum_func_constr = sum(prob_weight) == 1
+         
+         # Constraint 2: Each probability value should be grater than 1 // should follow for all agents
+-        prob_constr_1 = all(prob_weight) >= 0
+-        prob_constr_2 = all(prob_weight) <= 1
++        # prob_constr_1 = all(prob_weight) >= 0
++        # prob_constr_2 = all(prob_weight) <= 1
+         # Deterministic probability instead of stochastic // either 0 or 1 value
+         # Migth be able to incorporate in variable defination
+-        # prob_constr = all(prob_weight) in [0, 1]
++        prob_constr = all(prob_weight) in [0, 1]
+ 
+ 
+         # Constraint 3: Total function should be less than or equal to 0
+@@ -198,7 +198,7 @@ class DQL:
+         total_func_constr = add_constraint
+ 
+         # Define the problem with constraints
+-        complete_constraint = [sum_func_constr, prob_constr_1, prob_constr_2] + total_func_constr
++        complete_constraint = [sum_func_constr, prob_constr] + total_func_constr
+         opt_problem = Problem(object_func, complete_constraint)
+ 
+         # Solve the optimization problem using linear programming
+diff --git a/run.py b/run.py
+index 5ccae10..722c7f0 100644
+--- a/run.py
++++ b/run.py
+@@ -3,7 +3,9 @@ import subprocess
+ #Run the script for multiple levels of information exchange from level 1 to level 4
+ for i in range(1, 5):
+     print('#######################################################')
+-    print('####  Running the code for Level:', i, "info exchange  ####")
++    print('####              Running the code                 ####')
+     print('#######################################################')
+     p = subprocess.run(["python", "uav_env.py"])
+-    g = subprocess.run(["python", "main.py", "--info-exchange-lvl", str(i), "--num-episode", str(600), "--wandb-track", "True", "--learning-rate", str(2.5e-4)])
++    g = subprocess.run(["python", "main.py", "--num-episode", str(50), "--wandb-track", "True", "--learning-rate", str(2.5e-4)])
++
++# python main.py --num-episode 50 --wandb-track True --learning-rate 2.5e-4
+\ No newline at end of file
