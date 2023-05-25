@@ -1970,3 +1970,54 @@ _info {
 2023-05-24 21:59:10,181 DEBUG   HandlerThread:24744 [handler.py:handle_request():144] handle_request: status_report
 2023-05-24 21:59:10,412 INFO    Thread-16 :24744 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230524_213430-kqv7irv6\files\output.log
 2023-05-24 21:59:10,414 ERROR   gpu       :24744 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-24 21:59:12,437 INFO    Thread-16 :24744 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230524_213430-kqv7irv6\files\output.log
+2023-05-24 21:59:12,440 ERROR   gpu       :24744 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-24 21:59:14,457 INFO    Thread-16 :24744 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230524_213430-kqv7irv6\files\output.log
+2023-05-24 21:59:14,457 ERROR   gpu       :24744 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-24 21:59:15,674 DEBUG   HandlerThread:24744 [handler.py:handle_request():144] handle_request: status_report
+2023-05-24 21:59:16,507 ERROR   gpu       :24744 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-24 21:59:18,495 INFO    Thread-16 :24744 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230524_213430-kqv7irv6\files\output.log
+2023-05-24 21:59:18,516 ERROR   gpu       :24744 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-24 21:59:20,513 INFO    Thread-16 :24744 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230524_213430-kqv7irv6\files\output.log
+2023-05-24 21:59:20,529 ERROR   gpu       :24744 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-24 21:59:21,271 DEBUG   HandlerThread:24744 [handler.py:handle_request():144] handle_request: status_report
+2023-05-24 21:59:21,827 DEBUG   HandlerThread:24744 [handler.py:handle_request():144] handle_request: stop_status
+2023-05-24 21:59:21,832 DEBUG   SenderThread:24744 [sender.py:send_request():402] send_request: stop_status
+2023-05-24 21:59:22,537 INFO    Thread-16 :24744 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230524_213430-kqv7irv6\files\output.log
+2023-05-24 21:59:22,541 ERROR   gpu       :24744 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-24 21:59:24,559 ERROR   gpu       :24744 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-24 21:59:26,514 DEBUG   HandlerThread:24744 [handler.py:handle_request():144] handle_request: status_report
+2023-05-24 21:59:26,576 ERROR   gpu       :24744 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-24 21:59:26,592 INFO    Thread-16 :24744 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230524_213430-kqv7irv6\files\output.log
+2023-05-24 21:59:28,599 ERROR   gpu       :24744 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-24 21:59:28,610 INFO    Thread-16 :24744 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230524_213430-kqv7irv6\files\output.log
+2023-05-24 21:59:30,612 ERROR   gpu       :24744 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-24 21:59:30,634 INFO    Thread-16 :24744 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230524_213430-kqv7irv6\files\output.log
+2023-05-24 21:59:31,789 DEBUG   HandlerThread:24744 [handler.py:handle_request():144] handle_request: status_report
+2023-05-24 21:59:31,837 DEBUG   SenderThread:24744 [sender.py:send():375] send: stats
+2023-05-24 21:59:32,632 ERROR   gpu       :24744 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-24 21:59:32,651 INFO    Thread-16 :24744 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230524_213430-kqv7irv6\files\output.log
+2023-05-24 21:59:34,648 ERROR   gpu       :24744 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-24 21:59:36,675 ERROR   gpu       :24744 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-24 21:59:36,690 INFO    Thread-16 :24744 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230524_213430-kqv7irv6\files\output.log
+2023-05-24 21:59:36,862 DEBUG   HandlerThread:24744 [handler.py:handle_request():144] handle_request: stop_status
+2023-05-24 21:59:36,862 DEBUG   HandlerThread:24744 [handler.py:handle_request():144] handle_request: status_report
+2023-05-24 21:59:36,862 DEBUG   SenderThread:24744 [sender.py:send_request():402] send_request: stop_status
+2023-05-24 21:59:38,696 ERROR   gpu       :24744 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-24 21:59:38,707 INFO    Thread-16 :24744 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230524_213430-kqv7irv6\files\output.log
+2023-05-24 21:59:40,717 ERROR   gpu       :24744 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-24 21:59:42,645 DEBUG   HandlerThread:24744 [handler.py:handle_request():144] handle_request: status_report
+2023-05-24 21:59:42,728 ERROR   gpu       :24744 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-24 21:59:42,745 INFO    Thread-16 :24744 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230524_213430-kqv7irv6\files\output.log
+2023-05-24 21:59:44,748 ERROR   gpu       :24744 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-24 21:59:44,754 INFO    Thread-16 :24744 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230524_213430-kqv7irv6\files\output.log
+2023-05-24 21:59:46,802 ERROR   gpu       :24744 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-24 21:59:48,210 DEBUG   HandlerThread:24744 [handler.py:handle_request():144] handle_request: status_report
+2023-05-24 21:59:48,792 INFO    Thread-16 :24744 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230524_213430-kqv7irv6\files\output.log
+2023-05-24 21:59:48,813 ERROR   gpu       :24744 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-24 21:59:50,814 INFO    Thread-16 :24744 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230524_213430-kqv7irv6\files\output.log
+2023-05-24 21:59:50,829 ERROR   gpu       :24744 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-24 21:59:51,860 DEBUG   HandlerThread:24744 [handler.py:handle_request():144] handle_request: stop_status
+2023-05-24 21:59:51,860 DEBUG   SenderThread:24744 [sender.py:send_request():402] send_request: stop_status
+2023-05-24 21:59:52,834 INFO    Thread-16 :24744 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230524_213430-kqv7irv6\files\output.log
+2023-05-24 21:59:52,842 ERROR   gpu       :24744 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
