@@ -20,3 +20,16 @@ config: {'exp_name': 'correlated_madql_uav', 'seed': 1, 'torch_deterministic': T
 2023-05-24 15:44:15,565 INFO    MainThread:18012 [wandb_run.py:_on_init():2186] got version response upgrade_message: "wandb version 0.15.3 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
 
 2023-05-24 15:44:15,565 INFO    MainThread:18012 [wandb_init.py:init():787] starting run threads in backend
+2023-05-24 15:44:16,573 INFO    MainThread:18012 [wandb_run.py:_console_start():2158] atexit reg
+2023-05-24 15:44:16,573 INFO    MainThread:18012 [wandb_run.py:_redirect():2013] redirect: SettingsConsole.WRAP_RAW
+2023-05-24 15:44:16,578 INFO    MainThread:18012 [wandb_run.py:_redirect():2078] Wrapping output streams.
+2023-05-24 15:44:16,578 INFO    MainThread:18012 [wandb_run.py:_redirect():2103] Redirects installed.
+2023-05-24 15:44:16,578 INFO    MainThread:18012 [wandb_init.py:init():829] run started, returning control to user process
+2023-05-24 15:44:16,578 INFO    MainThread:18012 [wandb_run.py:_tensorboard_callback():1433] tensorboard callback: runs/correlated_madql_uav__lvl6__5__1__1684957452, True
+2023-05-24 19:06:21,467 INFO    MainThread:18012 [wandb_run.py:_finish():1893] finishing run saugat76/uav_nw_correlated_dql_connectivity/757gqa8a
+2023-05-24 19:06:21,467 INFO    MainThread:18012 [wandb_run.py:_atexit_cleanup():2127] got exitcode: 0
+2023-05-24 19:06:21,467 INFO    MainThread:18012 [wandb_run.py:_restore():2110] restore
+2023-05-24 19:06:21,467 INFO    MainThread:18012 [wandb_run.py:_restore():2116] restore done
+2023-05-24 19:06:33,752 INFO    MainThread:18012 [wandb_run.py:_footer_history_summary_info():3469] rendering history
+2023-05-24 19:06:33,752 INFO    MainThread:18012 [wandb_run.py:_footer_history_summary_info():3501] rendering summary
+2023-05-24 19:06:33,757 INFO    MainThread:18012 [wandb_run.py:_footer_sync_info():3428] logging synced files

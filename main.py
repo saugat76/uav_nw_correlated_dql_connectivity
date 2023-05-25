@@ -49,7 +49,7 @@ def parse_args():
     parser.add_argument("--num-steps", type=int, default= 100, help="number of steps/epoch use in every episode")
     parser.add_argument("--learning-rate", type=float, default= 3.5e-4, help="learning rate of the dql alggorithm used by every agent")
     parser.add_argument("--gamma", type=float, default= 0.95, help="discount factor used for the calculation of q-value, can prirotize future reward if kept high")
-    parser.add_argument("--batch-size", type=int, default= 512, help="batch sample size used in a trainning batch")
+    parser.add_argument("--batch-size", type=int, default= 2, help="batch sample size used in a trainning batch")
     parser.add_argument("--epsilon", type=float, default= 0.1, help="epsilon to set the eploration vs exploitation")
     parser.add_argument("--update-rate", type=int, default= 10, help="steps at which the target network updates it's parameter from main network")
     parser.add_argument("--buffer-size", type=int, default=125000, help="size of replay buffer of each individual agent")
@@ -289,8 +289,10 @@ class DQL:
 
             # Forward 
             # Loss calculation based on loss function
-            target_Q = target_Q.float()
-            Q_main = self.main_network(state).gather(1, action).squeeze()
+            Q_main = self.main_network(state).squeeze()
+            target_Q = target_Q.float() * torch.ones(torch.transpose(Q_main, 0, 1).shape, device=device)
+            target_Q = torch.transpose(target_Q, 0, 1)
+            
             loss = self.loss_func(target_Q.cpu().detach(), Q_main.cpu())
             # Intialization of the gradient to zero and computation of the gradient
             self.optimizer.zero_grad()
