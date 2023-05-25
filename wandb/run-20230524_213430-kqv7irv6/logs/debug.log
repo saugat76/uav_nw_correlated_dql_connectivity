@@ -26,3 +26,4 @@ config: {'exp_name': 'correlated_madql_uav', 'seed': 1, 'torch_deterministic': T
 2023-05-24 21:34:32,585 INFO    MainThread:26168 [wandb_run.py:_redirect():2103] Redirects installed.
 2023-05-24 21:34:32,586 INFO    MainThread:26168 [wandb_init.py:init():829] run started, returning control to user process
 2023-05-24 21:34:32,586 INFO    MainThread:26168 [wandb_run.py:_tensorboard_callback():1433] tensorboard callback: runs/correlated_madql_uav__lvl5__5__1__1684978467, True
+2023-05-25 00:14:41,274 WARNING MsgRouterThr:26168 [router.py:message_loop():77] message_loop has been closed

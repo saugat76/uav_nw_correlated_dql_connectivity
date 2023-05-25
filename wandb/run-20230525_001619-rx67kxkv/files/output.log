@@ -1,0 +1,169 @@
+C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\torch\functional.py:478: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at  C:\cb\pytorch_1000000000000\work\aten\src\ATen\native\TensorShape.cpp:2895.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+0
+Best Joint Action: 953
+Best Joint Action: 953
+Best Joint Action: 763
+Best Joint Action: 2855
+Best Joint Action: 2855
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 901
+Best Joint Action: 901
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+Best Joint Action: 720
+[1, 0, 1, 4, 0]
+Number of user connected in  0  episode is:  [ 3 11 13  4  3]
+Total user connected in  0  episode is:  34
+1
+Best Joint Action: 953
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Best Joint Action: 700
+Traceback (most recent call last):
+  File "C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\main.py", line 456, in <module>
+    weights = UAV_OB[k].correlated_equilibrium(shared_q_values, k)
+  File "C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\main.py", line 224, in correlated_equilibrium
+    opt_problem.solve()
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\cvxpy\problems\problem.py", line 493, in solve
+    return solve_func(self, *args, **kwargs)
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\cvxpy\problems\problem.py", line 1054, in _solve
+    data, solving_chain, inverse_data = self.get_problem_data(
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\cvxpy\problems\problem.py", line 681, in get_problem_data
+    data, inverse_data = solving_chain.apply(self, verbose)
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\cvxpy\reductions\chain.py", line 76, in apply
+    problem, inv = r.apply(problem)
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\cvxpy\reductions\dcp2cone\dcp2cone.py", line 65, in apply
+    canon_constr, aux_constr = self.canonicalize_tree(
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\cvxpy\reductions\dcp2cone\dcp2cone.py", line 98, in canonicalize_tree
+    canon_arg, c = self.canonicalize_tree(arg, affine_atom and affine_above)
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\cvxpy\reductions\dcp2cone\dcp2cone.py", line 98, in canonicalize_tree
+    canon_arg, c = self.canonicalize_tree(arg, affine_atom and affine_above)
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\cvxpy\reductions\dcp2cone\dcp2cone.py", line 101, in canonicalize_tree
+    canon_expr, c = self.canonicalize_expr(expr, canon_args, affine_above)
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\cvxpy\reductions\dcp2cone\dcp2cone.py", line 133, in canonicalize_expr
+    return expr.copy(args), []
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\cvxpy\utilities\canonical.py", line 101, in copy
+    return type(self)(*(args + data))
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\cvxpy\atoms\affine\index.py", line 54, in __init__
+    super(index, self).__init__(expr)
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\cvxpy\atoms\atom.py", line 51, in __init__
+    self._shape = self.shape_from_args()
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\cvxpy\atoms\affine\index.py", line 80, in shape_from_args
+    return ku.shape(self.key, self._orig_key, self.args[0].shape)
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\cvxpy\utilities\key_utils.py", line 177, in shape
+    def shape(key, orig_key, shape: Tuple[int, ...]) -> Tuple[int, ...]:
+KeyboardInterrupt
+Best Joint Action: 700
