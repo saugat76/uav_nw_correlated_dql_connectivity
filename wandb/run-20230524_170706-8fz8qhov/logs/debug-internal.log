@@ -1,0 +1,5 @@
+2023-05-24 17:07:06,751 INFO    StreamThr :10816 [internal.py:wandb_internal():86] W&B internal server running at pid: 10816, started at: 2023-05-24 17:07:06.751368
+2023-05-24 17:07:06,766 DEBUG   HandlerThread:10816 [handler.py:handle_request():144] handle_request: status
+2023-05-24 17:07:06,782 INFO    WriterThread:10816 [datastore.py:open_for_write():85] open: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230524_170706-8fz8qhov\run-8fz8qhov.wandb
+2023-05-24 17:07:06,782 DEBUG   SenderThread:10816 [sender.py:send():375] send: header
+2023-05-24 17:07:06,922 DEBUG   SenderThread:10816 [sender.py:send():375] send: run
