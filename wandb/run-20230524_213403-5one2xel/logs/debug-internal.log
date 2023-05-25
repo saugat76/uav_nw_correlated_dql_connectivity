@@ -1,0 +1,11 @@
+2023-05-24 21:34:03,956 INFO    StreamThr :27976 [internal.py:wandb_internal():86] W&B internal server running at pid: 27976, started at: 2023-05-24 21:34:03.956941
+2023-05-24 21:34:03,958 DEBUG   HandlerThread:27976 [handler.py:handle_request():144] handle_request: status
+2023-05-24 21:34:03,977 INFO    WriterThread:27976 [datastore.py:open_for_write():85] open: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230524_213403-5one2xel\run-5one2xel.wandb
+2023-05-24 21:34:03,978 DEBUG   SenderThread:27976 [sender.py:send():375] send: header
+2023-05-24 21:34:04,036 DEBUG   SenderThread:27976 [sender.py:send():375] send: run
+2023-05-24 21:34:04,272 INFO    SenderThread:27976 [dir_watcher.py:__init__():219] watching files in: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230524_213403-5one2xel\files
+2023-05-24 21:34:04,273 INFO    SenderThread:27976 [sender.py:_start_run_threads():1124] run started: 5one2xel with start time 1684978443.958456
+2023-05-24 21:34:04,275 DEBUG   SenderThread:27976 [sender.py:send_request():402] send_request: summary_record
+2023-05-24 21:34:04,276 INFO    SenderThread:27976 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-05-24 21:34:04,281 DEBUG   HandlerThread:27976 [handler.py:handle_request():144] handle_request: check_version
+2023-05-24 21:34:04,281 DEBUG   SenderThread:27976 [sender.py:send_request():402] send_request: check_version
