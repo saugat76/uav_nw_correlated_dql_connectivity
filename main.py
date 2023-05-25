@@ -282,16 +282,15 @@ class DQL:
             diff = state - next_state
             done_local = (diff != 0).any(dim=1).float().to(device)
 
+            # Implementation of DQL algorithm 
             Q_next = self.target_network(next_state).detach()
-            prob_local = torch.FloatTensor(self.pi).to(device = device)
-            Q_next_expected = Q_next @ prob_local
-            target_Q = reward.squeeze() + self.gamma * (Q_next_expected.view(batch_size, 1).squeeze() * done_local.squeeze())
+            target_Q = reward.squeeze() + self.gamma * Q_next.max(1)[0].view(batch_size, 1).squeeze() * done_local
 
             # Forward 
             # Loss calculation based on loss function
-            Q_main = self.main_network(state).squeeze()
-            target_Q = target_Q.float() * torch.ones(torch.transpose(Q_main, 0, 1).shape, device=device)
-            target_Q = torch.transpose(target_Q, 0, 1)
+            target_Q = target_Q.float()
+
+            Q_main = self.main_network(state).gather(1, action).squeeze()
             loss = self.loss_func(target_Q.cpu().detach(), Q_main.cpu())
             # Intialization of the gradient to zero and computation of the gradient
             self.optimizer.zero_grad()
