@@ -23326,3 +23326,7 @@ _info {
 2023-05-24 21:59:05,404 INFO    Thread-16 :13536 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230524_165436-qoc0iku5\files\output.log
 2023-05-24 21:59:06,421 ERROR   gpu       :13536 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
 2023-05-24 21:59:06,604 DEBUG   HandlerThread:13536 [handler.py:handle_request():144] handle_request: keepalive
+2023-05-24 21:59:07,420 INFO    Thread-16 :13536 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230524_165436-qoc0iku5\files\output.log
+2023-05-24 21:59:08,446 ERROR   gpu       :13536 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-24 21:59:10,412 DEBUG   HandlerThread:13536 [handler.py:handle_request():144] handle_request: status_report
+2023-05-24 21:59:10,463 ERROR   gpu       :13536 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
