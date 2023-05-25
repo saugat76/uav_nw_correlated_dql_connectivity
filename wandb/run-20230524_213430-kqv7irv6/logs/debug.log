@@ -1,0 +1,22 @@
+2023-05-24 21:34:30,970 INFO    MainThread:26168 [wandb_setup.py:_flush():76] Current SDK version is 0.15.1
+2023-05-24 21:34:30,970 INFO    MainThread:26168 [wandb_setup.py:_flush():76] Configure stats pid to 26168
+2023-05-24 21:34:30,970 INFO    MainThread:26168 [wandb_setup.py:_flush():76] Loading settings from C:\Users\tripats\.config\wandb\settings
+2023-05-24 21:34:30,970 INFO    MainThread:26168 [wandb_setup.py:_flush():76] Loading settings from C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\settings
+2023-05-24 21:34:30,970 INFO    MainThread:26168 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2023-05-24 21:34:30,970 INFO    MainThread:26168 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2023-05-24 21:34:30,980 INFO    MainThread:26168 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'main.py', 'program': 'C:\\Users\\tripats\\Documents\\GitHub\\UAV_SubBand_Correlated_DQL\\main.py'}
+2023-05-24 21:34:30,980 INFO    MainThread:26168 [wandb_init.py:_log_setup():507] Logging user logs to C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230524_213430-kqv7irv6\logs\debug.log
+2023-05-24 21:34:30,980 INFO    MainThread:26168 [wandb_init.py:_log_setup():508] Logging internal logs to C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230524_213430-kqv7irv6\logs\debug-internal.log
+2023-05-24 21:34:30,980 INFO    MainThread:26168 [wandb_init.py:init():547] calling init triggers
+2023-05-24 21:34:30,980 INFO    MainThread:26168 [wandb_init.py:init():554] wandb.init called with sweep_config: {}
+config: {'exp_name': 'correlated_madql_uav', 'seed': 1, 'torch_deterministic': True, 'cuda': True, 'wandb_track': True, 'wandb_name': 'uav_nw_correlated_dql_connectivity', 'wandb_entity': None, 'env_id': 'correlated-ma-custom-UAV-connectivity', 'num_env': 1, 'num_episode': 80, 'num_steps': 100, 'learning_rate': 0.00035, 'gamma': 0.95, 'batch_size': 512, 'epsilon': 0.1, 'update_rate': 10, 'buffer_size': 125000, 'epsilon_min': 0.1, 'epsilon_decay': False, 'epsilon_decay_steps': 1, 'layers': 2, 'nodes': 400, 'info_exchange_lvl': 5, 'num_user': 100, 'num_uav': 5, 'generate_user_distribution': False, 'carrier_freq': 2, 'coverage_xy': 1000, 'uav_height': 350, 'theta': 60, 'bw_uav': 4000000.0, 'bw_rb': 180000.0, 'grid_space': 100, 'uav_dis_th': 1000, 'dist_pri_param': 0.2}
+2023-05-24 21:34:30,980 INFO    MainThread:26168 [wandb_init.py:init():596] starting backend
+2023-05-24 21:34:30,980 INFO    MainThread:26168 [wandb_init.py:init():600] setting up manager
+2023-05-24 21:34:30,980 INFO    MainThread:26168 [backend.py:_multiprocessing_setup():106] multiprocessing start_methods=spawn, using: spawn
+2023-05-24 21:34:30,988 INFO    MainThread:26168 [wandb_init.py:init():606] backend started and connected
+2023-05-24 21:34:30,995 INFO    MainThread:26168 [wandb_init.py:init():700] updated telemetry
+2023-05-24 21:34:31,052 INFO    MainThread:26168 [wandb_init.py:init():737] communicating run to backend with 60.0 second timeout
+2023-05-24 21:34:31,277 INFO    MainThread:26168 [wandb_run.py:_on_init():2177] communicating current version
+2023-05-24 21:34:31,387 INFO    MainThread:26168 [wandb_run.py:_on_init():2186] got version response upgrade_message: "wandb version 0.15.3 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2023-05-24 21:34:31,387 INFO    MainThread:26168 [wandb_init.py:init():787] starting run threads in backend
