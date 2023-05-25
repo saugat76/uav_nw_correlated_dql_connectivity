@@ -250,8 +250,11 @@ class UAVenv(gym.Env):
         sum_user_assoc = np.sum(user_asso_flag, axis = 1)
         reward_solo = np.zeros(np.size(sum_user_assoc), dtype="float32")
         for k in range(self.NUM_UAV):
-                reward_solo[k] = np.copy(sum_user_assoc[k])
+            if self.flag[k] != 0:
+                reward_solo[k] = np.copy(sum_user_assoc[k] - 2)
                 isDone = True
+            else:
+                reward_solo[k] = np.copy(sum_user_assoc[k])
         reward = np.sum(reward_solo)
 
         # Return of obs, reward, done, info
