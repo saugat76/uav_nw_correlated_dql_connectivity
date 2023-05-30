@@ -418,13 +418,13 @@ if __name__ == "__main__":
         print(i_episode)
 
         # Change of epsilon threshold // takes epsilon and epsilon min value and chnages between with episodes
-        # for k in range(NUM_UAV):
-        #     if i_episode <= 30:
-        #         UAV_OB[k].epsilon_thres = epsilon
-        #     elif i_episode <= 50:
-        #         UAV_OB[k].epsilon_thres = (epsilon + epsilon_min)/2
-        #     else:
-        #         UAV_OB[k].epsilon_thres = epsilon
+        for k in range(NUM_UAV):
+            if i_episode <= 30:
+                UAV_OB[k].epsilon_thres = epsilon_min
+            elif i_episode <= 20:
+                UAV_OB[k].epsilon_thres = (epsilon + epsilon_min)/2
+            elif i_episode <= 10:
+                UAV_OB[k].epsilon_thres = epsilon
 
         # Environment reset and get the states
         u_env.reset()

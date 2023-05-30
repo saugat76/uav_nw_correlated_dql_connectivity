@@ -1,0 +1,37 @@
+diff --git a/main.py b/main.py
+index 2b269da..2c90c39 100644
+--- a/main.py
++++ b/main.py
+@@ -244,7 +244,7 @@ class DQL:
+     def epsilon_greedy(self, agent_idx, state):
+         temp = random.random()
+         # Epsilon decay policy is employed for faster convergence
+-        self.epsilon_thres = self.epsilon_min + (self.epsilon - self.epsilon_min) * math.exp(-1*self.steps_done/self.epsilon_decay)
++        # self.epsilon_thres = self.epsilon_min + (self.epsilon - self.epsilon_min) * math.exp(-1*self.steps_done/self.epsilon_decay)
+         self.steps_done += 1 
+         # Each agents possible state space is same so, prob varible // joining all index
+         prob = self.pi
+@@ -325,6 +325,7 @@ if __name__ == "__main__":
+     epsilon_decay = args.epsilon_decay_steps
+     dnn_epoch = 1
+ 
++
+     # Set the run id name to tack all the runs 
+     run_id = f"{args.exp_name}__lvl{args.info_exchange_lvl}__{u_env.NUM_UAV}__{args.seed}__{int(time.time())}"
+ 
+@@ -416,6 +417,15 @@ if __name__ == "__main__":
+     for i_episode in range(num_episode):
+         print(i_episode)
+ 
++        # Change of epsilon threshold // takes epsilon and epsilon min value and chnages between with episodes
++        for k in range(NUM_UAV):
++            if i_episode <= 30:
++                UAV_OB[k].epsilon_thres = epsilon
++            elif i_episode <= 50:
++                UAV_OB[k].epsilon_thres = (epsilon + epsilon_min)/2
++            else:
++                UAV_OB[k].epsilon_thres = epsilon
++
+         # Environment reset and get the states
+         u_env.reset()
+ 
