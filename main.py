@@ -58,6 +58,8 @@ def parse_args():
     parser.add_argument("--epsilon-decay-steps", type=int, default=1, help="set the rate at which is the epsilon is deacyed, set value equates number of steps at which the epsilon reaches minimum")
     parser.add_argument("--layers", type=int, default=2, help="set the number of layers for the target and main neural network")
     parser.add_argument("--nodes", type=int, default=400, help="set the number of nodes for the target and main neural network layers")
+    parser.add_argument("--seed-sync", type=lambda x: bool(strtobool(x)), default=False, help="synchronize the seed value among agents, by default set to False")
+
 
     # Environment specific arguments
     # To be consitent with previous project addition of level 5 and 6
@@ -182,15 +184,14 @@ class DQL:
                     for m in range(Q_ind.size(0)):
                         if n != m:
                             temp_compute[m, n] = Q_ind[n] - Q_ind[m]
-                temp_cat[(n * Q_ind.size(0)): (n + 1) * Q_ind.size(0), :] = temp_compute
-                temp_cumulative = prob_weight @ temp_cat 
+                temp_cumulative = temp_compute @ prob_weight[v, :]
                 add_constraint.append(temp_cumulative >= 0)
             return add_constraint
 
         # Joint action size = number of agents ^ action size // for a state 
         # Optimizing the joint action so setting as a variable for CE optimization 
         # Prob are arranged in the order UAV 0 (0, 1, 2, 3, 4), UAV 1 (0, 1, 2, 3, 4)..... // kept by a single agent
-        prob_weight = Variable((NUM_UAV * UAV_OB[agent_idx].action_size), pos = True)
+        prob_weight = Variable((NUM_UAV, UAV_OB[agent_idx].action_size), boolean = True)
         
         # Collect Q values for the corresponding states of each individual agents
         # Using negate value to use Minimize function for solving  // removed 
@@ -198,28 +199,30 @@ class DQL:
 
         # Objective function
         object_vec = q_complete
-        object_func = Maximize(sum(object_vec.flatten() @ prob_weight))
+        object_func = Maximize(sum(sum(prob_weight @ object_vec)))
 
         # Constraint 1: Sum of the Probabilities should be equal to 1 // should follow for all agents
-        sum_func_const = [sum(prob_weight[k*UAV_OB[k].action_size : (k + 1)*UAV_OB[k].action_size - 1]) for k in range(NUM_UAV)]  == 1
+        sum_func_const = [sum(prob_weight[k, :]) == 1 for k in range(NUM_UAV)]
+        # sum_func_const = sum(sum(prob_weight)) == 5
+
+        # Constraint 2: All probabilities either 0 or 1
         # Deterministic probability instead of stochastic // either 0 or 1 value
         # Might be able to incorporate in variable defination
-        # prob_constr = all(prob_weight) in [0, 1]
+        prob_constr_1 = all(prob_weight) >= 0 
+        prob_constr_2 = all(prob_weight) <= 1
 
         # Constraint 3: Total function should be less than or equal to 0
         add_constraint = generate_add_constraint(NUM_UAV, shared_q_values, prob_weight)
         total_func_constr = add_constraint
 
         # Define the problem with constraints
-        complete_constraint = [sum_func_const] + total_func_constr
+        complete_constraint = sum_func_const + [prob_constr_1, prob_constr_2] + total_func_constr
         opt_problem = Problem(object_func, complete_constraint)
 
         # Solve the optimization problem using linear programming
         opt_problem.solve()
         if opt_problem.status == "optimal":
             weights = prob_weight.value
-            print("Solved")
-            print(weights)
         else:
             weights = None
             print("Failed to find an optimal solution")
@@ -237,13 +240,12 @@ class DQL:
         self.steps_done += 1 
         # Each agents possible state space is same so, prob varible // joining all index
         prob = self.pi.reshape(UAV_OB[0].action_size, UAV_OB[0].action_size)
-        print(prob)
         choices = np.arange(0, UAV_OB[agent_idx].action_size, dtype=int)
         # Compare against a epsilon threshold to either explore or exploit
         if temp <= self.epsilon_thres:
             # If less than threshold action choosen randomly
             # Each iteration will generate action list from individual correlation device 
-            # Action here is representing joint action so has a value between (1, 5)
+            # Action here is representing joint action of all agents with a value between (1, 5)
             actions = []
             for k in range(NUM_UAV):
                 action = np.random.choice(choices)
@@ -257,16 +259,11 @@ class DQL:
                 prob_ind = prob[k, :]       
                 action = np.random.choice(choices, p=prob_ind)
                 actions.append(action)
-            # state = torch.unsqueeze(torch.FloatTensor(state),0)
-            # prob_local = torch.FloatTensor(self.pi).to(device = device)
-            # Q_values = self.main_network(state) * prob_local
-            # print(Q_values)
-            # actions = Q_values.detach().squeeze().max(1)[1].view(1,1).squeeze().cpu()
         return actions
        
 
     # Training of the DNN 
-    def train(self,batch_size, dnn_epoch):
+    def train(self,batch_size, dnn_epoch, agent_idx):
         for k in range(dnn_epoch):
             minibatch = random.sample(self.replay_buffer, batch_size)
             minibatch = np.vstack(minibatch)
@@ -283,7 +280,7 @@ class DQL:
             done = done.to(device = device)
             diff = state - next_state
             done_local = (diff != 0).any(dim=1).float().to(device)
-            prob_local = torch.FloatTensor(self.pi).to(device = device)
+            prob_local = torch.FloatTensor(self.pi[agent_idx, :]).to(device = device)
 
             # Implementation of DQL algorithm 
             Q_next = self.target_network(next_state).detach()
@@ -390,17 +387,8 @@ if __name__ == "__main__":
     UAV_OB = []
     for k in range(NUM_UAV):
         UAV_OB.append(DQL())
-        action_values_ind = torch.arange(UAV_OB[k].action_size)
-        action_profile = torch.stack(torch.meshgrid(*([action_values_ind] * NUM_UAV)), dim=-1).reshape(-1, NUM_UAV)
-        UAV_OB[k].action_profile = action_profile           
-        # Each joint action can be extracted using the index value from the equilibrium and 
-        # Independent action can be extracted using agents index
 
     best_result = 0
-
-    # Initialize action list for each UAV agent // O/p from the DQN and equilibria represents the indexes
-    # Array to map those indexes to a joint action profile
-
 
     # Initializing probability distribution for all the agents 
     # Individually calculation of the correlated equilibrium // Individual prob dist for all agent
@@ -413,15 +401,6 @@ if __name__ == "__main__":
     # Start of the episode
     for i_episode in range(num_episode):
         print(i_episode)
-
-        # Change of epsilon threshold // takes epsilon and epsilon min value and chnages between with episodes
-        # for k in range(NUM_UAV):
-        #     if i_episode <= 30:
-        #         UAV_OB[k].epsilon_thres = epsilon
-        #     elif i_episode <= 50:
-        #         UAV_OB[k].epsilon_thres = (epsilon + epsilon_min)/2
-        #     else:
-        #         UAV_OB[k].epsilon_thres = epsilon
 
         # Environment reset and get the states
         u_env.reset()
@@ -459,13 +438,15 @@ if __name__ == "__main__":
                 shared_q_values[k, :]= q_values.detach()
 
             # Get the current seed state // Seed synchronization
-            # seed_state = random.getstate()
-            # np_seed_state = np.random.get_state()
-            # torch_seed_state = torch.seed()
+            if args.seed_sync:
+                seed_state = random.getstate()
+                np_seed_state = np.random.get_state()
+                torch_seed_state = torch.seed()
+
             for k in range(NUM_UAV):
                 # Synchronization of seeding between agents // Synchronize randomness using same seed
-                # seeding_sync(seed_state, np_seed_state, torch_seed_state)
-
+                if args.seed_sync:
+                    seeding_sync(seed_state, np_seed_state, torch_seed_state)
                 # Note: seed synchronization might be creating the problem as it wont allow other agents to explore separately
 
                 weights = UAV_OB[k].correlated_equilibrium(shared_q_values, k)
@@ -531,7 +512,7 @@ if __name__ == "__main__":
 
             for k in range(NUM_UAV):
                 if len(UAV_OB[k].replay_buffer) > batch_size:
-                    UAV_OB[k].train(batch_size, dnn_epoch)
+                    UAV_OB[k].train(batch_size, dnn_epoch, k)
 
         # Update the probabilities for all the agents 
         # for k in range(NUM_UAV):
@@ -570,11 +551,18 @@ if __name__ == "__main__":
                         state = states[k, :]
                     elif args.info_exchange_lvl == 6:
                         state = states.flatten()
-                    state = torch.unsqueeze(torch.FloatTensor(state),0)
-                    choices = np.arange(0, UAV_OB[k].action_size ** NUM_UAV, dtype=int)
-                    correlated_actions = np.random.choice(choices, p=UAV_OB[k].pi)
-                    action_selected = np.copy(UAV_OB[k].action_profile[correlated_actions])      
-                    drone_act_list.append(action_selected[k])
+                    choices = np.arange(0, UAV_OB[k].action_size, dtype=int)
+                    state = torch.unsqueeze(torch.FloatTensor(state), 0)
+                    q_values = UAV_OB[k].main_network(state)
+                    shared_q_values[k, :]= q_values.detach()
+                    weights = UAV_OB[k].correlated_equilibrium(shared_q_values, k)
+                    if weights is not None:
+                        UAV_OB[k].pi = weights
+
+                for k in range(NUM_UAV):
+                    prob_ind = UAV_OB[k].pi[k, :]       
+                    action = np.random.choice(choices, p=prob_ind)     
+                    drone_act_list.append(action)
                 temp_data = u_env.step(drone_act_list)
                 states = u_env.get_state()
                 states_fin = states
