@@ -46,3 +46,185 @@ FileNotFoundError: [WinError 2] The system cannot find the file specified
 2023-05-31 15:38:51,271 DEBUG   HandlerThread:20836 [system_info.py:_save_code():89] Saving code
 2023-05-31 15:38:51,321 DEBUG   HandlerThread:20836 [system_info.py:_save_code():110] Saving code done
 2023-05-31 15:38:51,321 DEBUG   HandlerThread:20836 [system_info.py:_save_patches():127] Saving git patches
+2023-05-31 15:38:52,013 INFO    Thread-16 :20836 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\conda-environment.yaml
+2023-05-31 15:38:52,013 INFO    Thread-16 :20836 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\diff.patch
+2023-05-31 15:38:52,013 INFO    Thread-16 :20836 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\requirements.txt
+2023-05-31 15:38:52,013 INFO    Thread-16 :20836 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\wandb-summary.json
+2023-05-31 15:38:52,013 INFO    Thread-16 :20836 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\code\main.py
+2023-05-31 15:38:52,013 INFO    Thread-16 :20836 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\code
+2023-05-31 15:38:52,534 DEBUG   HandlerThread:20836 [system_info.py:_save_patches():169] Saving git patches done
+2023-05-31 15:38:52,537 INFO    HandlerThread:20836 [system_monitor.py:probe():216] Finished publishing system info
+2023-05-31 15:38:52,544 DEBUG   SenderThread:20836 [sender.py:send():375] send: files
+2023-05-31 15:38:52,544 INFO    SenderThread:20836 [sender.py:_save_file():1378] saving file wandb-metadata.json with policy now
+2023-05-31 15:38:52,544 INFO    SenderThread:20836 [sender.py:_save_file():1378] saving file code\main.py with policy now
+2023-05-31 15:38:52,544 INFO    SenderThread:20836 [sender.py:_save_file():1378] saving file diff.patch with policy now
+2023-05-31 15:38:52,544 INFO    SenderThread:20836 [sender.py:_save_file():1378] saving file upstream_diff_22b78c588271bf3617f294f0162f179dc798734e.patch with policy now
+2023-05-31 15:38:52,549 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: stop_status
+2023-05-31 15:38:52,549 DEBUG   SenderThread:20836 [sender.py:send_request():402] send_request: stop_status
+2023-05-31 15:38:52,554 INFO    HandlerThread:20836 [handler.py:handle_tbrecord():750] handling tbrecord: tbrecord {
+  log_dir: "runs/correlated_madql_uav__lvl6__5__1__1685561927"
+  save: true
+}
+control {
+  relay_id: "99b0f2d1f20047168e022430a8420cf7"
+}
+_info {
+  stream_id: "5qwe823a"
+}
+
+2023-05-31 15:38:52,554 DEBUG   HandlerThread:20836 [config_util.py:dict_from_config_file():104] no default config file found in config-defaults.yaml
+2023-05-31 15:38:52,638 INFO    wandb-upload_1:20836 [upload_job.py:push():117] Skipped uploading C:\Users\tripats\AppData\Local\Temp\tmpkhjzu7vxwandb\1m0wc584-code/main.py
+2023-05-31 15:38:52,638 DEBUG   SenderThread:20836 [sender.py:send():375] send: telemetry
+2023-05-31 15:38:52,638 DEBUG   SenderThread:20836 [sender.py:send():375] send: tbrecord
+2023-05-31 15:38:52,900 INFO    wandb-upload_0:20836 [upload_job.py:push():137] Uploaded file C:\Users\tripats\AppData\Local\Temp\tmpkhjzu7vxwandb\oxplt1in-wandb-metadata.json
+2023-05-31 15:38:52,983 INFO    wandb-upload_2:20836 [upload_job.py:push():137] Uploaded file C:\Users\tripats\AppData\Local\Temp\tmpkhjzu7vxwandb\q1qrbt9b-diff.patch
+2023-05-31 15:38:53,014 INFO    Thread-16 :20836 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\wandb-metadata.json
+2023-05-31 15:38:53,014 INFO    Thread-16 :20836 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\upstream_diff_22b78c588271bf3617f294f0162f179dc798734e.patch
+2023-05-31 15:38:53,219 ERROR   gpu       :20836 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-31 15:38:53,229 INFO    wandb-upload_3:20836 [upload_job.py:push():137] Uploaded file C:\Users\tripats\AppData\Local\Temp\tmpkhjzu7vxwandb\bgzojld9-upstream_diff_22b78c588271bf3617f294f0162f179dc798734e.patch
+2023-05-31 15:38:54,021 INFO    Thread-16 :20836 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\output.log
+2023-05-31 15:38:54,875 DEBUG   Thread-46 (_thread_except_body):20836 [tb_watcher.py:_process_events():274] Encountered tensorboard directory watcher error: [WinError 1314] A required privilege is not held by the client: 'C:\\Users\\tripats\\Documents\\GitHub\\UAV_SubBand_Correlated_DQL\\runs\\correlated_madql_uav__lvl6__5__1__1685561927\\events.out.tfevents.1685561932.CEC-ZHANGR43776.13244.0' -> 'C:\\Users\\tripats\\Documents\\GitHub\\UAV_SubBand_Correlated_DQL\\wandb\\run-20230531_153850-5qwe823a\\files\\events.out.tfevents.1685561932.CEC-ZHANGR43776.13244.0'
+2023-05-31 15:38:55,245 ERROR   gpu       :20836 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-31 15:38:55,790 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: status_report
+2023-05-31 15:38:56,044 INFO    Thread-16 :20836 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\output.log
+2023-05-31 15:38:56,887 DEBUG   SenderThread:20836 [sender.py:send():375] send: exit
+2023-05-31 15:38:56,887 INFO    SenderThread:20836 [sender.py:send_exit():598] handling exit code: 255
+2023-05-31 15:38:56,887 INFO    SenderThread:20836 [sender.py:send_exit():600] handling runtime: 5
+2023-05-31 15:38:56,887 INFO    SenderThread:20836 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-05-31 15:38:56,887 INFO    SenderThread:20836 [sender.py:send_exit():606] send defer
+2023-05-31 15:38:56,887 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: defer
+2023-05-31 15:38:56,887 INFO    HandlerThread:20836 [handler.py:handle_request_defer():170] handle defer: 0
+2023-05-31 15:38:56,887 DEBUG   SenderThread:20836 [sender.py:send_request():402] send_request: defer
+2023-05-31 15:38:56,887 INFO    SenderThread:20836 [sender.py:send_request_defer():622] handle sender defer: 0
+2023-05-31 15:38:56,887 INFO    SenderThread:20836 [sender.py:transition_state():626] send defer: 1
+2023-05-31 15:38:56,887 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: defer
+2023-05-31 15:38:56,890 INFO    HandlerThread:20836 [handler.py:handle_request_defer():170] handle defer: 1
+2023-05-31 15:38:56,890 DEBUG   SenderThread:20836 [sender.py:send_request():402] send_request: defer
+2023-05-31 15:38:56,890 INFO    SenderThread:20836 [sender.py:send_request_defer():622] handle sender defer: 1
+2023-05-31 15:38:56,890 INFO    SenderThread:20836 [sender.py:transition_state():626] send defer: 2
+2023-05-31 15:38:56,890 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: defer
+2023-05-31 15:38:56,890 INFO    HandlerThread:20836 [handler.py:handle_request_defer():170] handle defer: 2
+2023-05-31 15:38:56,890 INFO    HandlerThread:20836 [system_monitor.py:finish():190] Stopping system monitor
+2023-05-31 15:38:56,890 DEBUG   SystemMonitor:20836 [system_monitor.py:_start():159] Starting system metrics aggregation loop
+2023-05-31 15:38:56,890 DEBUG   SystemMonitor:20836 [system_monitor.py:_start():166] Finished system metrics aggregation loop
+2023-05-31 15:38:56,895 INFO    HandlerThread:20836 [interfaces.py:finish():202] Joined cpu monitor
+2023-05-31 15:38:56,895 DEBUG   SystemMonitor:20836 [system_monitor.py:_start():170] Publishing last batch of metrics
+2023-05-31 15:38:56,897 INFO    HandlerThread:20836 [interfaces.py:finish():202] Joined disk monitor
+2023-05-31 15:38:56,918 INFO    HandlerThread:20836 [interfaces.py:finish():202] Joined gpu monitor
+2023-05-31 15:38:56,918 INFO    HandlerThread:20836 [interfaces.py:finish():202] Joined memory monitor
+2023-05-31 15:38:56,918 INFO    HandlerThread:20836 [interfaces.py:finish():202] Joined network monitor
+2023-05-31 15:38:56,918 DEBUG   SenderThread:20836 [sender.py:send_request():402] send_request: defer
+2023-05-31 15:38:56,918 INFO    SenderThread:20836 [sender.py:send_request_defer():622] handle sender defer: 2
+2023-05-31 15:38:56,918 INFO    SenderThread:20836 [sender.py:transition_state():626] send defer: 3
+2023-05-31 15:38:56,918 DEBUG   SenderThread:20836 [sender.py:send():375] send: stats
+2023-05-31 15:38:56,921 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: defer
+2023-05-31 15:38:56,921 INFO    HandlerThread:20836 [handler.py:handle_request_defer():170] handle defer: 3
+2023-05-31 15:38:56,921 DEBUG   SenderThread:20836 [sender.py:send_request():402] send_request: defer
+2023-05-31 15:38:56,921 INFO    SenderThread:20836 [sender.py:send_request_defer():622] handle sender defer: 3
+2023-05-31 15:38:56,921 INFO    SenderThread:20836 [sender.py:transition_state():626] send defer: 4
+2023-05-31 15:38:56,921 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: defer
+2023-05-31 15:38:56,921 INFO    HandlerThread:20836 [handler.py:handle_request_defer():170] handle defer: 4
+2023-05-31 15:38:57,052 INFO    Thread-16 :20836 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\wandb-summary.json
+2023-05-31 15:38:58,060 INFO    Thread-16 :20836 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\output.log
+2023-05-31 15:39:05,710 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: poll_exit
+2023-05-31 15:39:05,710 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: status_report
+2023-05-31 15:39:05,710 DEBUG   SenderThread:20836 [sender.py:send_request():402] send_request: defer
+2023-05-31 15:39:05,710 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: keepalive
+2023-05-31 15:39:05,710 INFO    SenderThread:20836 [sender.py:send_request_defer():622] handle sender defer: 4
+2023-05-31 15:39:05,710 INFO    SenderThread:20836 [sender.py:transition_state():626] send defer: 5
+2023-05-31 15:39:05,710 DEBUG   SenderThread:20836 [sender.py:send_request():402] send_request: poll_exit
+2023-05-31 15:39:05,715 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: defer
+2023-05-31 15:39:05,715 INFO    HandlerThread:20836 [handler.py:handle_request_defer():170] handle defer: 5
+2023-05-31 15:39:05,715 DEBUG   SenderThread:20836 [sender.py:send():375] send: summary
+2023-05-31 15:39:05,721 INFO    SenderThread:20836 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-05-31 15:39:05,721 DEBUG   SenderThread:20836 [sender.py:send_request():402] send_request: defer
+2023-05-31 15:39:05,721 INFO    SenderThread:20836 [sender.py:send_request_defer():622] handle sender defer: 5
+2023-05-31 15:39:05,721 INFO    SenderThread:20836 [sender.py:transition_state():626] send defer: 6
+2023-05-31 15:39:05,721 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: defer
+2023-05-31 15:39:05,721 INFO    HandlerThread:20836 [handler.py:handle_request_defer():170] handle defer: 6
+2023-05-31 15:39:05,721 DEBUG   SenderThread:20836 [sender.py:send_request():402] send_request: defer
+2023-05-31 15:39:05,721 INFO    SenderThread:20836 [sender.py:send_request_defer():622] handle sender defer: 6
+2023-05-31 15:39:05,726 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: status_report
+2023-05-31 15:39:05,829 INFO    SenderThread:20836 [sender.py:transition_state():626] send defer: 7
+2023-05-31 15:39:05,829 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: defer
+2023-05-31 15:39:05,829 INFO    HandlerThread:20836 [handler.py:handle_request_defer():170] handle defer: 7
+2023-05-31 15:39:05,829 DEBUG   SenderThread:20836 [sender.py:send_request():402] send_request: defer
+2023-05-31 15:39:05,829 INFO    SenderThread:20836 [sender.py:send_request_defer():622] handle sender defer: 7
+2023-05-31 15:39:06,105 INFO    Thread-16 :20836 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\config.yaml
+2023-05-31 15:39:06,106 INFO    Thread-16 :20836 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\wandb-summary.json
+2023-05-31 15:39:07,953 INFO    SenderThread:20836 [sender.py:transition_state():626] send defer: 8
+2023-05-31 15:39:07,954 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: defer
+2023-05-31 15:39:07,954 INFO    HandlerThread:20836 [handler.py:handle_request_defer():170] handle defer: 8
+2023-05-31 15:39:07,954 DEBUG   SenderThread:20836 [sender.py:send_request():402] send_request: defer
+2023-05-31 15:39:07,954 INFO    SenderThread:20836 [sender.py:send_request_defer():622] handle sender defer: 8
+2023-05-31 15:39:07,982 INFO    SenderThread:20836 [sender.py:transition_state():626] send defer: 9
+2023-05-31 15:39:07,982 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: defer
+2023-05-31 15:39:07,982 INFO    HandlerThread:20836 [handler.py:handle_request_defer():170] handle defer: 9
+2023-05-31 15:39:07,982 DEBUG   SenderThread:20836 [sender.py:send():375] send: artifact
+2023-05-31 15:39:08,048 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: keepalive
+2023-05-31 15:39:08,126 INFO    Thread-16 :20836 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\output.log
+2023-05-31 15:39:08,485 INFO    wandb-upload_0:20836 [upload_job.py:push():92] Skipped uploading C:\Users\tripats\AppData\Local\wandb\wandb\artifacts\staging\tmpatj3lxxb
+2023-05-31 15:39:08,721 INFO    wandb-upload_1:20836 [upload_job.py:push():95] Uploaded file C:\Users\tripats\AppData\Local\wandb\wandb\artifacts\staging\tmpcos4yn2_
+2023-05-31 15:39:08,757 INFO    wandb-upload_2:20836 [upload_job.py:push():95] Uploaded file C:\Users\tripats\AppData\Local\wandb\wandb\artifacts\staging\tmp468tpk1q
+2023-05-31 15:39:09,443 INFO    SenderThread:20836 [sender.py:send_artifact():1474] sent artifact job-https___github.com_saugat76_UAV_SubBand_Correlated_QLearning.git_main.py - {'id': 'QXJ0aWZhY3Q6NDcyNTgxNTk4', 'digest': 'a1eec76bc9baffb4a1d3b205b2434c53', 'state': 'PENDING', 'aliases': [], 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjcxMzQyOTg3', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6NDcyNTY1MDY2', 'versionIndex': 29}}, 'version': 'latest'}
+2023-05-31 15:39:09,444 DEBUG   SenderThread:20836 [sender.py:send_request():402] send_request: defer
+2023-05-31 15:39:09,444 INFO    SenderThread:20836 [sender.py:send_request_defer():622] handle sender defer: 9
+2023-05-31 15:39:09,444 INFO    SenderThread:20836 [dir_watcher.py:finish():365] shutting down directory watcher
+2023-05-31 15:39:10,157 INFO    SenderThread:20836 [dir_watcher.py:finish():395] scan: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files
+2023-05-31 15:39:10,158 INFO    SenderThread:20836 [dir_watcher.py:finish():409] scan save: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\conda-environment.yaml conda-environment.yaml
+2023-05-31 15:39:10,159 INFO    SenderThread:20836 [dir_watcher.py:finish():409] scan save: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\config.yaml config.yaml
+2023-05-31 15:39:10,159 INFO    SenderThread:20836 [dir_watcher.py:finish():409] scan save: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\diff.patch diff.patch
+2023-05-31 15:39:10,160 INFO    SenderThread:20836 [dir_watcher.py:finish():409] scan save: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\output.log output.log
+2023-05-31 15:39:10,166 INFO    SenderThread:20836 [dir_watcher.py:finish():409] scan save: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\requirements.txt requirements.txt
+2023-05-31 15:39:10,172 INFO    SenderThread:20836 [dir_watcher.py:finish():409] scan save: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\upstream_diff_22b78c588271bf3617f294f0162f179dc798734e.patch upstream_diff_22b78c588271bf3617f294f0162f179dc798734e.patch
+2023-05-31 15:39:10,173 INFO    SenderThread:20836 [dir_watcher.py:finish():409] scan save: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\wandb-metadata.json wandb-metadata.json
+2023-05-31 15:39:10,173 INFO    SenderThread:20836 [dir_watcher.py:finish():409] scan save: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\wandb-summary.json wandb-summary.json
+2023-05-31 15:39:10,178 INFO    SenderThread:20836 [dir_watcher.py:finish():409] scan save: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\code\main.py code\main.py
+2023-05-31 15:39:10,179 INFO    SenderThread:20836 [sender.py:transition_state():626] send defer: 10
+2023-05-31 15:39:10,181 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: defer
+2023-05-31 15:39:10,181 INFO    HandlerThread:20836 [handler.py:handle_request_defer():170] handle defer: 10
+2023-05-31 15:39:10,182 DEBUG   SenderThread:20836 [sender.py:send_request():402] send_request: defer
+2023-05-31 15:39:10,182 INFO    SenderThread:20836 [sender.py:send_request_defer():622] handle sender defer: 10
+2023-05-31 15:39:10,182 INFO    SenderThread:20836 [file_pusher.py:finish():167] shutting down file pusher
+2023-05-31 15:39:10,484 INFO    wandb-upload_3:20836 [upload_job.py:push():137] Uploaded file C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\config.yaml
+2023-05-31 15:39:10,489 INFO    wandb-upload_2:20836 [upload_job.py:push():137] Uploaded file C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\wandb-summary.json
+2023-05-31 15:39:10,510 INFO    wandb-upload_1:20836 [upload_job.py:push():137] Uploaded file C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\output.log
+2023-05-31 15:39:10,587 INFO    wandb-upload_0:20836 [upload_job.py:push():137] Uploaded file C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files\requirements.txt
+2023-05-31 15:39:10,789 INFO    Thread-15 (_thread_body):20836 [sender.py:transition_state():626] send defer: 11
+2023-05-31 15:39:10,789 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: defer
+2023-05-31 15:39:10,789 INFO    HandlerThread:20836 [handler.py:handle_request_defer():170] handle defer: 11
+2023-05-31 15:39:10,790 DEBUG   SenderThread:20836 [sender.py:send_request():402] send_request: defer
+2023-05-31 15:39:10,790 INFO    SenderThread:20836 [sender.py:send_request_defer():622] handle sender defer: 11
+2023-05-31 15:39:10,790 INFO    SenderThread:20836 [file_pusher.py:join():172] waiting for file pusher
+2023-05-31 15:39:10,791 INFO    SenderThread:20836 [sender.py:transition_state():626] send defer: 12
+2023-05-31 15:39:10,791 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: defer
+2023-05-31 15:39:10,791 INFO    HandlerThread:20836 [handler.py:handle_request_defer():170] handle defer: 12
+2023-05-31 15:39:10,791 DEBUG   SenderThread:20836 [sender.py:send_request():402] send_request: defer
+2023-05-31 15:39:10,791 INFO    SenderThread:20836 [sender.py:send_request_defer():622] handle sender defer: 12
+2023-05-31 15:39:10,859 INFO    SenderThread:20836 [sender.py:transition_state():626] send defer: 13
+2023-05-31 15:39:10,859 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: defer
+2023-05-31 15:39:10,859 INFO    HandlerThread:20836 [handler.py:handle_request_defer():170] handle defer: 13
+2023-05-31 15:39:10,859 DEBUG   SenderThread:20836 [sender.py:send_request():402] send_request: defer
+2023-05-31 15:39:10,859 INFO    SenderThread:20836 [sender.py:send_request_defer():622] handle sender defer: 13
+2023-05-31 15:39:10,859 INFO    SenderThread:20836 [sender.py:transition_state():626] send defer: 14
+2023-05-31 15:39:10,859 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: defer
+2023-05-31 15:39:10,859 DEBUG   SenderThread:20836 [sender.py:send():375] send: final
+2023-05-31 15:39:10,859 INFO    HandlerThread:20836 [handler.py:handle_request_defer():170] handle defer: 14
+2023-05-31 15:39:10,859 DEBUG   SenderThread:20836 [sender.py:send():375] send: footer
+2023-05-31 15:39:10,859 DEBUG   SenderThread:20836 [sender.py:send_request():402] send_request: defer
+2023-05-31 15:39:10,864 INFO    SenderThread:20836 [sender.py:send_request_defer():622] handle sender defer: 14
+2023-05-31 15:39:10,864 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: poll_exit
+2023-05-31 15:39:10,864 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: server_info
+2023-05-31 15:39:10,864 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: get_summary
+2023-05-31 15:39:10,864 DEBUG   SenderThread:20836 [sender.py:send_request():402] send_request: poll_exit
+2023-05-31 15:39:10,864 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: sampled_history
+2023-05-31 15:39:10,864 DEBUG   SenderThread:20836 [sender.py:send_request():402] send_request: server_info
+2023-05-31 15:39:10,910 INFO    MainThread:20836 [wandb_run.py:_footer_history_summary_info():3469] rendering history
+2023-05-31 15:39:10,910 INFO    MainThread:20836 [wandb_run.py:_footer_history_summary_info():3501] rendering summary
+2023-05-31 15:39:10,910 INFO    MainThread:20836 [wandb_run.py:_footer_sync_info():3428] logging synced files
+2023-05-31 15:39:10,915 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: shutdown
+2023-05-31 15:39:10,915 INFO    HandlerThread:20836 [handler.py:finish():845] shutting down handler
+2023-05-31 15:39:11,871 INFO    WriterThread:20836 [datastore.py:close():298] close: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\run-5qwe823a.wandb
+2023-05-31 15:39:11,918 INFO    SenderThread:20836 [sender.py:finish():1550] shutting down sender
+2023-05-31 15:39:11,918 INFO    SenderThread:20836 [file_pusher.py:finish():167] shutting down file pusher
+2023-05-31 15:39:11,918 INFO    SenderThread:20836 [file_pusher.py:join():172] waiting for file pusher
