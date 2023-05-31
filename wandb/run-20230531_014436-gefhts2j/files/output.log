@@ -1,0 +1,15 @@
+C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\torch\functional.py:478: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at  C:\cb\pytorch_1000000000000\work\aten\src\ATen\native\TensorShape.cpp:2895.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+Traceback (most recent call last):
+  File "C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\main.py", line 487, in <module>
+    action = UAV_OB[k].epsilon_greedy(k, state)
+  File "C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\main.py", line 270, in epsilon_greedy
+    action = np.random.choice(choices, p=prob_ind)
+  File "mtrand.pyx", line 939, in numpy.random.mtrand.RandomState.choice
+ValueError: probabilities do not sum to 1
+0
+[[-0.  0.  0.  0.  0.]
+ [ 1.  1.  1.  1.  1.]
+ [ 0.  0.  0.  0. -0.]
+ [ 0.  0. -0.  0. -0.]
+ [ 0.  0.  0.  0.  0.]]
