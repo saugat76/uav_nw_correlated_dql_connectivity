@@ -1,0 +1,48 @@
+2023-05-31 15:38:50,784 INFO    StreamThr :20836 [internal.py:wandb_internal():86] W&B internal server running at pid: 20836, started at: 2023-05-31 15:38:50.779545
+2023-05-31 15:38:50,784 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: status
+2023-05-31 15:38:50,794 INFO    WriterThread:20836 [datastore.py:open_for_write():85] open: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\run-5qwe823a.wandb
+2023-05-31 15:38:50,794 DEBUG   SenderThread:20836 [sender.py:send():375] send: header
+2023-05-31 15:38:50,850 DEBUG   SenderThread:20836 [sender.py:send():375] send: run
+2023-05-31 15:38:51,012 INFO    SenderThread:20836 [dir_watcher.py:__init__():219] watching files in: C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\wandb\run-20230531_153850-5qwe823a\files
+2023-05-31 15:38:51,012 INFO    SenderThread:20836 [sender.py:_start_run_threads():1124] run started: 5qwe823a with start time 1685561930.784558
+2023-05-31 15:38:51,016 DEBUG   SenderThread:20836 [sender.py:send_request():402] send_request: summary_record
+2023-05-31 15:38:51,016 INFO    SenderThread:20836 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-05-31 15:38:51,021 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: check_version
+2023-05-31 15:38:51,021 DEBUG   SenderThread:20836 [sender.py:send_request():402] send_request: check_version
+2023-05-31 15:38:51,105 DEBUG   HandlerThread:20836 [handler.py:handle_request():144] handle_request: run_start
+2023-05-31 15:38:51,128 DEBUG   HandlerThread:20836 [system_info.py:__init__():31] System info init
+2023-05-31 15:38:51,128 DEBUG   HandlerThread:20836 [system_info.py:__init__():46] System info init done
+2023-05-31 15:38:51,128 INFO    HandlerThread:20836 [system_monitor.py:start():181] Starting system monitor
+2023-05-31 15:38:51,128 INFO    SystemMonitor:20836 [system_monitor.py:_start():145] Starting system asset monitoring threads
+2023-05-31 15:38:51,128 INFO    HandlerThread:20836 [system_monitor.py:probe():201] Collecting system info
+2023-05-31 15:38:51,133 INFO    SystemMonitor:20836 [interfaces.py:start():190] Started cpu monitoring
+2023-05-31 15:38:51,133 INFO    SystemMonitor:20836 [interfaces.py:start():190] Started disk monitoring
+2023-05-31 15:38:51,133 INFO    SystemMonitor:20836 [interfaces.py:start():190] Started gpu monitoring
+2023-05-31 15:38:51,140 INFO    SystemMonitor:20836 [interfaces.py:start():190] Started memory monitoring
+2023-05-31 15:38:51,150 INFO    SystemMonitor:20836 [interfaces.py:start():190] Started network monitoring
+2023-05-31 15:38:51,160 DEBUG   HandlerThread:20836 [system_info.py:probe():195] Probing system
+2023-05-31 15:38:51,160 DEBUG   HandlerThread:20836 [system_info.py:_probe_git():180] Probing git
+2023-05-31 15:38:51,171 ERROR   gpu       :20836 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-05-31 15:38:51,259 DEBUG   HandlerThread:20836 [system_info.py:_probe_git():188] Probing git done
+2023-05-31 15:38:51,259 DEBUG   HandlerThread:20836 [system_info.py:probe():240] Probing system done
+2023-05-31 15:38:51,259 DEBUG   HandlerThread:20836 [system_monitor.py:probe():210] {'os': 'Windows-10-10.0.19045-SP0', 'python': '3.10.4', 'heartbeatAt': '2023-05-31T19:38:51.160702', 'startedAt': '2023-05-31T19:38:50.763936', 'docker': None, 'cuda': None, 'args': ('--num-episode', '400', '--wandb-track', 'True', '--info-exchange-lvl', '6', '--epsilon', '0.1', '--gamma', '0.99'), 'state': 'running', 'program': 'C:\\Users\\tripats\\Documents\\GitHub\\UAV_SubBand_Correlated_DQL\\main.py', 'codePath': 'main.py', 'git': {'remote': 'https://github.com/saugat76/UAV_SubBand_Correlated_QLearning.git', 'commit': '70ad670ff6dc3640c8136cf7d3b55d6c8e0396b0'}, 'email': 'saugat.tripathi76@gmail.com', 'root': 'C:/Users/tripats/Documents/GitHub/UAV_SubBand_Correlated_DQL', 'host': 'CEC-ZHANGR43776', 'username': 'tripats', 'executable': 'C:\\Users\\tripats\\.conda\\envs\\uavenv\\python.exe', 'cpu_count': 8, 'cpu_count_logical': 16, 'cpu_freq': {'current': 2496.0, 'min': 0.0, 'max': 2496.0}, 'cpu_freq_per_core': [{'current': 2496.0, 'min': 0.0, 'max': 2496.0}], 'disk': {'total': 943.7177696228027, 'used': 288.70825576782227}, 'gpu': 'NVIDIA RTX A5000 Laptop GPU', 'gpu_count': 1, 'gpu_devices': [{'name': 'NVIDIA RTX A5000 Laptop GPU', 'memory_total': 17179869184}], 'memory': {'total': 63.204471588134766}}
+2023-05-31 15:38:51,259 INFO    HandlerThread:20836 [system_monitor.py:probe():211] Finished collecting system info
+2023-05-31 15:38:51,259 INFO    HandlerThread:20836 [system_monitor.py:probe():214] Publishing system info
+2023-05-31 15:38:51,259 DEBUG   HandlerThread:20836 [system_info.py:_save_pip():51] Saving list of pip packages installed into the current environment
+2023-05-31 15:38:51,264 DEBUG   HandlerThread:20836 [system_info.py:_save_pip():67] Saving pip packages done
+2023-05-31 15:38:51,264 DEBUG   HandlerThread:20836 [system_info.py:_save_conda():74] Saving list of conda packages installed into the current environment
+2023-05-31 15:38:51,271 ERROR   HandlerThread:20836 [system_info.py:_save_conda():85] Error saving conda packages: [WinError 2] The system cannot find the file specified
+Traceback (most recent call last):
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\wandb\sdk\internal\system\system_info.py", line 81, in _save_conda
+    subprocess.call(
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\subprocess.py", line 345, in call
+    with Popen(*popenargs, **kwargs) as p:
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\subprocess.py", line 966, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\subprocess.py", line 1435, in _execute_child
+    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+FileNotFoundError: [WinError 2] The system cannot find the file specified
+2023-05-31 15:38:51,271 DEBUG   HandlerThread:20836 [system_info.py:_save_conda():86] Saving conda packages done
+2023-05-31 15:38:51,271 DEBUG   HandlerThread:20836 [system_info.py:_save_code():89] Saving code
+2023-05-31 15:38:51,321 DEBUG   HandlerThread:20836 [system_info.py:_save_code():110] Saving code done
+2023-05-31 15:38:51,321 DEBUG   HandlerThread:20836 [system_info.py:_save_patches():127] Saving git patches
