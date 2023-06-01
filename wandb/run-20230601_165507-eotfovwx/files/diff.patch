@@ -1,0 +1,25 @@
+diff --git a/main.py b/main.py
+index fbf25ed..4fd3f18 100644
+--- a/main.py
++++ b/main.py
+@@ -84,7 +84,7 @@ def parse_args():
+     return args
+ 
+ # GPU configuration use for faster processing
+-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
++device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+ 
+ # DNN modeling
+ class NeuralNetwork(nn.Module):
+diff --git a/run.py b/run.py
+index 722c7f0..555271a 100644
+--- a/run.py
++++ b/run.py
+@@ -8,4 +8,4 @@ for i in range(1, 5):
+     p = subprocess.run(["python", "uav_env.py"])
+     g = subprocess.run(["python", "main.py", "--num-episode", str(50), "--wandb-track", "True", "--learning-rate", str(2.5e-4)])
+ 
+-# python main.py --num-episode 50 --wandb-track True --learning-rate 2.5e-4
+\ No newline at end of file
++# python main.py --num-episode 350 --wandb-track True --info-exchange-lvl 5 --seed-sync False
+\ No newline at end of file

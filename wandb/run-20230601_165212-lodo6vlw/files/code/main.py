@@ -427,11 +427,11 @@ if __name__ == "__main__":
                 # print(action_selected)
                 # Trying a shortcut // Since the correlated action selection gives same results for all agents
                 # Instead of computing in loop using the same value to see faster output
-                # drone_act_list = action_selected.tolist()
+                drone_act_list = action_selected.tolist()
                 # for k in range(NUM_UAV-1):
                 #     action_selected_list.append(action)
                 # If removed this need to adjust the store_transition function to action = correlated_action_list[k]
-                # break
+                break
                 ########################################################
                 
                 # Individual action from the correleted joint action
