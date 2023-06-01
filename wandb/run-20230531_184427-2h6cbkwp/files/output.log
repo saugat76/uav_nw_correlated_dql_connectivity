@@ -1,0 +1,276 @@
+
+0
+[1, 4, 4, 4, 1]
+Number of user connected in  0  episode is:  [0 0 0 8 4]
+Total user connected in  0  episode is:  12
+1
+2
+3
+4
+5
+C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\numpy\core\shape_base.py:121: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray.
+  ary = asanyarray(ary)
+6
+7
+8
+9
+10
+[1, 4, 4, 4, 1]
+Number of user connected in  10  episode is:  [7 1 9 0 0]
+Total user connected in  10  episode is:  17
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+[0, 4, 4, 4, 4]
+Number of user connected in  20  episode is:  [5 3 7 0 0]
+Total user connected in  20  episode is:  15
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+[2, 4, 4, 4, 4]
+Number of user connected in  30  episode is:  [7 0 8 0 0]
+Total user connected in  30  episode is:  15
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+[2, 4, 4, 4, 4]
+Number of user connected in  40  episode is:  [7 0 8 0 0]
+Total user connected in  40  episode is:  15
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+[2, 4, 4, 4, 4]
+Number of user connected in  50  episode is:  [7 0 8 0 0]
+Total user connected in  50  episode is:  15
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+[3, 4, 4, 4, 4]
+Number of user connected in  60  episode is:  [7 0 8 0 0]
+Total user connected in  60  episode is:  15
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+[3, 4, 4, 4, 4]
+Number of user connected in  70  episode is:  [11  0  8  0  0]
+Total user connected in  70  episode is:  19
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+[3, 4, 4, 4, 4]
+Number of user connected in  80  episode is:  [11  0  8  0  0]
+Total user connected in  80  episode is:  19
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+[3, 4, 4, 4, 4]
+Number of user connected in  90  episode is:  [11  0  8  0  0]
+Total user connected in  90  episode is:  19
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+[3, 4, 4, 4, 4]
+Number of user connected in  100  episode is:  [11  1 11  0  0]
+Total user connected in  100  episode is:  23
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+[3, 4, 4, 4, 4]
+Number of user connected in  110  episode is:  [16  2  3  0  0]
+Total user connected in  110  episode is:  21
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+[2, 4, 4, 4, 4]
+Number of user connected in  120  episode is:  [16  2  3  0  0]
+Total user connected in  120  episode is:  21
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+[3, 4, 4, 4, 4]
+Number of user connected in  130  episode is:  [7 2 3 0 0]
+Total user connected in  130  episode is:  12
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+[3, 4, 4, 4, 4]
+Number of user connected in  140  episode is:  [7 2 3 0 0]
+Total user connected in  140  episode is:  12
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+[2, 4, 4, 4, 4]
+Number of user connected in  150  episode is:  [5 2 3 0 0]
+Total user connected in  150  episode is:  10
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+[3, 4, 4, 4, 4]
+Number of user connected in  160  episode is:  [4 2 3 0 0]
+Total user connected in  160  episode is:  9
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+[2, 4, 4, 4, 4]
+Number of user connected in  170  episode is:  [7 2 3 0 0]
+Total user connected in  170  episode is:  12
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+[2, 4, 4, 4, 4]
+Number of user connected in  180  episode is:  [5 2 3 0 0]
+Total user connected in  180  episode is:  10
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+[3, 4, 4, 4, 4]
+Number of user connected in  190  episode is:  [7 2 3 0 0]
+Total user connected in  190  episode is:  12
+191
+192
+193
+194
+195
+196
+197
+198
+199
+[[6. 6.]
+ [0. 0.]
+ [0. 1.]
+ [0. 0.]
+ [0. 0.]]
+Total Connected User in Final Stage [17 14  3  2  1]
+Best State
+[[3. 4.]
+ [0. 0.]
+ [1. 1.]
+ [0. 0.]
+ [0. 0.]]
+Total Connected User (Best Outcome) 23

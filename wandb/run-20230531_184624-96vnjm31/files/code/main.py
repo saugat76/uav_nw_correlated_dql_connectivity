@@ -223,7 +223,6 @@ class DQL:
         opt_problem.solve()
         if opt_problem.status == "optimal":
             weights = prob_weight.value
-            print(weights)
         else:
             weights = None
             print("Failed to find an optimal solution")
