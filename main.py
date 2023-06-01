@@ -21,6 +21,7 @@ import os
 import math
 import warnings
 from cvxpy import Variable, Problem, Minimize, Maximize, multiply, matmul
+import cvxpy
 import time
 import sys
 from joblib import Parallel, delayed
@@ -58,6 +59,7 @@ def parse_args():
     parser.add_argument("--epsilon-decay-steps", type=int, default=1, help="set the rate at which is the epsilon is deacyed, set value equates number of steps at which the epsilon reaches minimum")
     parser.add_argument("--layers", type=int, default=2, help="set the number of layers for the target and main neural network")
     parser.add_argument("--nodes", type=int, default=400, help="set the number of nodes for the target and main neural network layers")
+    parser.add_argument("--seed-sync", type=lambda x: bool(strtobool(x)), default=False, help="synchronize the seed value among agents, by default set to False")
 
     # Environment specific arguments
     # To be consitent with previous project addition of level 5 and 6
@@ -169,72 +171,22 @@ class DQL:
     # Where, the indexes of joint actions of the joint action represents the agents index
 
     def correlated_equilibrium(self, shared_q_values, agent_idx):
-
-        # Additional constraint function // Generating constraint used for solving the optimization equation
-        def generate_add_constraint(NUM_UAV, shared_q_values, prob_weight):
-            add_constraint = []
-            for v in range(NUM_UAV):
-                temp_cumulative = 0
-                temp_cat = torch.zeros(UAV_OB[v].action_size**NUM_UAV, UAV_OB[v].action_size)
-                Q_ind = shared_q_values[v, :].reshape(UAV_OB[v].action_size, (UAV_OB[v].action_size)**(NUM_UAV-1))
-                for l in range(Q_ind.size(1)):
-                    temp_compute = torch.zeros((UAV_OB[v].action_size, UAV_OB[v].action_size))
-                    for n in range(Q_ind.size(0)):
-                        for m in range(Q_ind.size(0)):
-                            if n != m:
-                                temp_compute[m, n] = Q_ind[n, l] - Q_ind[m, l]
-                    temp_cat[(n * Q_ind.size(0) + l): (n + 1) * Q_ind.size(0) + l, :] = temp_compute
-                temp_cumulative = prob_weight @ temp_cat 
-                add_constraint.append(temp_cumulative >= 0)
-            return add_constraint
-
-        # Joint action size = number of agents ^ action size // for a state 
-        # Optimizing the joint action so setting as a variable for CE optimization 
-        joint_action_size = NUM_UAV ** UAV_OB[agent_idx].action_size
-        prob_weight = Variable(joint_action_size, boolean = True)
-        
-        # Collect Q values for the corresponding states of each individual agents
-        # Using negate value to use Minimize function for solving  // removed
-        q_complete = np.vstack([shared_q_values[k].ravel() for k in range(NUM_UAV)])
-
-        # Objective function
-        object_vec = q_complete
-        object_func = Maximize(sum(object_vec @ prob_weight))
-
-        # Constraint 1: Sum of the Probabilities should be equal to 1 // should follow for all agents
-        sum_func_constr = sum(prob_weight) == 1
-        
-        # Constraint 2: Each probability value should be grater than 1 // should follow for all agents
-        prob_constr_1 = all(prob_weight) >= 0
-        prob_constr_2 = all(prob_weight) <= 1
-        # Deterministic probability instead of stochastic // either 0 or 1 value
-        # Migth be able to incorporate in variable defination
-        # prob_constr = all(prob_weight) in [0, 1]
-
-        # Constraint 3: Total function should be less than or equal to 0
-        add_constraint = generate_add_constraint(NUM_UAV, shared_q_values, prob_weight)
-        total_func_constr = add_constraint
-
-        # Define the problem with constraints
-        complete_constraint = [sum_func_constr, prob_constr_1, prob_constr_2] + total_func_constr
-        opt_problem = Problem(object_func, complete_constraint)
-
-        # Solve the optimization problem using linear programming
-        # try:
-        opt_problem.solve()
-        # print(opt_problem.status)
-        if opt_problem.status == "optimal":
-            # print("Found solution")
-            weights = prob_weight.value
-            # print(weights)
-            # print('Max Weight:', np.max(weights))
-            # print("Best Joint Action:", np.argmax(weights))
-        else:
-            weights = None
-        # except:
-        #     weights = None
-        #     print("Failed to find an optimal solution")
-        return weights
+        # Considering a deterministic system where the correleted action are fixed
+        # Bruteforcing thorugh all the available option for each UAV agent and check for constraint satisfaction
+        for y in range(shared_q_values.size(1)):
+            max_ind = torch.argsort(torch.sum(shared_q_values, axis=0))
+            for k in range(len(max_ind)):
+                current_complete_action = UAV_OB[agent_idx].action_profile[max_ind[k]]
+                current_ind_action = current_complete_action[agent_idx]
+                negate_Ai_actions = (UAV_OB[agent_idx].action_profile[:, agent_idx] == current_ind_action).nonzero()
+                # Vectorizing the q-value of all agents
+                q_value_mat = shared_q_values[:, k] * torch.ones(UAV_OB[agent_idx].action_size ** (NUM_UAV - 1), NUM_UAV)
+                sum_contr =  torch.sum(q_value_mat.transpose(0, 1) - shared_q_values[:, negate_Ai_actions.squeeze()], axis=1)
+                if all(sum_contr >= 0):
+                    correlated_action_selected = k
+                    # print("Solution found")
+                    # print(correlated_action_selected)
+                    return correlated_action_selected
         
 
     def update_probs(self, shared_q_values, agent_idx):
@@ -247,7 +199,7 @@ class DQL:
         # self.epsilon_thres = self.epsilon_min + (self.epsilon - self.epsilon_min) * math.exp(-1*self.steps_done/self.epsilon_decay)
         self.steps_done += 1 
         # Each agents possible state space is same so, prob varible // joining all index
-        prob = self.pi
+        choosen_action = self.correlated_choice
         # Compare against a epsilon threshold to either explore or exploit
         if temp <= self.epsilon_thres:
             # If less than threshold action choosen randomly
@@ -259,12 +211,7 @@ class DQL:
             # Action choosen based on correlated probabilities of joint action which is 
             # Calculated using linear programming to find a solution
             choices = np.arange(0, UAV_OB[agent_idx].action_size ** NUM_UAV, dtype=int)
-            actions = np.random.choice(choices, p=prob)
-            # state = torch.unsqueeze(torch.FloatTensor(state),0)
-            # prob_local = torch.FloatTensor(self.pi).to(device = device)
-            # Q_values = self.main_network(state) * prob_local
-            # print(Q_values)
-            # actions = Q_values.detach().squeeze().max(1)[1].view(1,1).squeeze().cpu()
+            actions = choices[choosen_action]
         return actions
        
 
@@ -388,7 +335,7 @@ if __name__ == "__main__":
     ax1 = fig.add_subplot(gs[0:1, 0:1])
 
     # Create object of each UAV agent // Each agent is equpped with it's DQL system
-    # Initialize action list for each UAV agent // O/p from the DQN and equilibria represents the indexes
+    # Initialize action list for each UAV agent // output from the DQN and equilibria represents the indexes
     # Array to map those indexes to a joint action profile
     UAV_OB = []
     for k in range(NUM_UAV):
@@ -416,15 +363,6 @@ if __name__ == "__main__":
     # Start of the episode
     for i_episode in range(num_episode):
         print(i_episode)
-
-        # Change of epsilon threshold // takes epsilon and epsilon min value and chnages between with episodes
-        for k in range(NUM_UAV):
-            if i_episode <= 20:
-                UAV_OB[k].epsilon_thres = epsilon
-            # elif i_episode <= 50:
-            #     UAV_OB[k].epsilon_thres = (epsilon + epsilon_min)/2
-            else:
-                UAV_OB[k].epsilon_thres = epsilon_min
 
         # Environment reset and get the states
         u_env.reset()
@@ -462,18 +400,22 @@ if __name__ == "__main__":
                 shared_q_values[k, :]= q_values.detach()
 
             # Get the current seed state // Seed synchronization
-            # seed_state = random.getstate()
-            # np_seed_state = np.random.get_state()
-            # torch_seed_state = torch.seed()
-            for k in range(NUM_UAV):
-                # Synchronization of seeding between agents // Synchronize randomness using same seed
-                # seeding_sync(seed_state, np_seed_state, torch_seed_state)
+            if args.seed_sync:
+                seed_state = random.getstate()
+                np_seed_state = np.random.get_state()
+                torch_seed_state = torch.seed()
 
+            for k in range(NUM_UAV):
+
+                # Synchronization of seeding between agents // Synchronize randomness using same seed
+                if args.seed_sync:
+                    seeding_sync(seed_state, np_seed_state, torch_seed_state)
                 # Note: seed synchronization might be creating the problem as it wont allow other agents to explore separately
 
-                weights = UAV_OB[k].correlated_equilibrium(shared_q_values, k)
-                if weights is not None:
-                    UAV_OB[k].pi = weights
+                correlated_actions = UAV_OB[k].correlated_equilibrium(shared_q_values, k)
+                if correlated_actions is not None:
+                    UAV_OB[k].correlated_choice = correlated_actions
+
                 action = UAV_OB[k].epsilon_greedy(k, state)
                 action_selected_list.append(action)
                 # Action of the individual agent from the correlated action list
@@ -498,7 +440,7 @@ if __name__ == "__main__":
             # Find the global reward for the combined set of actions for the UAV
             # Reward function design for both level 5 and 6 is the same so, we dont pass the argument
             # To the UAV environment for the computation in the step function
-            print(drone_act_list)
+            # print(drone_act_list)
             temp_data = u_env.step(drone_act_list)
             reward = temp_data[1]
             done = temp_data[2]
@@ -676,4 +618,3 @@ if __name__ == "__main__":
             "best result", str(best_result))
     wandb.finish()
     writer.close()
-
