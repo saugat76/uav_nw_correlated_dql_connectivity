@@ -1,0 +1,65 @@
+{
+    "os": "Windows-10-10.0.19045-SP0",
+    "python": "3.10.4",
+    "heartbeatAt": "2023-06-01T21:36:48.256067",
+    "startedAt": "2023-06-01T21:36:47.682497",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--num-episode",
+        "350",
+        "--wandb-track",
+        "True",
+        "--info-exchange-lvl",
+        "6",
+        "--seed-sync",
+        "False",
+        "--gamma",
+        "0.99"
+    ],
+    "state": "running",
+    "program": "C:\\Users\\tripats\\Documents\\GitHub\\uav_nw_correlated_dql_connectivity\\main.py",
+    "codePath": "main.py",
+    "git": {
+        "remote": "https://github.com/saugat76/uav_nw_correlated_dql_connectivity.git",
+        "commit": "d30a7dce8d79417002f9687c4bcc51d1b68e056d"
+    },
+    "email": "saugat.tripathi76@gmail.com",
+    "root": "C:/Users/tripats/Documents/GitHub/uav_nw_correlated_dql_connectivity",
+    "host": "CEC-ZHANGR43-LL",
+    "username": "tripats",
+    "executable": "C:\\Users\\tripats\\.conda\\envs\\uavenv\\python.exe",
+    "cpu_count": 12,
+    "cpu_count_logical": 24,
+    "cpu_freq": {
+        "current": 3504.0,
+        "min": 0.0,
+        "max": 3504.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3504.0,
+            "min": 0.0,
+            "max": 3504.0
+        }
+    ],
+    "disk": {
+        "total": 930.9004402160645,
+        "used": 454.33984756469727
+    },
+    "gpu": "Quadro RTX 6000",
+    "gpu_count": 2,
+    "gpu_devices": [
+        {
+            "name": "Quadro RTX 6000",
+            "memory_total": 25769803776
+        },
+        {
+            "name": "Quadro RTX 6000",
+            "memory_total": 25769803776
+        }
+    ],
+    "memory": {
+        "total": 63.68939208984375
+    }
+}

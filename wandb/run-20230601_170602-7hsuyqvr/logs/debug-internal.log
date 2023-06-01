@@ -1,0 +1,660 @@
+2023-06-01 17:06:02,512 INFO    StreamThr :11256 [internal.py:wandb_internal():86] W&B internal server running at pid: 11256, started at: 2023-06-01 17:06:02.512313
+2023-06-01 17:06:02,512 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status
+2023-06-01 17:06:02,527 INFO    WriterThread:11256 [datastore.py:open_for_write():85] open: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\run-7hsuyqvr.wandb
+2023-06-01 17:06:02,527 DEBUG   SenderThread:11256 [sender.py:send():375] send: header
+2023-06-01 17:06:02,668 DEBUG   SenderThread:11256 [sender.py:send():375] send: run
+2023-06-01 17:06:02,934 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: check_version
+2023-06-01 17:06:02,934 INFO    SenderThread:11256 [dir_watcher.py:__init__():219] watching files in: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files
+2023-06-01 17:06:02,934 INFO    SenderThread:11256 [sender.py:_start_run_threads():1124] run started: 7hsuyqvr with start time 1685653562.512312
+2023-06-01 17:06:02,934 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:06:02,934 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:06:02,934 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: check_version
+2023-06-01 17:06:03,044 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: run_start
+2023-06-01 17:06:03,075 DEBUG   HandlerThread:11256 [system_info.py:__init__():31] System info init
+2023-06-01 17:06:03,075 DEBUG   HandlerThread:11256 [system_info.py:__init__():46] System info init done
+2023-06-01 17:06:03,075 INFO    HandlerThread:11256 [system_monitor.py:start():181] Starting system monitor
+2023-06-01 17:06:03,075 INFO    SystemMonitor:11256 [system_monitor.py:_start():145] Starting system asset monitoring threads
+2023-06-01 17:06:03,075 INFO    HandlerThread:11256 [system_monitor.py:probe():201] Collecting system info
+2023-06-01 17:06:03,075 INFO    SystemMonitor:11256 [interfaces.py:start():190] Started cpu monitoring
+2023-06-01 17:06:03,075 INFO    SystemMonitor:11256 [interfaces.py:start():190] Started disk monitoring
+2023-06-01 17:06:03,090 INFO    SystemMonitor:11256 [interfaces.py:start():190] Started gpu monitoring
+2023-06-01 17:06:03,090 INFO    SystemMonitor:11256 [interfaces.py:start():190] Started memory monitoring
+2023-06-01 17:06:03,090 INFO    SystemMonitor:11256 [interfaces.py:start():190] Started network monitoring
+2023-06-01 17:06:03,121 DEBUG   HandlerThread:11256 [system_info.py:probe():195] Probing system
+2023-06-01 17:06:03,121 DEBUG   HandlerThread:11256 [system_info.py:_probe_git():180] Probing git
+2023-06-01 17:06:03,340 DEBUG   HandlerThread:11256 [system_info.py:_probe_git():188] Probing git done
+2023-06-01 17:06:03,340 DEBUG   HandlerThread:11256 [system_info.py:probe():240] Probing system done
+2023-06-01 17:06:03,340 DEBUG   HandlerThread:11256 [system_monitor.py:probe():210] {'os': 'Windows-10-10.0.19045-SP0', 'python': '3.10.4', 'heartbeatAt': '2023-06-01T21:06:03.121932', 'startedAt': '2023-06-01T21:06:02.481066', 'docker': None, 'cuda': None, 'args': ('--num-episode', '350', '--wandb-track', 'True', '--info-exchange-lvl', '5', '--seed-sync', 'False', '--gamma', '0.99'), 'state': 'running', 'program': 'C:\\Users\\tripats\\Documents\\GitHub\\uav_nw_correlated_dql_connectivity\\main.py', 'codePath': 'main.py', 'git': {'remote': 'https://github.com/saugat76/uav_nw_correlated_dql_connectivity.git', 'commit': 'd30a7dce8d79417002f9687c4bcc51d1b68e056d'}, 'email': 'saugat.tripathi76@gmail.com', 'root': 'C:/Users/tripats/Documents/GitHub/uav_nw_correlated_dql_connectivity', 'host': 'CEC-ZHANGR43-LL', 'username': 'tripats', 'executable': 'C:\\Users\\tripats\\.conda\\envs\\uavenv\\python.exe', 'cpu_count': 12, 'cpu_count_logical': 24, 'cpu_freq': {'current': 3504.0, 'min': 0.0, 'max': 3504.0}, 'cpu_freq_per_core': [{'current': 3504.0, 'min': 0.0, 'max': 3504.0}], 'disk': {'total': 930.9004402160645, 'used': 451.0580940246582}, 'gpu': 'Quadro RTX 6000', 'gpu_count': 2, 'gpu_devices': [{'name': 'Quadro RTX 6000', 'memory_total': 25769803776}, {'name': 'Quadro RTX 6000', 'memory_total': 25769803776}], 'memory': {'total': 63.68939208984375}}
+2023-06-01 17:06:03,340 INFO    HandlerThread:11256 [system_monitor.py:probe():211] Finished collecting system info
+2023-06-01 17:06:03,340 INFO    HandlerThread:11256 [system_monitor.py:probe():214] Publishing system info
+2023-06-01 17:06:03,340 DEBUG   HandlerThread:11256 [system_info.py:_save_pip():51] Saving list of pip packages installed into the current environment
+2023-06-01 17:06:03,340 DEBUG   HandlerThread:11256 [system_info.py:_save_pip():67] Saving pip packages done
+2023-06-01 17:06:03,340 DEBUG   HandlerThread:11256 [system_info.py:_save_conda():74] Saving list of conda packages installed into the current environment
+2023-06-01 17:06:03,340 ERROR   HandlerThread:11256 [system_info.py:_save_conda():85] Error saving conda packages: [WinError 2] The system cannot find the file specified
+Traceback (most recent call last):
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\wandb\sdk\internal\system\system_info.py", line 81, in _save_conda
+    subprocess.call(
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\subprocess.py", line 345, in call
+    with Popen(*popenargs, **kwargs) as p:
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\subprocess.py", line 966, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\subprocess.py", line 1435, in _execute_child
+    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+FileNotFoundError: [WinError 2] The system cannot find the file specified
+2023-06-01 17:06:03,340 DEBUG   HandlerThread:11256 [system_info.py:_save_conda():86] Saving conda packages done
+2023-06-01 17:06:03,340 DEBUG   HandlerThread:11256 [system_info.py:_save_code():89] Saving code
+2023-06-01 17:06:03,449 DEBUG   HandlerThread:11256 [system_info.py:_save_code():110] Saving code done
+2023-06-01 17:06:03,449 DEBUG   HandlerThread:11256 [system_info.py:_save_patches():127] Saving git patches
+2023-06-01 17:06:03,934 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\conda-environment.yaml
+2023-06-01 17:06:03,949 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\requirements.txt
+2023-06-01 17:06:03,949 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:06:03,949 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\code\main.py
+2023-06-01 17:06:03,949 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\diff.patch
+2023-06-01 17:06:03,949 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\code
+2023-06-01 17:06:04,184 DEBUG   HandlerThread:11256 [system_info.py:_save_patches():169] Saving git patches done
+2023-06-01 17:06:04,184 INFO    HandlerThread:11256 [system_monitor.py:probe():216] Finished publishing system info
+2023-06-01 17:06:04,199 DEBUG   SenderThread:11256 [sender.py:send():375] send: files
+2023-06-01 17:06:04,199 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-metadata.json with policy now
+2023-06-01 17:06:04,199 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file code\main.py with policy now
+2023-06-01 17:06:04,199 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file diff.patch with policy now
+2023-06-01 17:06:04,215 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:06:04,215 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:06:04,215 INFO    HandlerThread:11256 [handler.py:handle_tbrecord():750] handling tbrecord: tbrecord {
+  log_dir: "runs/correlated_madql_uav__lvl5__5__1__1685653555"
+  save: true
+}
+control {
+  relay_id: "5e406378ab424693b83d639cdb087868"
+}
+_info {
+  stream_id: "7hsuyqvr"
+}
+
+2023-06-01 17:06:04,215 DEBUG   HandlerThread:11256 [config_util.py:dict_from_config_file():104] no default config file found in config-defaults.yaml
+2023-06-01 17:06:04,294 INFO    wandb-upload_1:11256 [upload_job.py:push():117] Skipped uploading C:\Users\tripats\AppData\Local\Temp\tmpnnhw74kwwandb\wq5z2cxn-code/main.py
+2023-06-01 17:06:04,356 DEBUG   SenderThread:11256 [sender.py:send():375] send: telemetry
+2023-06-01 17:06:04,356 DEBUG   SenderThread:11256 [sender.py:send():375] send: tbrecord
+2023-06-01 17:06:04,590 INFO    wandb-upload_0:11256 [upload_job.py:push():137] Uploaded file C:\Users\tripats\AppData\Local\Temp\tmpnnhw74kwwandb\grerskjf-wandb-metadata.json
+2023-06-01 17:06:04,653 INFO    wandb-upload_2:11256 [upload_job.py:push():137] Uploaded file C:\Users\tripats\AppData\Local\Temp\tmpnnhw74kwwandb\8wmy1uw1-diff.patch
+2023-06-01 17:06:04,949 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\diff.patch
+2023-06-01 17:06:04,965 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-metadata.json
+2023-06-01 17:06:06,981 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_created():278] file/dir created: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:06:08,387 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:06:08,653 DEBUG   Thread-34 (_thread_except_body):11256 [tb_watcher.py:_process_events():274] Encountered tensorboard directory watcher error: [WinError 1314] A required privilege is not held by the client: 'C:\\Users\\tripats\\Documents\\GitHub\\uav_nw_correlated_dql_connectivity\\runs\\correlated_madql_uav__lvl5__5__1__1685653555\\events.out.tfevents.1685653564.CEC-ZHANGR43-LL.21796.0' -> 'C:\\Users\\tripats\\Documents\\GitHub\\uav_nw_correlated_dql_connectivity\\wandb\\run-20230601_170602-7hsuyqvr\\files\\events.out.tfevents.1685653564.CEC-ZHANGR43-LL.21796.0'
+2023-06-01 17:06:09,027 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:06:13,434 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:06:18,480 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:06:19,215 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:06:19,215 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:06:24,340 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:06:29,355 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:06:33,480 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:06:33,480 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:06:33,496 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:06:33,496 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:06:34,277 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:06:34,308 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:06:34,308 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:06:34,554 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:06:35,278 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\config.yaml
+2023-06-01 17:06:37,308 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:06:39,871 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:06:44,933 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:06:49,308 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:06:49,308 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:06:50,387 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:06:55,449 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:07:00,496 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:07:02,480 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:07:02,480 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:07:02,480 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:07:02,480 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:07:02,574 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:07:03,105 DEBUG   SystemMonitor:11256 [system_monitor.py:_start():159] Starting system metrics aggregation loop
+2023-06-01 17:07:03,105 DEBUG   SenderThread:11256 [sender.py:send():375] send: stats
+2023-06-01 17:07:03,589 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:07:04,324 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:07:04,324 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:07:06,402 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:07:11,448 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:07:16,495 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:07:19,340 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:07:19,340 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:07:22,417 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:07:27,464 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:07:32,511 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:07:33,121 DEBUG   SenderThread:11256 [sender.py:send():375] send: stats
+2023-06-01 17:07:34,355 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:07:34,355 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:07:36,948 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:07:36,948 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:07:36,964 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:07:36,964 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:07:37,918 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:07:37,980 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:07:39,948 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:07:43,011 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:07:48,058 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:07:49,370 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:07:49,370 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:07:53,463 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:07:58,494 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:08:03,136 DEBUG   SenderThread:11256 [sender.py:send():375] send: stats
+2023-06-01 17:08:04,151 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:08:04,386 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:08:04,386 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:08:09,511 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:08:12,401 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:08:12,401 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:08:12,401 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:08:12,401 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:08:13,308 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:08:13,308 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:08:15,448 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:08:19,401 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:08:19,401 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:08:20,448 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:08:25,495 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:08:30,510 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:08:33,151 DEBUG   SenderThread:11256 [sender.py:send():375] send: stats
+2023-06-01 17:08:34,417 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:08:34,417 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:08:35,589 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:08:40,651 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:08:45,684 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:08:49,431 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:08:49,432 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:08:51,480 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:08:56,518 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:08:58,229 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:08:58,229 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:08:58,229 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:08:58,229 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:08:58,776 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:08:59,791 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:09:02,260 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:09:03,166 DEBUG   SenderThread:11256 [sender.py:send():375] send: stats
+2023-06-01 17:09:04,448 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:09:04,448 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:09:07,338 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:09:07,838 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:09:12,370 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:09:17,416 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:09:19,369 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:09:19,369 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:09:19,369 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:09:19,369 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:09:19,463 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:09:19,463 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:09:19,963 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:09:21,994 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:09:22,541 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:09:27,572 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:09:32,604 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:09:33,181 DEBUG   SenderThread:11256 [sender.py:send():375] send: stats
+2023-06-01 17:09:33,229 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:09:33,229 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:09:33,229 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:09:33,229 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:09:34,119 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:09:34,119 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:09:34,479 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:09:34,479 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:09:38,572 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:09:43,634 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:09:47,275 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:09:47,291 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:09:47,291 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:09:47,291 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:09:48,260 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:09:48,260 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:09:49,307 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:09:49,494 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:09:49,494 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:09:54,603 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:09:59,635 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:10:01,400 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:10:01,400 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:10:01,400 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:10:01,400 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:10:02,416 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:10:02,416 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:10:03,182 DEBUG   SenderThread:11256 [sender.py:send():375] send: stats
+2023-06-01 17:10:04,510 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:10:04,510 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:10:05,571 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:10:10,616 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:10:15,665 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:10:16,697 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:10:16,697 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:10:16,697 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:10:16,712 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:10:17,672 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:10:18,700 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:10:19,518 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:10:19,519 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:10:21,576 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:10:26,613 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:10:31,653 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:10:33,027 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:10:33,027 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:10:33,027 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:10:33,027 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:10:33,187 DEBUG   SenderThread:11256 [sender.py:send():375] send: stats
+2023-06-01 17:10:33,840 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:10:34,529 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:10:34,529 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:10:36,732 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:10:36,872 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:10:41,787 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:10:46,836 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:10:49,063 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:10:49,063 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:10:49,063 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:10:49,063 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:10:49,551 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:10:49,551 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:10:50,010 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:10:51,025 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:10:52,713 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:10:57,769 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:11:02,824 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:11:03,199 DEBUG   SenderThread:11256 [sender.py:send():375] send: stats
+2023-06-01 17:11:03,277 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:11:03,277 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:11:03,277 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:11:03,277 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:11:04,167 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:11:04,167 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:11:04,573 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:11:04,573 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:11:08,666 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:11:13,713 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:11:17,695 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:11:17,695 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:11:17,695 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:11:17,711 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:11:18,324 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:11:18,324 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:11:18,715 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:11:19,590 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:11:19,590 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:11:24,703 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:11:29,763 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:11:31,653 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:11:31,653 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:11:31,653 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:11:31,653 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:11:32,497 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:11:32,497 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:11:33,204 DEBUG   SenderThread:11256 [sender.py:send():375] send: stats
+2023-06-01 17:11:34,594 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:11:34,594 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:11:35,645 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:11:40,700 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:11:45,755 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:11:45,802 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:11:45,802 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:11:45,802 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:11:45,802 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:11:46,646 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:11:46,646 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:11:49,618 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:11:49,618 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:11:51,685 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:11:56,741 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:12:00,119 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:12:00,119 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:12:00,119 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:12:00,119 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:12:00,812 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:12:02,155 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:12:02,832 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:12:03,206 DEBUG   SenderThread:11256 [sender.py:send():375] send: stats
+2023-06-01 17:12:04,632 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:12:04,632 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:12:07,710 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:12:12,753 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:12:14,581 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:12:14,581 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:12:14,581 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:12:14,597 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:12:14,972 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:12:16,992 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:12:18,637 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:12:19,652 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:12:19,652 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:12:23,739 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:12:28,794 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:12:28,997 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:12:28,997 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:12:28,997 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:12:29,013 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:12:29,122 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:12:31,158 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:12:33,209 DEBUG   SenderThread:11256 [sender.py:send():375] send: stats
+2023-06-01 17:12:34,224 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:12:34,661 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:12:34,661 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:12:39,752 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:12:43,053 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:12:43,068 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:12:43,068 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:12:43,068 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:12:43,287 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:12:45,088 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:12:45,306 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:12:49,686 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:12:49,686 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:12:50,748 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:12:55,803 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:12:57,490 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:12:57,490 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:12:57,490 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:12:57,490 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:12:58,473 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:13:01,495 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:13:01,651 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:13:03,213 DEBUG   SenderThread:11256 [sender.py:send():375] send: stats
+2023-06-01 17:13:04,701 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:13:04,701 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:13:06,769 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:13:11,824 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:13:12,839 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:13:12,839 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:13:12,839 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:13:12,839 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:13:13,624 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:13:14,655 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:13:16,894 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:13:19,712 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:13:19,712 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:13:22,794 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:13:27,583 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:13:27,583 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:13:27,583 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:13:27,583 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:13:27,802 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:13:28,599 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:13:28,817 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:13:33,217 DEBUG   SenderThread:11256 [sender.py:send():375] send: stats
+2023-06-01 17:13:34,232 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:13:34,717 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:13:34,717 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:13:39,808 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:13:41,655 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:13:41,655 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:13:41,655 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:13:41,655 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:13:41,936 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:13:42,952 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:13:45,721 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:13:49,729 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:13:49,729 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:13:50,776 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:13:55,842 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:13:56,021 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:13:56,023 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:13:56,023 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:13:56,025 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:13:56,095 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:13:57,108 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:14:01,054 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:14:03,225 DEBUG   SenderThread:11256 [sender.py:send():375] send: stats
+2023-06-01 17:14:04,741 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:14:04,741 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:14:06,819 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:14:11,382 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:14:11,382 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:14:11,382 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:14:11,382 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:14:12,273 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:14:12,397 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:14:13,288 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:14:17,444 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:14:19,757 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:14:19,757 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:14:22,835 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:14:26,293 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:14:26,293 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:14:26,293 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:14:26,293 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:14:26,475 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:14:27,476 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:14:28,308 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:14:33,225 DEBUG   SenderThread:11256 [sender.py:send():375] send: stats
+2023-06-01 17:14:34,241 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:14:34,776 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:14:34,777 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:14:39,881 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:14:41,148 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:14:41,148 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:14:41,148 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:14:41,163 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:14:41,616 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:14:43,655 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:14:45,228 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:14:49,787 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:14:49,789 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:14:50,881 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:14:55,944 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:15:00,991 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:15:02,752 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:15:02,753 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:15:02,753 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:15:02,755 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:15:02,835 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:15:03,243 DEBUG   SenderThread:11256 [sender.py:send():375] send: stats
+2023-06-01 17:15:03,837 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:15:04,809 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:15:04,809 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:15:06,866 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:15:11,912 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:15:16,955 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:15:17,944 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:15:17,944 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:15:17,944 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:15:17,944 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:15:17,975 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:15:19,818 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:15:19,819 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:15:20,011 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:15:22,885 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:15:27,928 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:15:32,663 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:15:32,663 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:15:32,663 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:15:32,663 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:15:33,147 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:15:33,255 DEBUG   SenderThread:11256 [sender.py:send():375] send: stats
+2023-06-01 17:15:33,257 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:15:34,836 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:15:34,836 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:15:36,162 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:15:39,085 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:15:44,131 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:15:49,063 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:15:49,065 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:15:49,066 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:15:49,067 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:15:49,287 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:15:49,741 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:15:49,848 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:15:49,849 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:15:52,323 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:15:54,924 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:15:59,961 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:16:03,268 DEBUG   SenderThread:11256 [sender.py:send():375] send: stats
+2023-06-01 17:16:04,410 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:16:04,411 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:16:04,412 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:16:04,414 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:16:04,461 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:16:04,863 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:16:04,864 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:16:05,928 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:16:06,493 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:16:10,959 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:16:16,006 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:16:19,303 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:16:19,303 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:16:19,303 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:16:19,303 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:16:19,631 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:16:19,881 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:16:19,881 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:16:21,668 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:16:21,947 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:16:26,984 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:16:31,681 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:16:31,682 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:16:31,682 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:16:31,684 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:16:31,769 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:16:32,693 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:16:33,271 DEBUG   SenderThread:11256 [sender.py:send():375] send: stats
+2023-06-01 17:16:33,780 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:16:34,891 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: stop_status
+2023-06-01 17:16:34,892 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: stop_status
+2023-06-01 17:16:37,957 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:16:40,412 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: partial_history
+2023-06-01 17:16:40,412 DEBUG   SenderThread:11256 [sender.py:send():375] send: history
+2023-06-01 17:16:40,412 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: summary_record
+2023-06-01 17:16:40,412 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:16:40,568 DEBUG   SenderThread:11256 [sender.py:send():375] send: exit
+2023-06-01 17:16:40,568 INFO    SenderThread:11256 [sender.py:send_exit():598] handling exit code: 255
+2023-06-01 17:16:40,568 INFO    SenderThread:11256 [sender.py:send_exit():600] handling runtime: 637
+2023-06-01 17:16:40,568 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:16:40,568 INFO    SenderThread:11256 [sender.py:send_exit():606] send defer
+2023-06-01 17:16:40,568 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: defer
+2023-06-01 17:16:40,568 INFO    HandlerThread:11256 [handler.py:handle_request_defer():170] handle defer: 0
+2023-06-01 17:16:40,568 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: defer
+2023-06-01 17:16:40,568 INFO    SenderThread:11256 [sender.py:send_request_defer():622] handle sender defer: 0
+2023-06-01 17:16:40,568 INFO    SenderThread:11256 [sender.py:transition_state():626] send defer: 1
+2023-06-01 17:16:40,568 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: defer
+2023-06-01 17:16:40,568 INFO    HandlerThread:11256 [handler.py:handle_request_defer():170] handle defer: 1
+2023-06-01 17:16:40,568 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: defer
+2023-06-01 17:16:40,568 INFO    SenderThread:11256 [sender.py:send_request_defer():622] handle sender defer: 1
+2023-06-01 17:16:40,568 INFO    SenderThread:11256 [sender.py:transition_state():626] send defer: 2
+2023-06-01 17:16:40,568 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: defer
+2023-06-01 17:16:40,568 INFO    HandlerThread:11256 [handler.py:handle_request_defer():170] handle defer: 2
+2023-06-01 17:16:40,568 INFO    HandlerThread:11256 [system_monitor.py:finish():190] Stopping system monitor
+2023-06-01 17:16:40,568 DEBUG   SystemMonitor:11256 [system_monitor.py:_start():166] Finished system metrics aggregation loop
+2023-06-01 17:16:40,568 DEBUG   SystemMonitor:11256 [system_monitor.py:_start():170] Publishing last batch of metrics
+2023-06-01 17:16:40,568 INFO    HandlerThread:11256 [interfaces.py:finish():202] Joined cpu monitor
+2023-06-01 17:16:40,584 INFO    HandlerThread:11256 [interfaces.py:finish():202] Joined disk monitor
+2023-06-01 17:16:40,662 INFO    HandlerThread:11256 [interfaces.py:finish():202] Joined gpu monitor
+2023-06-01 17:16:40,662 INFO    HandlerThread:11256 [interfaces.py:finish():202] Joined memory monitor
+2023-06-01 17:16:40,662 INFO    HandlerThread:11256 [interfaces.py:finish():202] Joined network monitor
+2023-06-01 17:16:40,662 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: defer
+2023-06-01 17:16:40,662 INFO    SenderThread:11256 [sender.py:send_request_defer():622] handle sender defer: 2
+2023-06-01 17:16:40,662 INFO    SenderThread:11256 [sender.py:transition_state():626] send defer: 3
+2023-06-01 17:16:40,677 DEBUG   SenderThread:11256 [sender.py:send():375] send: stats
+2023-06-01 17:16:40,677 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: defer
+2023-06-01 17:16:40,677 INFO    HandlerThread:11256 [handler.py:handle_request_defer():170] handle defer: 3
+2023-06-01 17:16:40,677 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: defer
+2023-06-01 17:16:40,677 INFO    SenderThread:11256 [sender.py:send_request_defer():622] handle sender defer: 3
+2023-06-01 17:16:40,677 INFO    SenderThread:11256 [sender.py:transition_state():626] send defer: 4
+2023-06-01 17:16:40,677 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: defer
+2023-06-01 17:16:40,677 INFO    HandlerThread:11256 [handler.py:handle_request_defer():170] handle defer: 4
+2023-06-01 17:16:40,834 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:16:41,842 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:16:46,927 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: poll_exit
+2023-06-01 17:16:46,927 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:16:46,927 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: keepalive
+2023-06-01 17:16:46,927 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: defer
+2023-06-01 17:16:46,927 INFO    SenderThread:11256 [sender.py:send_request_defer():622] handle sender defer: 4
+2023-06-01 17:16:46,927 INFO    SenderThread:11256 [sender.py:transition_state():626] send defer: 5
+2023-06-01 17:16:46,927 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: poll_exit
+2023-06-01 17:16:46,927 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: defer
+2023-06-01 17:16:46,927 INFO    HandlerThread:11256 [handler.py:handle_request_defer():170] handle defer: 5
+2023-06-01 17:16:46,927 DEBUG   SenderThread:11256 [sender.py:send():375] send: summary
+2023-06-01 17:16:46,927 INFO    SenderThread:11256 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-06-01 17:16:46,927 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: defer
+2023-06-01 17:16:46,927 INFO    SenderThread:11256 [sender.py:send_request_defer():622] handle sender defer: 5
+2023-06-01 17:16:46,927 INFO    SenderThread:11256 [sender.py:transition_state():626] send defer: 6
+2023-06-01 17:16:46,927 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: defer
+2023-06-01 17:16:46,927 INFO    HandlerThread:11256 [handler.py:handle_request_defer():170] handle defer: 6
+2023-06-01 17:16:46,927 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: defer
+2023-06-01 17:16:46,927 INFO    SenderThread:11256 [sender.py:send_request_defer():622] handle sender defer: 6
+2023-06-01 17:16:46,927 INFO    SenderThread:11256 [sender.py:transition_state():626] send defer: 7
+2023-06-01 17:16:46,927 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: status_report
+2023-06-01 17:16:46,927 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: defer
+2023-06-01 17:16:46,927 INFO    HandlerThread:11256 [handler.py:handle_request_defer():170] handle defer: 7
+2023-06-01 17:16:46,927 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: defer
+2023-06-01 17:16:46,927 INFO    SenderThread:11256 [sender.py:send_request_defer():622] handle sender defer: 7
+2023-06-01 17:16:47,771 INFO    SenderThread:11256 [sender.py:transition_state():626] send defer: 8
+2023-06-01 17:16:47,771 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: defer
+2023-06-01 17:16:47,771 INFO    HandlerThread:11256 [handler.py:handle_request_defer():170] handle defer: 8
+2023-06-01 17:16:47,771 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: defer
+2023-06-01 17:16:47,771 INFO    SenderThread:11256 [sender.py:send_request_defer():622] handle sender defer: 8
+2023-06-01 17:16:47,802 INFO    SenderThread:11256 [sender.py:transition_state():626] send defer: 9
+2023-06-01 17:16:47,802 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: defer
+2023-06-01 17:16:47,802 DEBUG   SenderThread:11256 [sender.py:send():375] send: artifact
+2023-06-01 17:16:47,802 INFO    HandlerThread:11256 [handler.py:handle_request_defer():170] handle defer: 9
+2023-06-01 17:16:47,912 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:16:47,912 INFO    Thread-16 :11256 [dir_watcher.py:_on_file_modified():295] file/dir modified: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:16:48,302 INFO    wandb-upload_0:11256 [upload_job.py:push():92] Skipped uploading C:\Users\tripats\AppData\Local\wandb\wandb\artifacts\staging\tmpb8tuz_vb
+2023-06-01 17:16:48,318 INFO    wandb-upload_2:11256 [upload_job.py:push():92] Skipped uploading C:\Users\tripats\AppData\Local\wandb\wandb\artifacts\staging\tmpw2r280sk
+2023-06-01 17:16:48,615 INFO    wandb-upload_1:11256 [upload_job.py:push():95] Uploaded file C:\Users\tripats\AppData\Local\wandb\wandb\artifacts\staging\tmpq7w6j23a
+2023-06-01 17:16:49,583 INFO    SenderThread:11256 [sender.py:send_artifact():1474] sent artifact job-https___github.com_saugat76_uav_nw_correlated_dql_connectivity.git_main.py - {'id': 'QXJ0aWZhY3Q6NDc0MzcyNjYz', 'digest': 'e0690dff3c03ea755a6ccbd3f6a089d7', 'state': 'PENDING', 'aliases': [], 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjcxODQxMDMz', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6NDc0MzcyNTQ0', 'versionIndex': 7}}, 'version': 'latest'}
+2023-06-01 17:16:49,584 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: defer
+2023-06-01 17:16:49,584 INFO    SenderThread:11256 [sender.py:send_request_defer():622] handle sender defer: 9
+2023-06-01 17:16:49,584 INFO    SenderThread:11256 [dir_watcher.py:finish():365] shutting down directory watcher
+2023-06-01 17:16:49,943 INFO    SenderThread:11256 [dir_watcher.py:finish():395] scan: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files
+2023-06-01 17:16:49,944 INFO    SenderThread:11256 [dir_watcher.py:finish():409] scan save: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\conda-environment.yaml conda-environment.yaml
+2023-06-01 17:16:49,944 INFO    SenderThread:11256 [dir_watcher.py:finish():409] scan save: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\config.yaml config.yaml
+2023-06-01 17:16:49,945 INFO    SenderThread:11256 [dir_watcher.py:finish():409] scan save: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\diff.patch diff.patch
+2023-06-01 17:16:49,946 INFO    SenderThread:11256 [dir_watcher.py:finish():409] scan save: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log output.log
+2023-06-01 17:16:49,953 INFO    SenderThread:11256 [dir_watcher.py:finish():409] scan save: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\requirements.txt requirements.txt
+2023-06-01 17:16:49,961 INFO    SenderThread:11256 [dir_watcher.py:finish():409] scan save: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-metadata.json wandb-metadata.json
+2023-06-01 17:16:49,962 INFO    SenderThread:11256 [dir_watcher.py:finish():409] scan save: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json wandb-summary.json
+2023-06-01 17:16:49,977 INFO    SenderThread:11256 [dir_watcher.py:finish():409] scan save: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\code\main.py code\main.py
+2023-06-01 17:16:49,977 INFO    SenderThread:11256 [sender.py:transition_state():626] send defer: 10
+2023-06-01 17:16:49,979 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: defer
+2023-06-01 17:16:49,980 INFO    HandlerThread:11256 [handler.py:handle_request_defer():170] handle defer: 10
+2023-06-01 17:16:49,981 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: defer
+2023-06-01 17:16:49,981 INFO    SenderThread:11256 [sender.py:send_request_defer():622] handle sender defer: 10
+2023-06-01 17:16:49,981 INFO    SenderThread:11256 [file_pusher.py:finish():168] shutting down file pusher
+2023-06-01 17:16:50,255 INFO    wandb-upload_0:11256 [upload_job.py:push():137] Uploaded file C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\config.yaml
+2023-06-01 17:16:50,381 INFO    wandb-upload_1:11256 [upload_job.py:push():137] Uploaded file C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\output.log
+2023-06-01 17:16:50,398 INFO    wandb-upload_3:11256 [upload_job.py:push():137] Uploaded file C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\wandb-summary.json
+2023-06-01 17:16:50,414 INFO    wandb-upload_2:11256 [upload_job.py:push():137] Uploaded file C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\files\requirements.txt
+2023-06-01 17:16:50,626 INFO    Thread-15 (_thread_body):11256 [sender.py:transition_state():626] send defer: 11
+2023-06-01 17:16:50,627 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: defer
+2023-06-01 17:16:50,627 INFO    HandlerThread:11256 [handler.py:handle_request_defer():170] handle defer: 11
+2023-06-01 17:16:50,628 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: defer
+2023-06-01 17:16:50,629 INFO    SenderThread:11256 [sender.py:send_request_defer():622] handle sender defer: 11
+2023-06-01 17:16:50,629 INFO    SenderThread:11256 [file_pusher.py:join():173] waiting for file pusher
+2023-06-01 17:16:50,629 INFO    SenderThread:11256 [sender.py:transition_state():626] send defer: 12
+2023-06-01 17:16:50,630 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: defer
+2023-06-01 17:16:50,630 INFO    HandlerThread:11256 [handler.py:handle_request_defer():170] handle defer: 12
+2023-06-01 17:16:50,631 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: defer
+2023-06-01 17:16:50,631 INFO    SenderThread:11256 [sender.py:send_request_defer():622] handle sender defer: 12
+2023-06-01 17:16:50,880 INFO    SenderThread:11256 [sender.py:transition_state():626] send defer: 13
+2023-06-01 17:16:50,883 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: defer
+2023-06-01 17:16:50,884 INFO    HandlerThread:11256 [handler.py:handle_request_defer():170] handle defer: 13
+2023-06-01 17:16:50,885 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: defer
+2023-06-01 17:16:50,885 INFO    SenderThread:11256 [sender.py:send_request_defer():622] handle sender defer: 13
+2023-06-01 17:16:50,885 INFO    SenderThread:11256 [sender.py:transition_state():626] send defer: 14
+2023-06-01 17:16:50,887 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: defer
+2023-06-01 17:16:50,887 DEBUG   SenderThread:11256 [sender.py:send():375] send: final
+2023-06-01 17:16:50,887 INFO    HandlerThread:11256 [handler.py:handle_request_defer():170] handle defer: 14
+2023-06-01 17:16:50,888 DEBUG   SenderThread:11256 [sender.py:send():375] send: footer
+2023-06-01 17:16:50,888 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: defer
+2023-06-01 17:16:50,889 INFO    SenderThread:11256 [sender.py:send_request_defer():622] handle sender defer: 14
+2023-06-01 17:16:50,891 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: poll_exit
+2023-06-01 17:16:50,891 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: server_info
+2023-06-01 17:16:50,892 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: get_summary
+2023-06-01 17:16:50,892 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: poll_exit
+2023-06-01 17:16:50,893 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: sampled_history
+2023-06-01 17:16:50,893 DEBUG   SenderThread:11256 [sender.py:send_request():402] send_request: server_info
+2023-06-01 17:16:50,944 INFO    MainThread:11256 [wandb_run.py:_footer_history_summary_info():3476] rendering history
+2023-06-01 17:16:50,946 INFO    MainThread:11256 [wandb_run.py:_footer_history_summary_info():3508] rendering summary
+2023-06-01 17:16:50,949 INFO    MainThread:11256 [wandb_run.py:_footer_sync_info():3434] logging synced files
+2023-06-01 17:16:50,952 DEBUG   HandlerThread:11256 [handler.py:handle_request():144] handle_request: shutdown
+2023-06-01 17:16:50,953 INFO    HandlerThread:11256 [handler.py:finish():845] shutting down handler
+2023-06-01 17:16:51,896 INFO    WriterThread:11256 [datastore.py:close():298] close: C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\wandb\run-20230601_170602-7hsuyqvr\run-7hsuyqvr.wandb
+2023-06-01 17:16:51,959 INFO    SenderThread:11256 [sender.py:finish():1550] shutting down sender
+2023-06-01 17:16:51,959 INFO    SenderThread:11256 [file_pusher.py:finish():168] shutting down file pusher
+2023-06-01 17:16:51,959 INFO    SenderThread:11256 [file_pusher.py:join():173] waiting for file pusher

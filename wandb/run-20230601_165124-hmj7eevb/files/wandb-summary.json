@@ -1,1 +1,1 @@
-{"episodic_reward": 600.0, "episodic_length": 100, "connected_users": 1244.0, "global_steps": 67, "_timestamp": 1685653225.172501, "_runtime": 540.7598581314087, "_step": 67}
+{"episodic_reward": 1296.0, "episodic_length": 100, "connected_users": 1946.0, "global_steps": 161, "_timestamp": 1685654180.46865, "_runtime": 1496.0560071468353, "_step": 161, "_wandb": {"runtime": 1504}}
