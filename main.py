@@ -174,9 +174,6 @@ class DQL:
         # Considering a deterministic system where the correleted action are fixed
         # Bruteforcing thorugh all the available option for each UAV agent and check for constraint satisfaction
         max_ind = torch.argsort(torch.sum(shared_q_values, axis=0), descending = True)
-        # print(torch.sum(shared_q_values, axis=0))
-        # print(max_ind)
-        # sys.exit()
         for k in max_ind:
             # Go over all the joint action indices which gives the max sum of Q's -> Descending order
             # Joint action value in form [0, 1, 1, 2, 3] from the joint action index
@@ -187,29 +184,18 @@ class DQL:
             excluded_idx = torch.arange(len(current_complete_action))[np.arange(len(current_complete_action)) != agent_idx]
             # Extracting the indcies where A-i matches which corresponds to the action profile index where all 
             # The value of current complete action matches excpet that of agent_idx
-            # print(agent_idx)
-            # print(UAV_OB[agent_idx].action_profile[:, excluded_idx])          
-            
             Ai_actions = (UAV_OB[agent_idx].action_profile[:, excluded_idx] == current_complete_action[excluded_idx]).all(dim=1).nonzero()
-            print(agent_idx)
-            print(Ai_actions)
-            print(k)
             # Vectorizing the Q-value of all agents
             q_value_mat = shared_q_values[:, k] * torch.ones(NUM_UAV, Ai_actions.shape[0])
-            print(q_value_mat.transpose(0, 1))
-            print(shared_q_values[:, Ai_actions.squeeze()])
-            print(q_value_mat.transpose(0, 1) - shared_q_values[:, Ai_actions.squeeze()])
             sum_contr =  torch.sum(q_value_mat.transpose(0, 1) - shared_q_values[:, Ai_actions.squeeze()], axis=1)
-            print(sum_contr)
             if all(sum_contr >= 0):
                 correlated_action_selected = k
-                print("Solution found")
-                print(correlated_action_selected)
+                # print("Solution found")
+                # print(correlated_action_selected)
                 return correlated_action_selected
         
     def update_probs(self, shared_q_values, agent_idx):
         return self.correlated_equilibrium(shared_q_values, agent_idx)
-
 
     def epsilon_greedy(self, agent_idx, state):
         temp = random.random()
