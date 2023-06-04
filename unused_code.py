@@ -206,3 +206,8 @@
         #     weights = None
             print("Failed to find an optimal solution")
         return weights
+
+
+# 
+# Ai_actions = torch.where(((UAV_OB[agent_idx].action_profile[:, excluded_idx] == excluded_idx).all(dim=1)), 
+            #                          UAV_OB[agent_idx].action_profile)[0]

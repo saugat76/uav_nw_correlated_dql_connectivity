@@ -11,3 +11,89 @@ Total user connected in  0  episode is:  12
 5
 C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\numpy\core\shape_base.py:121: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray.
   ary = asanyarray(ary)
+6
+7
+8
+9
+10
+[0, 0, 0, 2, 0]
+Number of user connected in  10  episode is:  [4 0 0 4 0]
+Total user connected in  10  episode is:  8
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+[0, 0, 0, 3, 0]
+Number of user connected in  20  episode is:  [4 0 0 3 0]
+Total user connected in  20  episode is:  7
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+[0, 0, 1, 0, 0]
+Number of user connected in  30  episode is:  [4 0 3 0 0]
+Total user connected in  30  episode is:  7
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+[0, 0, 1, 0, 1]
+Number of user connected in  40  episode is:  [4 0 3 0 0]
+Total user connected in  40  episode is:  7
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+[0, 0, 1, 2, 1]
+Number of user connected in  50  episode is:  [4 0 3 4 0]
+Total user connected in  50  episode is:  11
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+[0, 0, 1, 2, 2]
+Number of user connected in  60  episode is:  [4 0 3 4 0]
+Total user connected in  60  episode is:  11
+61
+Traceback (most recent call last):
+  File "C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\main.py", line 470, in <module>
+    UAV_OB[k].train(batch_size, dnn_epoch)
+  File "C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\main.py", line 226, in train
+    reward = torch.FloatTensor(np.vstack(minibatch[:,2]))
+  File "<__array_function__ internals>", line 180, in vstack
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\numpy\core\shape_base.py", line 279, in vstack
+    arrs = atleast_2d(*tup)
+  File "<__array_function__ internals>", line 180, in atleast_2d
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\numpy\core\shape_base.py", line 123, in atleast_2d
+    result = ary.reshape(1, 1)
+KeyboardInterrupt

@@ -1,0 +1,1 @@
+{"episodic_reward": 1813.0, "episodic_length": 100, "connected_users": 2459.0, "global_steps": 13, "_timestamp": 1685670086.1392512, "_runtime": 884.3190052509308, "_step": 4469, "loss__0": 964.5658569335938, "loss__1": 1038.9864501953125, "loss__2": 3263.94287109375, "loss__3": 3164.041748046875, "loss__4": 178.61129760742188, "_wandb": {"runtime": 883}}

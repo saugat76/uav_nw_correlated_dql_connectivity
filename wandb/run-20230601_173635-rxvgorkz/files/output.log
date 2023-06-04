@@ -6,3 +6,34 @@ Number of user connected in  0  episode is:  [4 0 4 2 0]
 Total user connected in  0  episode is:  10
 1
 2
+3
+4
+5
+C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\numpy\core\shape_base.py:121: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray.
+  ary = asanyarray(ary)
+6
+7
+8
+9
+10
+[0, 0, 3, 0, 2]
+Number of user connected in  10  episode is:  [4 0 8 0 4]
+Total user connected in  10  episode is:  16
+11
+12
+13
+14
+15
+16
+17
+18
+Traceback (most recent call last):
+  File "C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\main.py", line 470, in <module>
+    UAV_OB[k].train(batch_size, dnn_epoch)
+  File "C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\main.py", line 222, in train
+    minibatch = np.vstack(minibatch)
+  File "<__array_function__ internals>", line 180, in vstack
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\numpy\core\shape_base.py", line 282, in vstack
+    return _nx.concatenate(arrs, 0)
+  File "<__array_function__ internals>", line 180, in concatenate
+KeyboardInterrupt

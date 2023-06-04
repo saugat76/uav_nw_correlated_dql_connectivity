@@ -173,22 +173,40 @@ class DQL:
     def correlated_equilibrium(self, shared_q_values, agent_idx):
         # Considering a deterministic system where the correleted action are fixed
         # Bruteforcing thorugh all the available option for each UAV agent and check for constraint satisfaction
-        for y in range(shared_q_values.size(1)):
-            max_ind = torch.argsort(torch.sum(shared_q_values, axis=0))
-            for k in range(len(max_ind)):
-                current_complete_action = UAV_OB[agent_idx].action_profile[max_ind[k]]
-                current_ind_action = current_complete_action[agent_idx]
-                negate_Ai_actions = (UAV_OB[agent_idx].action_profile[:, agent_idx] == current_ind_action).nonzero()
-                # Vectorizing the q-value of all agents
-                q_value_mat = shared_q_values[:, k] * torch.ones(UAV_OB[agent_idx].action_size ** (NUM_UAV - 1), NUM_UAV)
-                sum_contr =  torch.sum(q_value_mat.transpose(0, 1) - shared_q_values[:, negate_Ai_actions.squeeze()], axis=1)
-                if all(sum_contr >= 0):
-                    correlated_action_selected = k
-                    # print("Solution found")
-                    # print(correlated_action_selected)
-                    return correlated_action_selected
+        max_ind = torch.argsort(torch.sum(shared_q_values, axis=0), descending = True)
+        # print(torch.sum(shared_q_values, axis=0))
+        # print(max_ind)
+        # sys.exit()
+        for k in max_ind:
+            # Go over all the joint action indices which gives the max sum of Q's -> Descending order
+            # Joint action value in form [0, 1, 1, 2, 3] from the joint action index
+            current_complete_action = UAV_OB[agent_idx].action_profile[k, :]
+            # Extracring the action value of the agent_idx from complete action selected
+            current_ind_action = current_complete_action[agent_idx]
+            # Extracting indices of the others except agent_idx
+            excluded_idx = torch.arange(len(current_complete_action))[np.arange(len(current_complete_action)) != agent_idx]
+            # Extracting the indcies where A-i matches which corresponds to the action profile index where all 
+            # The value of current complete action matches excpet that of agent_idx
+            # print(agent_idx)
+            # print(UAV_OB[agent_idx].action_profile[:, excluded_idx])          
+            
+            Ai_actions = (UAV_OB[agent_idx].action_profile[:, excluded_idx] == current_complete_action[excluded_idx]).all(dim=1).nonzero()
+            print(agent_idx)
+            print(Ai_actions)
+            print(k)
+            # Vectorizing the Q-value of all agents
+            q_value_mat = shared_q_values[:, k] * torch.ones(NUM_UAV, Ai_actions.shape[0])
+            print(q_value_mat.transpose(0, 1))
+            print(shared_q_values[:, Ai_actions.squeeze()])
+            print(q_value_mat.transpose(0, 1) - shared_q_values[:, Ai_actions.squeeze()])
+            sum_contr =  torch.sum(q_value_mat.transpose(0, 1) - shared_q_values[:, Ai_actions.squeeze()], axis=1)
+            print(sum_contr)
+            if all(sum_contr >= 0):
+                correlated_action_selected = k
+                print("Solution found")
+                print(correlated_action_selected)
+                return correlated_action_selected
         
-
     def update_probs(self, shared_q_values, agent_idx):
         return self.correlated_equilibrium(shared_q_values, agent_idx)
 
@@ -244,6 +262,11 @@ class DQL:
 
             Q_main = self.main_network(state).gather(1, action).squeeze()
             loss = self.loss_func(target_Q.cpu().detach(), Q_main.cpu())
+
+            # Store the loss information for debugging purposes 
+            self.loss = loss
+
+
             # Intialization of the gradient to zero and computation of the gradient
             self.optimizer.zero_grad()
             loss.backward()
@@ -468,6 +491,8 @@ if __name__ == "__main__":
             for k in range(NUM_UAV):
                 if len(UAV_OB[k].replay_buffer) > batch_size:
                     UAV_OB[k].train(batch_size, dnn_epoch)
+                    wandb.log({f"loss__{k}" : UAV_OB[k].loss})
+
 
         # Update the probabilities for all the agents 
         # for k in range(NUM_UAV):

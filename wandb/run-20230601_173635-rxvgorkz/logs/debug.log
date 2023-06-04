@@ -19,3 +19,10 @@ config: {'exp_name': 'correlated_madql_uav', 'seed': 1, 'torch_deterministic': T
 2023-06-01 17:36:36,071 INFO    MainThread:14732 [wandb_run.py:_on_init():2185] got version response upgrade_message: "wandb version 0.15.3 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
 
 2023-06-01 17:36:36,071 INFO    MainThread:14732 [wandb_init.py:init():782] starting run threads in backend
+2023-06-01 17:36:37,181 INFO    MainThread:14732 [wandb_run.py:_console_start():2157] atexit reg
+2023-06-01 17:36:37,181 INFO    MainThread:14732 [wandb_run.py:_redirect():2012] redirect: SettingsConsole.WRAP_RAW
+2023-06-01 17:36:37,181 INFO    MainThread:14732 [wandb_run.py:_redirect():2077] Wrapping output streams.
+2023-06-01 17:36:37,181 INFO    MainThread:14732 [wandb_run.py:_redirect():2102] Redirects installed.
+2023-06-01 17:36:37,181 INFO    MainThread:14732 [wandb_init.py:init():824] run started, returning control to user process
+2023-06-01 17:36:37,181 INFO    MainThread:14732 [wandb_run.py:_tensorboard_callback():1432] tensorboard callback: runs/correlated_madql_uav__lvl5__5__1__1685655389, True
+2023-06-01 17:52:13,864 WARNING MsgRouterThr:14732 [router.py:message_loop():77] message_loop has been closed

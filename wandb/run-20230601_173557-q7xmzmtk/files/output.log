@@ -19,3 +19,22 @@ C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\numpy\core\shape_base.py:1
 [0, 0, 0, 1, 0]
 Number of user connected in  10  episode is:  [4 0 0 3 0]
 Total user connected in  10  episode is:  7
+11
+12
+13
+14
+15
+16
+17
+Traceback (most recent call last):
+  File "C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\main.py", line 470, in <module>
+    UAV_OB[k].train(batch_size, dnn_epoch)
+  File "C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\main.py", line 225, in train
+    action = torch.LongTensor(np.vstack(minibatch[:,1]))
+  File "<__array_function__ internals>", line 180, in vstack
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\numpy\core\shape_base.py", line 279, in vstack
+    arrs = atleast_2d(*tup)
+  File "<__array_function__ internals>", line 180, in atleast_2d
+  File "C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\numpy\core\shape_base.py", line 121, in atleast_2d
+    ary = asanyarray(ary)
+KeyboardInterrupt

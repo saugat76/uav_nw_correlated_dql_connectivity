@@ -1,0 +1,28 @@
+C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\torch\functional.py:478: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at  C:\cb\pytorch_1000000000000\work\aten\src\ATen\native\TensorShape.cpp:2895.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+0
+[0, 0, 0, 4, 2]
+Number of user connected in  0  episode is:  [4 0 0 4 6]
+Total user connected in  0  episode is:  14
+1
+2
+3
+4
+C:\Users\tripats\.conda\envs\uavenv\lib\site-packages\numpy\core\shape_base.py:121: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray.
+  ary = asanyarray(ary)
+5
+6
+7
+8
+9
+10
+[0, 0, 1, 0, 0]
+Number of user connected in  10  episode is:  [4 0 3 0 0]
+Total user connected in  10  episode is:  7
+11
+Traceback (most recent call last):
+  File "C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\main.py", line 469, in <module>
+    UAV_OB[k].train(batch_size, dnn_epoch)
+  File "C:\Users\tripats\Documents\GitHub\uav_nw_correlated_dql_connectivity\main.py", line 228, in train
+    state = state.to(device = device)
+KeyboardInterrupt
