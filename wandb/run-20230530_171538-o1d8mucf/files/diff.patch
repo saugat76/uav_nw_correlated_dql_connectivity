@@ -1,0 +1,23 @@
+diff --git a/main.py b/main.py
+index 2033f9f..cf8ebe2 100644
+--- a/main.py
++++ b/main.py
+@@ -462,12 +462,14 @@ if __name__ == "__main__":
+                 shared_q_values[k, :]= q_values.detach()
+ 
+             # Get the current seed state // Seed synchronization
+-            seed_state = random.getstate()
+-            np_seed_state = np.random.get_state()
+-            torch_seed_state = torch.seed()
++            # seed_state = random.getstate()
++            # np_seed_state = np.random.get_state()
++            # torch_seed_state = torch.seed()
+             for k in range(NUM_UAV):
+                 # Synchronization of seeding between agents // Synchronize randomness using same seed
+-                seeding_sync(seed_state, np_seed_state, torch_seed_state)
++                # seeding_sync(seed_state, np_seed_state, torch_seed_state)
++
++                # Note: seed synchronization might be creating the problem as it wont allow other agents to explore separately
+ 
+                 weights = UAV_OB[k].correlated_equilibrium(shared_q_values, k)
+                 if weights is not None:
