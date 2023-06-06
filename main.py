@@ -84,7 +84,7 @@ def parse_args():
     return args
 
 # GPU configuration use for faster processing
-device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # DNN modeling
 class NeuralNetwork(nn.Module):
@@ -191,10 +191,7 @@ class DQL:
             sum_contr =  q_value_mat.transpose(0, 1) - shared_q_values[:, Ai_actions.squeeze()]
             if torch.all(sum_contr >= 0):
                 correlated_action_selected = k
-                # print("Solution found")
-                # print(correlated_action_selected)
                 return correlated_action_selected
-        # print("Solution not found")
         return None
 
 
@@ -203,13 +200,8 @@ class DQL:
         # Epsilon decay policy is employed for faster convergence
         # self.epsilon_thres = self.epsilon_min + (self.epsilon - self.epsilon_min) * math.exp(-1*self.steps_done/self.epsilon_decay)
         self.steps_done += 1 
-        choices = np.arange(0, UAV_OB[agent_idx].action_size ** NUM_UAV, dtype=int)
         # Each agents possible state space is same so, prob varible // joining all index
-        if self.correlated_choice != None:
-            choosen_action = self.correlated_choice
-        else:
-            choosen_action = np.random.randint(0, UAV_OB[agent_idx].action_size ** NUM_UAV, dtype=int)
-
+        choosen_action = self.correlated_choice
         # Compare against a epsilon threshold to either explore or exploit
         if temp <= self.epsilon_thres:
             # If less than threshold action choosen randomly
@@ -220,6 +212,7 @@ class DQL:
             # Else (high prob) choosing the action based correlated equilibrium 
             # Action choosen based on correlated probabilities of joint action which is 
             # Calculated using linear programming to find a solution
+            choices = np.arange(0, UAV_OB[agent_idx].action_size ** NUM_UAV, dtype=int)
             actions = choices[choosen_action]
         return actions
        
@@ -418,9 +411,10 @@ if __name__ == "__main__":
                 # Note: seed synchronization might be creating the problem as it wont allow other agents to explore separately
 
                 correlated_actions = UAV_OB[k].correlated_equilibrium(shared_q_values, k)
-                UAV_OB[k].correlated_choice = None
                 if correlated_actions is not None:
                     UAV_OB[k].correlated_choice = correlated_actions
+                else:
+                    UAV_OB[k].correlated_choice = np.random.randint(0, UAV_OB[k].action_size ** NUM_UAV, dtype=int)  
 
                 action = UAV_OB[k].epsilon_greedy(k, state)
                 action_selected_list.append(action)
@@ -433,11 +427,11 @@ if __name__ == "__main__":
                 # print(action_selected)
                 # Trying a shortcut // Since the correlated action selection gives same results for all agents
                 # Instead of computing in loop using the same value to see faster output
-                # drone_act_list = action_selected.tolist()
-                # for k in range(NUM_UAV-1):
-                #     action_selected_list.append(action)
+                drone_act_list = action_selected.tolist()
+                for k in range(NUM_UAV-1):
+                    action_selected_list.append(action)
                 # If removed this need to adjust the store_transition function to action = correlated_action_list[k]
-                # break
+                break
                 ########################################################
                 
                 # Individual action from the correleted joint action
@@ -537,6 +531,8 @@ if __name__ == "__main__":
 
                     if correlated_actions is not None:
                         UAV_OB[k].correlated_choice = correlated_actions
+                    else:
+                        UAV_OB[k].correlated_choice = np.random.randint(0, UAV_OB[k].action_size ** NUM_UAV, dtype=int)
 
                 for k in range(NUM_UAV):
                     action_selected = np.copy(UAV_OB[k].action_profile[UAV_OB[k].correlated_choice])     
@@ -632,6 +628,7 @@ if __name__ == "__main__":
     #############################
     ####   Tensorboard logs  ####
     #############################
+    
     writer.add_figure("images/uav_users_best", fig_4)
     writer.add_text(
             "best outcome", str(best_state))
