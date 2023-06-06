@@ -1,8 +1,0 @@
-Traceback (most recent call last):
-  File "C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\main.py", line 381, in <module>
-    UAV_OB.append(DQL())
-  File "C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\main.py", line 130, in __init__
-    self.main_network = NeuralNetwork(self.state_size, self.combined_action_size).to(device)
-  File "C:\Users\tripats\Documents\GitHub\UAV_SubBand_Correlated_DQL\main.py", line 91, in __init__
-    if args.num_layers == 2:
-AttributeError: 'Namespace' object has no attribute 'num_layers'
