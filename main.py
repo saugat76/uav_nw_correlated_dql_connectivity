@@ -86,7 +86,7 @@ def parse_args():
     return args
 
 # GPU configuration use for faster processing
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 
 # DNN modeling
 class NeuralNetwork(nn.Module):
@@ -135,6 +135,8 @@ class DQL:
         self.gamma = discount_factor
         self.epsilon = epsilon
         self.epsilon_min = epsilon_min
+        # Intialize the epsilon thres as epsilon as well which later changes based on epsilon decay algo
+        self.epsilon_thres = epsilon
         self.epsilon_decay = epsilon_decay
         self.learning_rate = alpha
         self.main_network = NeuralNetwork(self.state_size, self.combined_action_size).to(device)
