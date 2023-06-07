@@ -247,16 +247,32 @@ class UAVenv(gym.Env):
         ################################################################
         ##     Opt.1  Collaborative Goal with Same Global Reward      ##
         ################################################################
-        isDone = np.full((self.NUM_UAV), False)
-        sum_user_assoc = np.sum(user_asso_flag, axis = 1)
-        reward_solo = np.zeros(np.size(sum_user_assoc), dtype="float32")
-        for k in range(self.NUM_UAV):
-            if self.flag[k] != 0:
-                reward_solo[k] = np.copy(sum_user_assoc[k] - 2)
-                # isDone[k] = True
-            else:
-                reward_solo[k] = np.copy(sum_user_assoc[k])
-        reward = np.sum(reward_solo)
+        if self.args.reward_func == 1:
+            isDone = np.full((self.NUM_UAV), False)
+            sum_user_assoc = np.sum(user_asso_flag, axis = 1)
+            reward_solo = np.zeros(np.size(sum_user_assoc), dtype="float32")
+            for k in range(self.NUM_UAV):
+                if self.flag[k] != 0:
+                    reward_solo[k] = np.copy(sum_user_assoc[k] - 2)
+                    isDone[k] = True
+                else:
+                    reward_solo[k] = np.copy(sum_user_assoc[k])
+            reward = np.sum(reward_solo)
+
+        ################################################################
+        ##    Opt.2  Collaborative Goal with Different Global Reward  ##
+        ################################################################
+        if self.args.reward_func == 2:
+            isDone = np.full((self.NUM_UAV), False)
+            sum_user_assoc = np.sum(user_asso_flag, axis = 1)
+            reward_solo = np.zeros(np.size(sum_user_assoc), dtype="float32")
+            for k in range(self.NUM_UAV):
+                if self.flag[k] != 0:
+                    reward_solo[k] = np.copy(sum_user_assoc[k] - 2)
+                    isDone[k] = True
+                else:
+                    reward_solo[k] = np.copy(sum_user_assoc[k])
+            reward = np.copy(reward_solo)
 
         # Return of obs, reward, done, info
         return np.copy(self.state).reshape(1, self.NUM_UAV * 3), reward, isDone, "empty", sum_user_assoc, rb_allocated

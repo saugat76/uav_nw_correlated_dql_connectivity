@@ -78,7 +78,9 @@ def parse_args():
     parser.add_argument("--grid-space", type=int, default=100, help="seperating space for grid")
     parser.add_argument("--uav-dis-th", type=int, default=1000, help="distance value that defines which uav agent share info")
     parser.add_argument("--dist-pri-param", type=float, default=1/5, help="distance penalty priority parameter used in level 3 info exchange")
-    
+    parser.add_argument("--reward-func", type=int, default=1, help="reward func used 1-> global reward across agents, 2-> independent reward")
+
+
     args = parser.parse_args()
 
     return args
@@ -132,7 +134,6 @@ class DQL:
         self.replay_buffer = deque(maxlen = 125000)
         self.gamma = discount_factor
         self.epsilon = epsilon
-        self.epsilon_thres = epsilon        
         self.epsilon_min = epsilon_min
         self.epsilon_decay = epsilon_decay
         self.learning_rate = alpha
@@ -198,7 +199,7 @@ class DQL:
     def epsilon_greedy(self, agent_idx, state):
         temp = random.random()
         # Epsilon decay policy is employed for faster convergence
-        # self.epsilon_thres = self.epsilon_min + (self.epsilon - self.epsilon_min) * math.exp(-1*self.steps_done/self.epsilon_decay)
+        self.epsilon_thres = self.epsilon_min + (self.epsilon - self.epsilon_min) * math.exp(-1*self.steps_done/self.epsilon_decay)
         self.steps_done += 1 
         # Each agents possible state space is same so, prob varible // joining all index
         choosen_action = self.correlated_choice
@@ -461,7 +462,10 @@ if __name__ == "__main__":
                     next_sta = next_state.flatten()
                 action = action_selected_list[k]
                 done_individual = done[k]
-                reward_ind = reward
+                if args.reward_func == 1:
+                    reward_ind = reward
+                elif args.reward_func == 2:
+                    reward_ind = reward[k]
                 UAV_OB[k].store_transition(state, action, reward_ind, next_sta, done_individual)
 
             # Calculation of the total episodic reward of all the UAVs 
@@ -469,7 +473,10 @@ if __name__ == "__main__":
             ##########################
             ####   Custom logs    ####
             ##########################
-            episode_reward[i_episode] += reward
+            if args.reward_func == 1:
+                episode_reward[i_episode] += reward
+            elif args.reward_func == 2:
+                episode_reward[i_episode] += np.sum(reward)
             episode_user_connected[i_episode] += np.sum(temp_data[4])
             user_connected = temp_data[4]
             
