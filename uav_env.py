@@ -254,7 +254,7 @@ class UAVenv(gym.Env):
             for k in range(self.NUM_UAV):
                 if self.flag[k] != 0:
                     reward_solo[k] = np.copy(sum_user_assoc[k] - 2)
-                    isDone[k] = True
+                    # isDone[k] = True
                 else:
                     reward_solo[k] = np.copy(sum_user_assoc[k])
             reward = np.sum(reward_solo)
@@ -269,7 +269,7 @@ class UAVenv(gym.Env):
             for k in range(self.NUM_UAV):
                 if self.flag[k] != 0:
                     reward_solo[k] = np.copy(sum_user_assoc[k] - 2)
-                    isDone[k] = True
+                    # isDone[k] = True
                 else:
                     reward_solo[k] = np.copy(sum_user_assoc[k])
             reward = np.copy(reward_solo)
