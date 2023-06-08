@@ -260,7 +260,7 @@ class UAVenv(gym.Env):
             reward = np.sum(reward_solo)
 
         ################################################################
-        ##    Opt.2  Collaborative Goal with Different Global Reward  ##
+        ##       Opt.2  Collaborative Goal with Different Reward      ##
         ################################################################
         if self.args.reward_func == 2:
             isDone = np.full((self.NUM_UAV), False)
