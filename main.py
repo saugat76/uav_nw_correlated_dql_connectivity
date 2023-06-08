@@ -60,6 +60,8 @@ def parse_args():
     parser.add_argument("--layers", type=int, default=2, help="set the number of layers for the target and main neural network")
     parser.add_argument("--nodes", type=int, default=400, help="set the number of nodes for the target and main neural network layers")
     parser.add_argument("--seed-sync", type=lambda x: bool(strtobool(x)), default=False, help="synchronize the seed value among agents, by default set to False")
+    parser.add_argument("--lstm-layers", type=int, default=2, help="set the number of layers for the lstm layer of target and main neural network")
+    parser.add_argument("--lstm-nodes", type=int, default=64, help="set the number of nodes for the lstm layer of target and main neural network layers")
 
     # Environment specific arguments
     # To be consitent with previous project addition of level 5 and 6
@@ -86,26 +88,30 @@ def parse_args():
     return args
 
 # GPU configuration use for faster processing
-device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # DNN modeling
 class NeuralNetwork(nn.Module):
     # NN is set to have same structure for all lvl of info exchange in this setup
-    def __init__(self, state_size, combined_action_size):
+    def __init__(self, state_size, combined_action_size, action_size):
         super(NeuralNetwork, self).__init__()
         self.state_size = state_size
         self.combined_action_size = combined_action_size
+        self.action_size = action_size
         if args.layers == 2:
+            self.lstm = nn.LSTM(NUM_UAV * self.action_size, args.lstm_nodes, args.lstm_layers)
             self.linear_stack = model = nn.Sequential(
-                nn.Linear(self.state_size, args.nodes),
+                nn.Linear(self.state_size + args.lstm_nodes, args.nodes),
                 nn.ReLU(),
                 nn.Linear(args.nodes, args.nodes),
                 nn.ReLU(),
                 nn.Linear(args.nodes, self.combined_action_size)
             ).to(device=device)
+
         elif args.layers == 3:
+            self.lstm = nn.LSTM(NUM_UAV * self.action_size, args.lstm_nodes, args.lstm_layers)
             self.linear_stack = model = nn.Sequential(
-            nn.Linear(self.state_size, args.nodes),
+            nn.Linear(self.state_size + args.lstm_nodes, args.nodes),
             nn.ReLU(),
             nn.Linear(args.nodes, args.nodes),
             nn.ReLU(),
@@ -114,9 +120,17 @@ class NeuralNetwork(nn.Module):
             nn.Linear(args.nodes, self.combined_action_size)
         ).to(device=device)
 
-    def forward(self, x):
-        x = x.to(device)
-        Q_values = self.linear_stack(x)
+
+    def forward(self, x1, x2):
+        x1 = x1.to(device)
+        x2 = x2.to(device)
+        lstm_out, _ = self.lstm(x2)
+        linear_in = torch.cat((lstm_out.view(-1, args.lstm_nodes).squeeze(), x1), dim=-1)
+        # try:
+        #     linear_in = torch.cat((lstm_out.view(-1, args.lstm_nodes), x1.unsqueeze(0)), dim=-1)
+        # except:
+        #     linear_in = torch.cat((lstm_out.view(-1, args.lstm_nodes), x1), dim=-1)
+        Q_values = self.linear_stack(linear_in)
         return Q_values
 
 class DQL:
@@ -139,16 +153,16 @@ class DQL:
         self.epsilon_thres = epsilon
         self.epsilon_decay = epsilon_decay
         self.learning_rate = alpha
-        self.main_network = NeuralNetwork(self.state_size, self.combined_action_size).to(device)
-        self.target_network = NeuralNetwork(self.state_size, self.combined_action_size).to(device)
+        self.main_network = NeuralNetwork(self.state_size, self.combined_action_size, self.action_size).to(device)
+        self.target_network = NeuralNetwork(self.state_size, self.combined_action_size, self.action_size).to(device)
         self.target_network.load_state_dict(self.main_network.state_dict())
         self.optimizer = torch.optim.Adam(self.main_network.parameters(), lr = self.learning_rate)
         self.loss_func = nn.SmoothL1Loss()      # Huber Loss // Combines MSE and MAE
         self.steps_done = 0
 
     # Storing information of individual UAV information in their respective buffer
-    def store_transition(self, state, action, reward, next_state, done):
-        self.replay_buffer.append((state, action, reward, next_state, done))
+    def store_transition(self, state, action, reward, next_state, done, previous_action, next_action):
+        self.replay_buffer.append((state, action, reward, next_state, done, previous_action, next_action))
 
     #################################################
     ######      Correlated Equilibrium       ########
@@ -222,34 +236,36 @@ class DQL:
 
     # Training of the DNN 
     def train(self,batch_size, dnn_epoch, agent_idx):
+        # In this function state is representing -> Location of UAV + Previous Computed Correlated Action
         for k in range(dnn_epoch):
             minibatch = random.sample(self.replay_buffer, batch_size)
             minibatch = np.vstack(minibatch)
-            minibatch = minibatch.reshape(batch_size,5)
+            minibatch = minibatch.reshape(batch_size,7)
             state = torch.FloatTensor(np.vstack(minibatch[:,0]))
             action = torch.LongTensor(np.vstack(minibatch[:,1]))
             reward = torch.FloatTensor(np.vstack(minibatch[:,2]))
             next_state = torch.FloatTensor(np.vstack(minibatch[:,3]))
             done = torch.Tensor(np.vstack(minibatch[:,4]))
+            previous_action = torch.Tensor(np.vstack(minibatch[:,5]))
+            next_action = torch.Tensor(np.vstack(minibatch[:,6]))
             state = state.to(device = device)
             action = action.to(device = device)
             reward = reward.to(device = device)
             next_state = next_state.to(device = device)
             done = done.to(device = device)
+            previous_action = previous_action.to(device=device)
+            next_action = next_action.to(device=device)
             done_local = (done).any(dim=1).float().to(device)
 
             # Implementation of DQL algorithm 
-            Q_next = self.target_network(next_state).detach()
-            # Correlated actions computation for the next state value 
-            # next_correlated_action = [self.correlated_equilibrium(Q_next[l], agent_idx) for l in range(512)]
+            Q_next = self.target_network(next_state, next_action).detach()
 
             target_Q = reward.squeeze() + self.gamma * Q_next.max(1)[0].view(batch_size, 1).squeeze() * done_local
 
             # Forward 
             # Loss calculation based on loss function
             target_Q = target_Q.float()
-
-            Q_main = self.main_network(state).gather(1, action).squeeze()
+            Q_main = self.main_network(state, previous_action).gather(1, action).squeeze()
             loss = self.loss_func(target_Q.cpu().detach(), Q_main.cpu())
 
             # Store the loss information for debugging purposes 
@@ -371,10 +387,14 @@ if __name__ == "__main__":
         # Get the initial states
         states = u_env.get_state()
         reward = np.zeros(NUM_UAV)
+
+        next_action = torch.zeros(NUM_UAV, UAV_OB[0].action_size)
         
         for t in range(max_epochs):
             drone_act_list = []
             action_selected_list = []
+            previous_action = torch.zeros(NUM_UAV, UAV_OB[0].action_size)
+
             # Update the target network 
             for k in range(NUM_UAV):
                 if t % update_rate == 0:
@@ -396,8 +416,7 @@ if __name__ == "__main__":
                 elif args.info_exchange_lvl == 6:
                     state = states_ten.flatten()
                 state = state.float()
-                state = torch.unsqueeze(torch.FloatTensor(state), 0)
-                q_values = UAV_OB[k].main_network(state)
+                q_values = UAV_OB[k].main_network(state, previous_action.flatten().unsqueeze(0))
                 shared_q_values[k, :]= q_values.detach()
 
             # Get the current seed state // Seed synchronization
@@ -439,6 +458,9 @@ if __name__ == "__main__":
                 
                 # Individual action from the correleted joint action
                 drone_act_list.append(action_selected[k])
+            
+            for k in range(NUM_UAV):
+                next_action[k , drone_act_list[k]] = 1
 
             # Find the global reward for the combined set of actions for the UAV
             # Reward function design for both level 5 and 6 is the same so, we dont pass the argument
@@ -468,7 +490,9 @@ if __name__ == "__main__":
                     reward_ind = reward
                 elif args.reward_func == 2:
                     reward_ind = reward[k]
-                UAV_OB[k].store_transition(state, action, reward_ind, next_sta, done_individual)
+                previous_action_passed = previous_action.flatten()
+                next_action_passed = next_action.flatten()
+                UAV_OB[k].store_transition(state, action, reward_ind, next_sta, done_individual, previous_action_passed, next_action_passed)
 
             # Calculation of the total episodic reward of all the UAVs 
             # Calculation of the total number of connected User for the combination of all UAVs
@@ -486,6 +510,7 @@ if __name__ == "__main__":
             episode_reward_agent = np.add(episode_reward_agent, reward)
 
             states = next_state
+            previous_action = next_action
 
             for k in range(NUM_UAV):
                 if len(UAV_OB[k].replay_buffer) > batch_size:
@@ -525,16 +550,21 @@ if __name__ == "__main__":
             # Get the states
             states = u_env.get_state()
             states_ten = torch.from_numpy(states)
+            reward = np.zeros(NUM_UAV)
+
             for t in range(100):
                 drone_act_list = []
+                action_selected_list = []
+                previous_action = torch.zeros(NUM_UAV, UAV_OB[0].action_size)
+                states_ten = torch.from_numpy(states)
                 for k in range(NUM_UAV):
                     if args.info_exchange_lvl == 5:
-                        state = states[k, :]
+                        state = states_ten[k, :]
                     elif args.info_exchange_lvl == 6:
-                        state = states.flatten()
+                        state = states_ten.flatten()
+                    state = state.float()
                     choices = np.arange(0, UAV_OB[k].action_size, dtype=int)
-                    state = torch.unsqueeze(torch.FloatTensor(state), 0)
-                    q_values = UAV_OB[k].main_network(state)
+                    q_values = UAV_OB[k].main_network(state, previous_action.flatten().unsqueeze(0))
                     shared_q_values[k, :]= q_values.detach()
                     correlated_actions = UAV_OB[k].correlated_equilibrium(shared_q_values, k)
 
@@ -548,6 +578,8 @@ if __name__ == "__main__":
                     drone_act_list.append(action_selected[k])
 
                 temp_data = u_env.step(drone_act_list)
+                for k in range(NUM_UAV):
+                    previous_action[k , drone_act_list[k]] = 1
                 states = u_env.get_state()
                 states_fin = states
                 if best_result < sum(temp_data[4]):
