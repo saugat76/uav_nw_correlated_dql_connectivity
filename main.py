@@ -258,6 +258,8 @@ class DQL:
             done_local = (done).any(dim=1).float().to(device)
 
             # Implementation of DQL algorithm 
+            print(next_action)
+            print(previous_action)
             Q_next = self.target_network(next_state, next_action).detach()
 
             target_Q = reward.squeeze() + self.gamma * Q_next.max(1)[0].view(batch_size, 1).squeeze() * done_local
@@ -388,12 +390,12 @@ if __name__ == "__main__":
         states = u_env.get_state()
         reward = np.zeros(NUM_UAV)
 
+        previous_action = torch.zeros(NUM_UAV, UAV_OB[0].action_size)
         next_action = torch.zeros(NUM_UAV, UAV_OB[0].action_size)
         
         for t in range(max_epochs):
             drone_act_list = []
             action_selected_list = []
-            previous_action = torch.zeros(NUM_UAV, UAV_OB[0].action_size)
 
             # Update the target network 
             for k in range(NUM_UAV):
@@ -551,11 +553,13 @@ if __name__ == "__main__":
             states = u_env.get_state()
             states_ten = torch.from_numpy(states)
             reward = np.zeros(NUM_UAV)
+            previous_action = torch.zeros(NUM_UAV, UAV_OB[0].action_size)
+            next_action = torch.zeros(NUM_UAV, UAV_OB[0].action_size)
 
             for t in range(100):
                 drone_act_list = []
                 action_selected_list = []
-                previous_action = torch.zeros(NUM_UAV, UAV_OB[0].action_size)
+                
                 states_ten = torch.from_numpy(states)
                 for k in range(NUM_UAV):
                     if args.info_exchange_lvl == 5:
