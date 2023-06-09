@@ -258,8 +258,6 @@ class DQL:
             done_local = (done).any(dim=1).float().to(device)
 
             # Implementation of DQL algorithm 
-            print(next_action)
-            print(previous_action)
             Q_next = self.target_network(next_state, next_action).detach()
 
             target_Q = reward.squeeze() + self.gamma * Q_next.max(1)[0].view(batch_size, 1).squeeze() * done_local
@@ -472,8 +470,8 @@ if __name__ == "__main__":
             done = temp_data[2]
             next_state = u_env.get_state()
             # Computation of other condition for done information
-            # If done i.e. any UAV out-of-boundary or next-state == state
-            done = (states_ten == next_state) or done
+            # If done i.e. any UAV out-of-boundary (not implemented this) or next-state == state
+            done = np.logical_or(np.all(states_ten.numpy() == next_state, 1), done)
 
             # Store the transition information
             for k in range(NUM_UAV):
