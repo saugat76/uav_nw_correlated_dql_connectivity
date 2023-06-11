@@ -532,9 +532,11 @@ if __name__ == "__main__":
         writer.add_scalar("charts/episodic_length", t, i_episode)
         writer.add_scalar("charts/connected_users", episode_user_connected[i_episode], i_episode)
         writer.add_scalar("charts/average_episodic_reward", (episode_reward[i_episode] / t) , i_episode)
+        writer.add_scalar("charts/average_connected_users", (episode_user_connected[i_episode] / t) , i_episode)
         if args.wandb_track:
             wandb.log({"episodic_reward": episode_reward[i_episode], "episodic_length": t, "connected_users":episode_user_connected[i_episode], "global_steps": global_step})
             wandb.log({"average_episodic_reward": (episode_reward[i_episode] / t)})
+            wandb.log({"average_episodic_reward": (episode_user_connected[i_episode] / t)})
             # wandb.log({"reward: "+ str(agent): reward[agent] for agent in range(NUM_UAV)})
             # wandb.log({"connected_users: "+ str(agent_l): user_connected[agent_l] for agent_l in range(NUM_UAV)})
         global_step += 1

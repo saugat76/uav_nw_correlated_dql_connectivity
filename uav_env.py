@@ -275,7 +275,7 @@ class UAVenv(gym.Env):
             reward = np.copy(reward_solo)
 
         # Consideration for isDone condition // when all UAVs are set to hover a particular position
-        if action == 4 * np.ones((self.NUM_UAV, 1), dtype=np.int16):
+        if action == np.all(4 * np.ones((self.NUM_UAV, 1), dtype=np.int16)):
             isDone = np.full((self.NUM_UAV), True)
 
         # Return of obs, reward, done, info
