@@ -470,8 +470,8 @@ if __name__ == "__main__":
             done = temp_data[2]
             next_state = u_env.get_state()
             # Computation of other condition for done information
-            # If done i.e. any UAV out-of-boundary (not implemented this) or next-state == state
-            done = np.logical_or(np.all(states_ten.numpy() == next_state, 1), done)
+            # If done i.e. if UAVs are set to hover over a specific location
+            done = done
 
             # Store the transition information
             for k in range(NUM_UAV):
@@ -519,8 +519,8 @@ if __name__ == "__main__":
                         wandb.log({f"loss__{k}" : UAV_OB[k].loss})
             
             # # If all UAVs are done the program_done is True
-            done_program = all(done)
-            if done_program:
+            done_episode = all(done)
+            if done_episode:
                 break
 
 
@@ -531,8 +531,10 @@ if __name__ == "__main__":
         writer.add_scalar("charts/episodic_reward", episode_reward[i_episode], i_episode)
         writer.add_scalar("charts/episodic_length", t, i_episode)
         writer.add_scalar("charts/connected_users", episode_user_connected[i_episode], i_episode)
+        writer.add_scalar("charts/average_episodic_reward", (episode_reward[i_episode] / t) , i_episode)
         if args.wandb_track:
             wandb.log({"episodic_reward": episode_reward[i_episode], "episodic_length": t, "connected_users":episode_user_connected[i_episode], "global_steps": global_step})
+            wandb.log({"average_episodic_reward": (episode_reward[i_episode] / t)})
             # wandb.log({"reward: "+ str(agent): reward[agent] for agent in range(NUM_UAV)})
             # wandb.log({"connected_users: "+ str(agent_l): user_connected[agent_l] for agent_l in range(NUM_UAV)})
         global_step += 1
