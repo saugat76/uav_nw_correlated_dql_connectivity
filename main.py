@@ -447,9 +447,11 @@ if __name__ == "__main__":
             reward = temp_data[1]
             done = temp_data[2]
             next_state = u_env.get_state()
+
+            # This is not optimized for the actual completion of the epsiode
             # Computation of other condition for done information
             # If done i.e. any UAV out-of-boundary or next-state == state
-            done = (states_ten == next_state) or done
+            # done = done
 
             # Store the transition information
             for k in range(NUM_UAV):
