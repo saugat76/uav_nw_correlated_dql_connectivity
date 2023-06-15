@@ -50,7 +50,7 @@ def parse_args():
     parser.add_argument("--max-steps", type=int, default= 100, help="max number of steps/epoch use in every episode")
     parser.add_argument("--learning-rate", type=float, default= 3.5e-4, help="learning rate of the dql alggorithm used by every agent")
     parser.add_argument("--gamma", type=float, default= 0.95, help="discount factor used for the calculation of q-value, can prirotize future reward if kept high")
-    parser.add_argument("--batch-size", type=int, default= 512, help="batch sample size used in a trainning batch")
+    parser.add_argument("--batch-size", type=int, default= 2, help="batch sample size used in a trainning batch")
     parser.add_argument("--epsilon", type=float, default= 0.1, help="epsilon to set the eploration vs exploitation")
     parser.add_argument("--update-rate", type=int, default= 10, help="steps at which the target network updates it's parameter from main network")
     parser.add_argument("--buffer-size", type=int, default=125000, help="size of replay buffer of each individual agent")
@@ -69,7 +69,7 @@ def parse_args():
     parser.add_argument("--num-user", type=int, default=100, help="number of user in defined environment")
     parser.add_argument("--num-uav", type=int, default=5, help="number of uav for the defined environment")
     parser.add_argument("--generate-user-distribution", type=lambda x: bool(strtobool(x)), default=False, help="if true generate a new user distribution, set true if changing number of users")
-    parser.add_argument("--carrier-freq", type=int, default=2, help="set the frequency of the carrier signal in GHz")
+    parser.add_argument("--carrier-freq", type=int, default=512, help="set the frequency of the carrier signal in GHz")
     parser.add_argument("--coverage-xy", type=int, default=1000, help="set the length of target area (square)")
     parser.add_argument("--uav-height", type=int, default=350, help="define the altitude for all uav")
     parser.add_argument("--theta", type=int, default=60, help="angle of coverage for a uav in degree")
@@ -86,7 +86,7 @@ def parse_args():
     return args
 
 # GPU configuration use for faster processing
-device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # DNN modeling
 class NeuralNetwork(nn.Module):
@@ -147,8 +147,8 @@ class DQL:
         self.steps_done = 0
 
     # Storing information of individual UAV information in their respective buffer
-    def store_transition(self, state, action, reward, next_state, done):
-        self.replay_buffer.append((state, action, reward, next_state, done))
+    def store_transition(self, state, action, reward, next_state, done, next_correlated_action):
+        self.replay_buffer.append((state, action, reward, next_state, done, next_correlated_action))
 
     #################################################
     ######      Correlated Equilibrium       ########
@@ -225,25 +225,28 @@ class DQL:
         for k in range(dnn_epoch):
             minibatch = random.sample(self.replay_buffer, batch_size)
             minibatch = np.vstack(minibatch)
-            minibatch = minibatch.reshape(batch_size,5)
+            minibatch = minibatch.reshape(batch_size,6)
             state = torch.FloatTensor(np.vstack(minibatch[:,0]))
             action = torch.LongTensor(np.vstack(minibatch[:,1]))
             reward = torch.FloatTensor(np.vstack(minibatch[:,2]))
             next_state = torch.FloatTensor(np.vstack(minibatch[:,3]))
             done = torch.Tensor(np.vstack(minibatch[:,4]))
+            next_correlated_action = torch.Tensor(np.vstack(minibatch[:,5]))
             state = state.to(device = device)
             action = action.to(device = device)
             reward = reward.to(device = device)
             next_state = next_state.to(device = device)
             done = done.to(device = device)
             done_local = (done).any(dim=1).float().to(device)
+            next_correlated_action = next_correlated_action.to(device=device)
+            next_correlated_action = next_correlated_action.to(torch.long).squeeze().cpu().numpy()
 
             # Implementation of DQL algorithm 
-            Q_next = self.target_network(next_state).detach()
-            # Correlated actions computation for the next state value 
-            # next_correlated_action = [self.correlated_equilibrium(Q_next[l], agent_idx) for l in range(512)]
+            Q_next = self.target_network(next_state).detach().squeeze()
+            index_local = np.arange(batch_size)
+            Q_next_sel = Q_next[index_local, next_correlated_action[index_local]]
 
-            target_Q = reward.squeeze() + self.gamma * Q_next.max(1)[0].view(batch_size, 1).squeeze() * done_local
+            target_Q = reward.squeeze() + self.gamma * Q_next_sel.view(batch_size, 1).squeeze() * done_local
 
             # Forward 
             # Loss calculation based on loss function
@@ -448,6 +451,36 @@ if __name__ == "__main__":
             done = temp_data[2]
             next_state = u_env.get_state()
 
+            ############################################################
+            ### Computation of correlated equilibrium for next state ###
+            ############################################################
+            # Used during the training // corresponding action for target Q value
+            # Intialization of next shared_q_value variable 
+            next_shared_q_values_local = torch.zeros(NUM_UAV, UAV_OB[1].combined_action_size)
+            next_states_ten_local = torch.from_numpy(next_state)
+            shared_state_local = next_states_ten_local.numpy().flatten()
+            next_state_ten = torch.FloatTensor(next_state)
+            # To simplify is programming calculating once and sharing among UAVs
+            # Sharing of the Q-values
+            for k in range(NUM_UAV):
+                if args.info_exchange_lvl == 5:
+                    next_state_local = next_states_ten_local[k, :]
+                elif args.info_exchange_lvl == 6:
+                    next_state_local = next_states_ten_local.flatten()
+                next_state_local = next_state_local.float()
+                next_state_local = torch.unsqueeze(torch.FloatTensor(next_state_local), 0)
+                next_q_values_local = UAV_OB[k].main_network(state)
+                next_shared_q_values_local[k, :]= next_q_values_local.detach()
+
+            ## For simplicity of program computing correlated equilibrium of next state only once
+            next_correlated_action = UAV_OB[k].correlated_equilibrium(next_shared_q_values_local, 0)
+            if next_correlated_action is not None:
+                next_correlated_choice = next_correlated_action
+                next_correlated_choice = next_correlated_choice.cpu()
+            else:
+                next_correlated_choice = torch.randint(0, UAV_OB[k].action_size ** NUM_UAV, (1,), dtype =torch.int16, device="cpu")
+                
+
             # This is not optimized for the actual completion of the epsiode
             # Computation of other condition for done information
             # If done i.e. any UAV out-of-boundary or next-state == state
@@ -470,7 +503,7 @@ if __name__ == "__main__":
                     reward_ind = reward
                 elif args.reward_func == 2:
                     reward_ind = reward[k]
-                UAV_OB[k].store_transition(state, action, reward_ind, next_sta, done_individual)
+                UAV_OB[k].store_transition(state, action, reward_ind, next_sta, done_individual, next_correlated_choice)
 
             # Calculation of the total episodic reward of all the UAVs 
             # Calculation of the total number of connected User for the combination of all UAVs
