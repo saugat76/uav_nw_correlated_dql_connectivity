@@ -35,7 +35,7 @@ os.chdir = ("")
 def parse_args():
     parser = argparse.ArgumentParser()
     # Arguments for the experiments name / run / setup and Weights and Biases
-    parser.add_argument("--exp-name", type=str, default="correlated_madql_uav", help="name of this experiment")
+    parser.add_argument("--exp-name", type=str, default="correlated_madql_uav_complex_cont", help="name of this experiment")
     parser.add_argument("--seed", type=int, default=1, help="seed of experiment to ensure reproducibility")
     parser.add_argument("--torch-deterministic", type= lambda x:bool(strtobool(x)), default=True, nargs="?", const=True, help="if toggeled, 'torch-backends.cudnn.deterministic=False'")
     parser.add_argument("--cuda", type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True, help="if toggled, cuda will be enabled by default")
@@ -79,6 +79,8 @@ def parse_args():
     parser.add_argument("--uav-dis-th", type=int, default=1000, help="distance value that defines which uav agent share info")
     parser.add_argument("--dist-pri-param", type=float, default=1/5, help="distance penalty priority parameter used in level 3 info exchange")
     parser.add_argument("--reward-func", type=int, default=1, help="reward func used 1-> global reward across agents, 2-> independent reward")
+    parser.add_argument("--coverage-threshold", type=int, default=75, help="if coverage threshold not satisfied, penalize reward, in percentage")
+    parser.add_argument("--coverage-penalty", type=int, default=5, help="penalty value if threshold is not satisfied")
 
 
     args = parser.parse_args()
@@ -86,7 +88,7 @@ def parse_args():
     return args
 
 # GPU configuration use for faster processing
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 
 # DNN modeling
 class NeuralNetwork(nn.Module):
