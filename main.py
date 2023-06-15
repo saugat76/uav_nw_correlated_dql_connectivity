@@ -50,7 +50,7 @@ def parse_args():
     parser.add_argument("--max-steps", type=int, default= 100, help="max number of steps/epoch use in every episode")
     parser.add_argument("--learning-rate", type=float, default= 3.5e-4, help="learning rate of the dql alggorithm used by every agent")
     parser.add_argument("--gamma", type=float, default= 0.95, help="discount factor used for the calculation of q-value, can prirotize future reward if kept high")
-    parser.add_argument("--batch-size", type=int, default= 2, help="batch sample size used in a trainning batch")
+    parser.add_argument("--batch-size", type=int, default= 512, help="batch sample size used in a trainning batch")
     parser.add_argument("--epsilon", type=float, default= 0.1, help="epsilon to set the eploration vs exploitation")
     parser.add_argument("--update-rate", type=int, default= 10, help="steps at which the target network updates it's parameter from main network")
     parser.add_argument("--buffer-size", type=int, default=125000, help="size of replay buffer of each individual agent")
@@ -63,13 +63,13 @@ def parse_args():
 
     # Environment specific arguments
     # To be consitent with previous project addition of level 5 and 6
-    parser.add_argument("--info-exchange-lvl", type=int, default=5, help="information exchange level between UAVs: 5 -> individual partial q-values, 6 -> q-values and state") 
+    parser.add_argument("--info-exchange-lvl", type=int, default=6, help="information exchange level between UAVs: 5 -> individual partial q-values, 6 -> q-values and state") 
      
     # Arguments for used inside the wireless UAV based enviornment  
     parser.add_argument("--num-user", type=int, default=100, help="number of user in defined environment")
     parser.add_argument("--num-uav", type=int, default=5, help="number of uav for the defined environment")
     parser.add_argument("--generate-user-distribution", type=lambda x: bool(strtobool(x)), default=False, help="if true generate a new user distribution, set true if changing number of users")
-    parser.add_argument("--carrier-freq", type=int, default=512, help="set the frequency of the carrier signal in GHz")
+    parser.add_argument("--carrier-freq", type=int, default=2, help="set the frequency of the carrier signal in GHz")
     parser.add_argument("--coverage-xy", type=int, default=1000, help="set the length of target area (square)")
     parser.add_argument("--uav-height", type=int, default=350, help="define the altitude for all uav")
     parser.add_argument("--theta", type=int, default=60, help="angle of coverage for a uav in degree")
