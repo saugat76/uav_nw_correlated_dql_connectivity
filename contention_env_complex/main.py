@@ -421,10 +421,8 @@ if __name__ == "__main__":
                 correlated_actions = UAV_OB[k].correlated_equilibrium(shared_q_values, k)
                 if correlated_actions is not None:
                     UAV_OB[k].correlated_choice = correlated_actions
-                    print("solution found")
                 else:
                     UAV_OB[k].correlated_choice = np.random.randint(0, UAV_OB[k].action_size ** NUM_UAV, dtype=int)  
-                    print("no solution found")
                 action = UAV_OB[k].epsilon_greedy(k, state)
                 action_selected_list.append(action)
                 # Action of the individual agent from the correlated action list
@@ -436,11 +434,12 @@ if __name__ == "__main__":
                 # print(action_selected)
                 # Trying a shortcut // Since the correlated action selection gives same results for all agents
                 # Instead of computing in loop using the same value to see faster output
-                # drone_act_list = action_selected.tolist()
-                # for k in range(NUM_UAV-1):
-                #     action_selected_list.append(action)
+                # There is another section before store _transition function which also needs to be commented if we want to remove this 
+                drone_act_list = action_selected.tolist()
+                for k in range(NUM_UAV-1):
+                    action_selected_list.append(action)
                 # # If removed this need to adjust the store_transition function to action = correlated_action_list[k]
-                # break
+                break
                 ########################################################
                 
                 # Individual action from the correleted joint action
@@ -475,13 +474,17 @@ if __name__ == "__main__":
                 next_q_values_local = UAV_OB[k].main_network(state)
                 next_shared_q_values_local[k, :]= next_q_values_local.detach()
 
+            #########################################################
             ## For simplicity of program computing correlated equilibrium of next state only once
+            # Only one equilibria calculation // Can change if want a actually full distributed system
             next_correlated_action = UAV_OB[k].correlated_equilibrium(next_shared_q_values_local, 0)
             if next_correlated_action is not None:
                 next_correlated_choice = next_correlated_action
                 next_correlated_choice = next_correlated_choice.cpu()
             else:
                 next_correlated_choice = torch.randint(0, UAV_OB[k].action_size ** NUM_UAV, (1,), dtype =torch.int16, device="cpu")
+            #########################################################
+
                 
 
             # This is not optimized for the actual completion of the epsiode
@@ -532,9 +535,9 @@ if __name__ == "__main__":
                         wandb.log({f"loss__{k}" : UAV_OB[k].loss})
 
             # Keeping track of covered users every time step to ensure the hard coded value is satisfied
-            writer.add_scaler("chart/connected_users_per_timestep", temp_data[6], (i_episode * max_epochs + t))
+            writer.add_scalar("chart/covered_users_per_timestep", temp_data[6], (i_episode * max_epochs + t))
             if args.wandb_track:
-                wandb.log({"connected_users_per_timestep": temp_data[6], "timestep": (i_episode * max_epochs + t) })
+                wandb.log({"covererd_users_per_timestep": temp_data[6], "timestep": (i_episode * max_epochs + t) })
             
             # # If all UAVs are done the program_done is True
             done_program = all(done)
@@ -602,11 +605,11 @@ if __name__ == "__main__":
             if not os.path.exists(custom_dir):
                 os.makedirs(custom_dir)
                 
-            u_env.render(ax1)
+            # u_env.render(ax1)
             ##########################
             ####   Custom logs    ####
             ##########################
-            figure = plt.title("Simulation")
+            # figure = plt.title("Simulation")
             # plt.savefig(custom_dir + f'\{i_episode}__{t}.png')
 
             #############################
