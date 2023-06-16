@@ -80,7 +80,7 @@ def parse_args():
     parser.add_argument("--dist-pri-param", type=float, default=1/5, help="distance penalty priority parameter used in level 3 info exchange")
     parser.add_argument("--reward-func", type=int, default=1, help="reward func used 1-> global reward across agents, 2-> independent reward")
     parser.add_argument("--coverage-threshold", type=int, default=75, help="if coverage threshold not satisfied, penalize reward, in percentage")
-    parser.add_argument("--coverage-penalty", type=int, default=5, help="penalty value if threshold is not satisfied")
+    parser.add_argument("--coverage-penalty", type=int, default=10, help="penalty value if threshold is not satisfied")
 
 
     args = parser.parse_args()
@@ -436,11 +436,11 @@ if __name__ == "__main__":
                 # print(action_selected)
                 # Trying a shortcut // Since the correlated action selection gives same results for all agents
                 # Instead of computing in loop using the same value to see faster output
-                drone_act_list = action_selected.tolist()
-                for k in range(NUM_UAV-1):
-                    action_selected_list.append(action)
-                # If removed this need to adjust the store_transition function to action = correlated_action_list[k]
-                break
+                # drone_act_list = action_selected.tolist()
+                # for k in range(NUM_UAV-1):
+                #     action_selected_list.append(action)
+                # # If removed this need to adjust the store_transition function to action = correlated_action_list[k]
+                # break
                 ########################################################
                 
                 # Individual action from the correleted joint action
@@ -530,6 +530,11 @@ if __name__ == "__main__":
                     UAV_OB[k].train(batch_size, dnn_epoch, k)
                     if args.wandb_track:
                         wandb.log({f"loss__{k}" : UAV_OB[k].loss})
+
+            # Keeping track of covered users every time step to ensure the hard coded value is satisfied
+            writer.add_scaler("chart/connected_users_per_timestep", temp_data[6], (i_episode * max_epochs + t))
+            if args.wandb_track:
+                wandb.log({"connected_users_per_timestep": temp_data[6], "timestep": (i_episode * max_epochs + t) })
             
             # # If all UAVs are done the program_done is True
             done_program = all(done)
