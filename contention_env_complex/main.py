@@ -421,9 +421,10 @@ if __name__ == "__main__":
                 correlated_actions = UAV_OB[k].correlated_equilibrium(shared_q_values, k)
                 if correlated_actions is not None:
                     UAV_OB[k].correlated_choice = correlated_actions
+                    print("solution found")
                 else:
                     UAV_OB[k].correlated_choice = np.random.randint(0, UAV_OB[k].action_size ** NUM_UAV, dtype=int)  
-
+                    print("no solution found")
                 action = UAV_OB[k].epsilon_greedy(k, state)
                 action_selected_list.append(action)
                 # Action of the individual agent from the correlated action list
