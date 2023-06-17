@@ -596,11 +596,11 @@ if __name__ == "__main__":
             if not os.path.exists(custom_dir):
                 os.makedirs(custom_dir)
                 
-            u_env.render(ax1)
+            # u_env.render(ax1)
             ##########################
             ####   Custom logs    ####
             ##########################
-            figure = plt.title("Simulation")
+            # figure = plt.title("Simulation")
             # plt.savefig(custom_dir + f'\{i_episode}__{t}.png')
 
             #############################
