@@ -237,6 +237,8 @@ class UAVenv(gym.Env):
         #####################################################################################
         ##     Opt.1  Collaborative Goal with Same Global Reward With Individual Penalty   ##
         #####################################################################################
+        # It doesnot make sense in contetion env where each agent is trying to do it's own thing 
+        # So ommiting this for the contention enviornements
         if self.args.reward_func == 1:
             isDone = np.full((self.NUM_UAV), False)
             sum_user_assoc = np.sum(user_asso_flag, axis = 1)
@@ -247,7 +249,7 @@ class UAVenv(gym.Env):
                     # isDone[k] = True
                 else:
                     reward_solo[k] = np.copy(sum_user_assoc[k])
-                if total_covered_users <= self.args.coverage_threshold:
+                if ((total_covered_users/self.NUM_USER)*100) <= self.args.coverage_threshold:
                     reward_solo[k] = np.copy(reward_solo[k] - self.args.coverage_penalty)
             reward = np.sum(reward_solo)
 
@@ -264,12 +266,12 @@ class UAVenv(gym.Env):
                     # isDone[k] = True
                 else:
                     reward_solo[k] = np.copy(sum_user_assoc[k])
-                if total_covered_users <= self.args.coverage_threshold:
+                if ((total_covered_users/self.NUM_USER)*100) <= self.args.coverage_threshold:
                     reward_solo[k] = np.copy(reward_solo[k] - self.args.coverage_penalty)
             reward = np.copy(reward_solo)
 
         # Return of obs, reward, done, info
-        return np.copy(self.state).reshape(1, self.NUM_UAV * 3), reward, isDone, "empty", sum_user_assoc, rb_allocated
+        return np.copy(self.state).reshape(1, self.NUM_UAV * 3), reward, isDone, "empty", sum_user_assoc, rb_allocated, total_covered_users
 
 
     def render(self, ax, mode='human', close=False):

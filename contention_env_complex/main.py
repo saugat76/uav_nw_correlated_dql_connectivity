@@ -80,7 +80,7 @@ def parse_args():
     parser.add_argument("--dist-pri-param", type=float, default=1/5, help="distance penalty priority parameter used in level 3 info exchange")
     parser.add_argument("--reward-func", type=int, default=1, help="reward func used 1-> global reward across agents, 2-> independent reward")
     parser.add_argument("--coverage-threshold", type=int, default=75, help="if coverage threshold not satisfied, penalize reward, in percentage")
-    parser.add_argument("--coverage-penalty", type=int, default=5, help="penalty value if threshold is not satisfied")
+    parser.add_argument("--coverage-penalty", type=int, default=10, help="penalty value if threshold is not satisfied")
 
 
     args = parser.parse_args()
@@ -175,26 +175,28 @@ class DQL:
     # Joint action are indexed in the order: [0,0,0,0,0], [0,0,0,0,1],... [1,0,0,0,0]...[4,4,4,4,4]
     # Where, the indexes of joint actions of the joint action represents the agents index
 
-    def correlated_equilibrium(self, shared_q_values, agent_idx):
+    def correlated_equilibrium(self, shared_q_values):
         # Considering a deterministic system where the correleted action are fixed
         # Bruteforcing thorugh all the available option for each UAV agent and check for constraint satisfaction4
-        shared_q_values = shared_q_values.to(device=device)
-        max_ind = torch.argsort(torch.sum(shared_q_values, axis=0), descending = True).to(device=device)
+        shared_q_values_np = shared_q_values.cpu().squeeze().numpy()
+        max_ind = np.argsort(-np.sum(shared_q_values.cpu().numpy(), axis=0))
+        action_profile_local  = UAV_OB[0].action_profile.squeeze().cpu().numpy()
         for k in max_ind:
+            Q_Ai = np.zeros((NUM_UAV, UAV_OB[0].action_size))
             # Go over all the joint action indices which gives the max sum of Q's -> Descending order
             # Joint action value in form [0, 1, 1, 2, 3] from the joint action index
-            current_complete_action = UAV_OB[agent_idx].action_profile[k, :]
-            # Extracring the action value of the agent_idx from complete action selected
-            current_ind_action = current_complete_action[agent_idx]
+            current_complete_action = action_profile_local[k, :]
             # Extracting indices of the others except agent_idx
-            excluded_idx = torch.arange(len(current_complete_action))[np.arange(len(current_complete_action)) != agent_idx]
-            # Extracting the indcies where A-i matches which corresponds to the action profile index where all 
-            # The value of current complete action matches excpet that of agent_idx
-            Ai_actions = (UAV_OB[agent_idx].action_profile[:, excluded_idx] == current_complete_action[excluded_idx]).all(dim=1).nonzero().to(device=device)
-            # Vectorizing the Q-value of all agents
-            q_value_mat = shared_q_values[:, k] * torch.ones(NUM_UAV, Ai_actions.shape[0]).to(device=device)
-            sum_contr =  q_value_mat.transpose(0, 1) - shared_q_values[:, Ai_actions.squeeze()]
-            if torch.all(sum_contr >= 0):
+            for agent_idx in range(NUM_UAV):
+                excluded_idx = np.arange(len(current_complete_action))[np.arange(len(current_complete_action)) != agent_idx]
+                # Extracting the indcies where A-i matches which corresponds to the action profile index where all 
+                # The value of current complete action matches excpet that of agent_idx
+                Ai_= np.where(np.all(action_profile_local[:, excluded_idx] == current_complete_action[excluded_idx], 1))[0]
+                Q_Ai[agent_idx, :] = shared_q_values_np[agent_idx, :][Ai_.astype(int)]
+            # Vectorizing the Q-value of of a single agent
+            q_val_mat = shared_q_values_np[:, k] * np.ones((NUM_UAV, Ai_.shape[0]))
+            diff_Q = q_val_mat.transpose() - Q_Ai
+            if np.all(diff_Q >= 0):
                 correlated_action_selected = k
                 return correlated_action_selected
         return None
@@ -418,13 +420,13 @@ if __name__ == "__main__":
                     seeding_sync(seed_state, np_seed_state, torch_seed_state)
                 # Note: seed synchronization might be creating the problem as it wont allow other agents to explore separately
 
-                correlated_actions = UAV_OB[k].correlated_equilibrium(shared_q_values, k)
+                correlated_actions = UAV_OB[k].correlated_equilibrium(shared_q_values)
                 if correlated_actions is not None:
                     UAV_OB[k].correlated_choice = correlated_actions
                 else:
                     UAV_OB[k].correlated_choice = np.random.randint(0, UAV_OB[k].action_size ** NUM_UAV, dtype=int)  
-
                 action = UAV_OB[k].epsilon_greedy(k, state)
+
                 action_selected_list.append(action)
                 # Action of the individual agent from the correlated action list
                 # Correlated joint action // computed by individual agent
@@ -435,10 +437,11 @@ if __name__ == "__main__":
                 # print(action_selected)
                 # Trying a shortcut // Since the correlated action selection gives same results for all agents
                 # Instead of computing in loop using the same value to see faster output
+                # There is another section before store _transition function which also needs to be commented if we want to remove this 
                 drone_act_list = action_selected.tolist()
                 for k in range(NUM_UAV-1):
                     action_selected_list.append(action)
-                # If removed this need to adjust the store_transition function to action = correlated_action_list[k]
+                # # If removed this need to adjust the store_transition function to action = correlated_action_list[k]
                 break
                 ########################################################
                 
@@ -474,13 +477,17 @@ if __name__ == "__main__":
                 next_q_values_local = UAV_OB[k].main_network(state)
                 next_shared_q_values_local[k, :]= next_q_values_local.detach()
 
+            #########################################################
             ## For simplicity of program computing correlated equilibrium of next state only once
-            next_correlated_action = UAV_OB[k].correlated_equilibrium(next_shared_q_values_local, 0)
+            # Only one equilibria calculation // Can change if want a actually full distributed system
+            next_correlated_action = UAV_OB[k].correlated_equilibrium(next_shared_q_values_local)
             if next_correlated_action is not None:
                 next_correlated_choice = next_correlated_action
-                next_correlated_choice = next_correlated_choice.cpu()
+                next_correlated_choice = next_correlated_choice
             else:
-                next_correlated_choice = torch.randint(0, UAV_OB[k].action_size ** NUM_UAV, (1,), dtype =torch.int16, device="cpu")
+                next_correlated_choice = np.random.randint(0, UAV_OB[k].action_size ** NUM_UAV, (1,), dtype =np.int16)
+            #########################################################
+
                 
 
             # This is not optimized for the actual completion of the epsiode
@@ -529,6 +536,11 @@ if __name__ == "__main__":
                     UAV_OB[k].train(batch_size, dnn_epoch, k)
                     if args.wandb_track:
                         wandb.log({f"loss__{k}" : UAV_OB[k].loss})
+
+            # Keeping track of covered users every time step to ensure the hard coded value is satisfied
+            writer.add_scalar("chart/covered_users_per_timestep", temp_data[6], (i_episode * max_epochs + t))
+            if args.wandb_track:
+                wandb.log({"covererd_users_per_timestep": temp_data[6], "timestep": (i_episode * max_epochs + t) })
             
             # # If all UAVs are done the program_done is True
             done_program = all(done)
@@ -573,7 +585,7 @@ if __name__ == "__main__":
                     state = torch.unsqueeze(torch.FloatTensor(state), 0)
                     q_values = UAV_OB[k].main_network(state)
                     shared_q_values[k, :]= q_values.detach()
-                    correlated_actions = UAV_OB[k].correlated_equilibrium(shared_q_values, k)
+                    correlated_actions = UAV_OB[k].correlated_equilibrium(shared_q_values)
 
                     if correlated_actions is not None:
                         UAV_OB[k].correlated_choice = correlated_actions
