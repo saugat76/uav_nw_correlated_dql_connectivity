@@ -239,3 +239,71 @@ def correlated_equilibrium(self, shared_q_values, agent_idx):
             # print("Solution found")
             # print(correlated_action_selected)
             return correlated_action_selected
+        
+
+
+
+
+
+
+ def generate_add_constraint(NUM_UAV, shared_q_values, prob_weight):
+        add_constraint = []
+        temp_cat = torch.zeros(UAV_OB[0].action_size*NUM_UAV, UAV_OB[0].action_size ** NUM_UAV)
+        for v in range(NUM_UAV):
+            temp_cumulative = 0
+            Q_ind = shared_q_values[v, :].reshape(UAV_OB[v].action_size, (UAV_OB[v].action_size)**(NUM_UAV-1))
+            for l in range(Q_ind.size(1)):
+                temp_compute = torch.zeros((UAV_OB[v].action_size, UAV_OB[v].action_size))
+                for n in range(Q_ind.size(0)):
+                    for m in range(Q_ind.size(0)):
+                        if n != m:
+                            temp_compute[m, n] = Q_ind[n, l] - Q_ind[m, l]
+                temp_cat[(v * UAV_OB[v].action_size): (v+1) * UAV_OB[v].action_size, l * UAV_OB[v].action_size:(l+1) * UAV_OB[v].action_size] = temp_compute
+        temp_cumulative = (cvxpy.reshape(prob_weight, (1, NUM_UAV * UAV_OB[0].action_size)) @ torch.ones(temp_cat.shape)) @ temp_cat.transpose(0, 1)
+        temp_cumulative = cvxpy.reshape(temp_cumulative, (NUM_UAV, UAV_OB[0].action_size))
+        add_constraint = cvxpy.sum(temp_cumulative, 1) >= 0
+        return [add_constraint]
+
+    def correlated_equilibrium(self, shared_q_values, agent_idx):
+        # Joint action size = number of agents ^ action size // for a state 
+        # Optimizing the joint action so setting as a variable for CE optimization 
+        prob_weight = Variable((NUM_UAV ** UAV_OB[0].action_size), pos = True)
+
+        # Collect Q values for the corresponding states of each individual agents
+        q_complete = shared_q_values
+
+        # Objective function
+        object_vec = cvxpy.transpose(q_complete)
+        object_func = Maximize(sum(object_vec @ prob_weight))
+
+        # Constraint 1: Sum of the Probabilities should be equal to 1 // should follow for all agents
+        sum_func_constr = sum(prob_weight) == 1 
+        
+        # Constraint 2: Each probability value should be grater than 1 // should follow for all agents
+        prob_constr_1 = all(prob_weight) >= 0
+        prob_constr_2 = all(prob_weight) <= 1
+
+        # Constraint 3: Total function should be less than or equal to 0
+        add_constraint = self.generate_add_constraint(NUM_UAV, shared_q_values, prob_weight)
+        total_func_constr = add_constraint
+
+        # Define the problem with constraints
+        complete_constraint = sum_func_constr + [prob_constr_1, prob_constr_2] + total_func_constr
+        opt_problem = Problem(object_func, complete_constraint)
+
+        # Solve the optimization problem using linear programming
+        # try:
+        opt_problem.solve()
+        # print(opt_problem.status)
+        if opt_problem.status == "optimal":
+            print("Found solution")
+            weights = prob_weight.value
+            print(weights)
+            print('Max Weight:', np.max(weights))
+            print("Best Joint Action:", np.argmax(weights))
+        else:
+            weights = None
+            print("Failed to find an optimal solution")
+        return weights
+
+
