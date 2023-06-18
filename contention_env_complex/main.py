@@ -532,7 +532,7 @@ if __name__ == "__main__":
             states = next_state
 
             for k in range(NUM_UAV):
-                if len(UAV_OB[k].replay_buffer) > batch_size:
+                if len(UAV_OB[k].replay_buffer) > batch_size and (i_episode * max_epochs + t)%batch_size == 0:
                     UAV_OB[k].train(batch_size, dnn_epoch, k)
                     if args.wandb_track:
                         wandb.log({f"loss__{k}" : UAV_OB[k].loss})
