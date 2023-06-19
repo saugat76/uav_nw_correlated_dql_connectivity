@@ -307,3 +307,9 @@ def correlated_equilibrium(self, shared_q_values, agent_idx):
         return weights
 
 
+
+
+
+for k in range(UAV_OB[v].combined_action_size):
+                excluded_idx_ar = action_idx_arranged[action_profile_local[:, v] != action_profile_local[k, v]]
+                q_excluded.append(q_ind[excluded_idx_ar[k]])
