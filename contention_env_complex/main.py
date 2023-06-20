@@ -201,7 +201,6 @@ class DQL:
     #             return correlated_action_selected
     #     return None
 
-        
     def generate_add_constraint(self, NUM_UAV, shared_q_values, prob_weight):
         add_constraint = []
         shared_q_values_np = shared_q_values.cpu().squeeze().numpy()
