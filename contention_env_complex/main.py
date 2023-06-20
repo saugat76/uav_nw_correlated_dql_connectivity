@@ -88,7 +88,7 @@ def parse_args():
     return args
 
 # GPU configuration use for faster processing
-device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # DNN modeling
 class NeuralNetwork(nn.Module):
@@ -200,28 +200,6 @@ class DQL:
     #             correlated_action_selected = k
     #             return correlated_action_selected
     #     return None
-    
-    # def generate_add_constraint(self, NUM_UAV, shared_q_values, prob_weight):
-    #     add_constraint = []
-    #     shared_q_values_np = shared_q_values.cpu().squeeze().numpy()
-    #     action_profile_local  = UAV_OB[0].action_profile.squeeze().cpu().numpy()
-    #     combined_action_idx_local = np.arange(UAV_OB[0].combined_action_size)
-    #     ind_action_space_local = np.arange(UAV_OB[0].action_size)
-    #     for v in range(NUM_UAV):
-    #         temp_cumulative = 0
-    #         q_ind = shared_q_values_np[v, :]
-    #         # q_excluded = np.zeros((UAV_OB[v].combined_action_size, 5))
-    #         for k in range(UAV_OB[0].combined_action_size):
-    #             excluded_idxs = ind_action_space_local[ind_action_space_local != v]
-    #             current_complete_action = action_profile_local[k]
-    #             excluded_idx_ar = combined_action_idx_local[np.all(action_profile_local[:, excluded_idxs] == 
-    #                                                                current_complete_action[excluded_idxs], 1)]
-    #             q_excluded = q_ind[excluded_idx_ar]
-    #             Q_neg = np.array([q_ind]*UAV_OB[v].action_size).transpose() - q_excluded
-    #             temp_cumulative = cvxpy.sum(prob_weight[k] * Q_neg)
-
-    #         add_constraint.append(temp_cumulative >= 0)
-    #     return add_constraint
 
         
     def generate_add_constraint(self, NUM_UAV, shared_q_values, prob_weight):
@@ -511,6 +489,8 @@ if __name__ == "__main__":
 
                 correlated_probs = UAV_OB[k].correlated_equilibrium(shared_q_values)
                 if correlated_probs is not None:
+                    # Normalization // numpy issues with float precision
+                    correlated_probs /= correlated_probs.sum()
                     UAV_OB[k].correlated_choice = np.random.choice(np.arange(0, UAV_OB[k].action_size ** NUM_UAV), p=correlated_probs)
                     sol = 1
                 else:
@@ -578,7 +558,8 @@ if __name__ == "__main__":
             # Only one equilibria calculation // Can change if want a actually full distributed system
             next_correlated_probs = UAV_OB[k].correlated_equilibrium(next_shared_q_values_local)
             if next_correlated_probs is not None:
-                next_correlated_choice = np.random.choice(np.arange(0, UAV_OB[k].action_size ** NUM_UAV), p=correlated_probs)
+                next_correlated_probs /= next_correlated_probs.sum()
+                next_correlated_choice = np.random.choice(np.arange(0, UAV_OB[k].action_size ** NUM_UAV), p=next_correlated_probs)
             else:
                 next_correlated_choice = np.random.randint(0, UAV_OB[k].action_size ** NUM_UAV, (1,), dtype =np.int16)
             #########################################################
@@ -681,13 +662,23 @@ if __name__ == "__main__":
                     shared_q_values[k, :]= q_values.detach()
                     correlated_probs = UAV_OB[k].correlated_equilibrium(shared_q_values)
 
+                    # if correlated_probs is not None:
+                    #     correlated_probs /= correlated_probs.sum()
+                    #     UAV_OB[k].correlated_choice = np.random.choice(np.arange(0, UAV_OB[k].action_size ** NUM_UAV), p=correlated_probs)
+                    # else:
+                    #     UAV_OB[k].correlated_choice = np.random.randint(0, UAV_OB[k].action_size ** NUM_UAV, dtype=int)
+                    # Doing computation only once for simplicity 
+                    ################################################################
                     if correlated_probs is not None:
-                        UAV_OB[k].correlated_choice = np.random.choice(np.arange(0, UAV_OB[k].action_size ** NUM_UAV), p=correlated_probs)
+                        correlated_probs /= correlated_probs.sum()
+                        correlated_action_list_idx = np.random.choice(np.arange(0, UAV_OB[k].action_size ** NUM_UAV), p=correlated_probs)
                     else:
-                        UAV_OB[k].correlated_choice = np.random.randint(0, UAV_OB[k].action_size ** NUM_UAV, dtype=int)
+                        correlated_action_list_idx = np.random.randint(0, UAV_OB[k].action_size ** NUM_UAV, dtype=int)
+                    break
+                    ############################################
 
                 for k in range(NUM_UAV):
-                    action_selected = np.copy(UAV_OB[k].action_profile[UAV_OB[k].correlated_choice])     
+                    action_selected = np.copy(UAV_OB[k].action_profile[correlated_action_list_idx])     
                     drone_act_list.append(action_selected[k])
 
                 temp_data = u_env.step(drone_act_list)
