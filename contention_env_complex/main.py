@@ -203,29 +203,30 @@ class DQL:
 
     def generate_add_constraint(self, NUM_UAV, shared_q_values, prob_weight):
         add_constraint = []
-        shared_q_values_np = shared_q_values.cpu().squeeze().numpy()
-        action_profile_local  = UAV_OB[0].action_profile.squeeze().cpu().numpy()
+        shared_q_values_np = shared_q_values.cpu().numpy()
+        action_profile_local  = UAV_OB[0].action_profile.cpu().numpy()
         combined_action_idx_local = np.arange(UAV_OB[0].combined_action_size)
-        ind_action_space_local = np.arange(UAV_OB[0].action_size)
+        ind_agent_local = np.arange(NUM_UAV)
         for v in range(NUM_UAV):
             temp_cumulative = 0
             q_ind = shared_q_values_np[v, :]
             q_excluded = np.zeros((UAV_OB[v].combined_action_size, UAV_OB[v].action_size))
+            excluded_idxs = ind_agent_local[ind_agent_local != v]
             for k in range(UAV_OB[0].combined_action_size):
-                excluded_idxs = ind_action_space_local[ind_action_space_local != v]
                 current_complete_action = action_profile_local[k]
                 excluded_idx_ar = combined_action_idx_local[np.all(action_profile_local[:, excluded_idxs] == 
                                                                    current_complete_action[excluded_idxs], 1)]
                 q_excluded[k, :] = q_ind[excluded_idx_ar]
             Q_neg = np.array([q_ind]*UAV_OB[v].action_size).transpose() - q_excluded
-            temp_cumulative += cvxpy.sum(prob_weight @ Q_neg)
+            temp_cumulative = cvxpy.sum(prob_weight @ Q_neg)
             add_constraint.append(temp_cumulative >= 0)
         return add_constraint
 
     def correlated_equilibrium(self, shared_q_values):
+        time1 = time.time()
         # Joint action size = number of agents ^ action size // for a state 
         # Optimizing the joint action so setting as a variable for CE optimization 
-        prob_weight = Variable((NUM_UAV ** UAV_OB[0].action_size), pos = True)
+        prob_weight = Variable((UAV_OB[0].action_size ** NUM_UAV), pos = True)
 
         # Collect Q values for the corresponding states of each individual agents
         q_complete = shared_q_values
@@ -259,6 +260,7 @@ class DQL:
                 # print(weights)
                 # print('Max Weight:', np.max(weights))
                 # print("Best Joint Action:", np.argmax(weights))
+                print(time.time() - time1)
             else:
                 weights = None
                 # print("Failed to find an optimal solution")
