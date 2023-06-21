@@ -235,7 +235,6 @@ class DQL:
         combined_action_idx_local = np.arange(UAV_OB[0].combined_action_size)
         ind_agent_local = np.arange(NUM_UAV)
         for v in range(NUM_UAV):
-            temp_cumulative = 0
             q_ind = shared_q_values_np[v, :]
             q_excluded = np.zeros((UAV_OB[v].combined_action_size, UAV_OB[v].action_size))
             excluded_idxs = ind_agent_local[ind_agent_local != v]
@@ -247,6 +246,7 @@ class DQL:
             
             Q_neg = np.array([q_ind]*UAV_OB[v].action_size).transpose() - q_excluded
             temp_cumulative = (prob_weight @ Q_neg)
+            print(temp_cumulative.shape)
             add_constraint.append(temp_cumulative >= 0)
         return add_constraint
 
