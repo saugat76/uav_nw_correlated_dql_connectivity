@@ -246,7 +246,6 @@ class DQL:
             
             Q_neg = np.array([q_ind]*UAV_OB[v].action_size).transpose() - q_excluded
             temp_cumulative = (prob_weight @ Q_neg)
-            print(temp_cumulative.shape)
             add_constraint.append(temp_cumulative >= 0)
         return add_constraint
 
@@ -565,6 +564,7 @@ if __name__ == "__main__":
                 There is another section before store _transition function which also needs to be commented if we want to remove this '''
                 for k in range(NUM_UAV):
                     if correlated_probs is not None:
+                        correlated_probs /= correlated_probs.sum()
                         UAV_OB[k].correlated_probs = correlated_probs
                     else:
                         UAV_OB[k].correlated_probs = (1/ UAV_OB[k].action_size ** NUM_UAV) * np.ones(UAV_OB[k].action_size ** NUM_UAV)

@@ -244,7 +244,6 @@ class DQL:
             
             Q_neg = np.array([q_ind]*UAV_OB[v].action_size).transpose() - q_excluded
             temp_cumulative = (prob_weight @ Q_neg)
-            print(temp_cumulative.shape)
             add_constraint.append(temp_cumulative >= 0)
         return add_constraint
 
@@ -273,7 +272,7 @@ class DQL:
         total_func_constr = self.generate_add_constraint(NUM_UAV, shared_q_values, prob_weight)
 
         # Define the problem with constraints
-        complete_constraint = [sum_func_constr, prob_constr_1, prob_constr_2] + total_func_constr
+        complete_constraint = [sum_func_constr] + total_func_constr
         opt_problem = Problem(object_func, complete_constraint)
 
         # Solve the optimization problem using linear programming
@@ -283,7 +282,7 @@ class DQL:
             if opt_problem.status == "optimal":
                 # print("Found solution")
                 weights = prob_weight.value
-                # print(weights)
+                # weights = np.rint(weights)
                 # print('Max Weight:', np.max(weights))
                 # print("Best Joint Action:", np.argmax(weights))
                 # print(time.time() - time1)
@@ -563,6 +562,7 @@ if __name__ == "__main__":
                 There is another section before store _transition function which also needs to be commented if we want to remove this '''
                 for k in range(NUM_UAV):
                     if correlated_probs is not None:
+                        correlated_probs /= correlated_probs.sum()
                         UAV_OB[k].correlated_probs = correlated_probs
                     else:
                         UAV_OB[k].correlated_probs = (1/ UAV_OB[k].action_size ** NUM_UAV) * np.ones(UAV_OB[k].action_size ** NUM_UAV)
@@ -674,11 +674,6 @@ if __name__ == "__main__":
                     UAV_OB[k].train(batch_size, dnn_epoch, k)
                     if args.wandb_track:
                         wandb.log({f"loss__{k}" : UAV_OB[k].loss})
-
-            # Keeping track of covered users every time step to ensure the hard coded value is satisfied
-            writer.add_scalar("chart/covered_users_per_timestep", temp_data[6], (i_episode * max_epochs + t))
-            if args.wandb_track:
-                wandb.log({"covererd_users_per_timestep": temp_data[6], "timestep": (i_episode * max_epochs + t) })
             #######################################################################################################
 
             # If all UAVs are done the program_done is True
