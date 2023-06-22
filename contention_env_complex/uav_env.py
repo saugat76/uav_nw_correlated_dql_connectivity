@@ -225,11 +225,10 @@ class UAVenv(gym.Env):
         total_covered_users = 0
         covered_user_flag = np.zeros((self.NUM_USER))
         for j in range(self.NUM_USER):
-            if covered_user_flag[j] == 0:
-                for i in range(self.NUM_UAV): 
-                     if dist_u_uav[i, j] <= self.coverage_radius:
-                        covered_user_flag[j] = 1
-                        total_covered_users += 1
+            for i in range(self.NUM_UAV): 
+                if dist_u_uav[i, j] <= self.coverage_radius:
+                    total_covered_users += 1
+                    break
         
         # Need to work on the return parameter of done, info, reward, and obs
         # Calculation of reward function too i.e. total bandwidth providednew to the user
