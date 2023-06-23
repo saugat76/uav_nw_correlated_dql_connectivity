@@ -85,8 +85,8 @@ def parse_args():
     parser.add_argument("--uav-dis-th", type=int, default=1000, help="distance value that defines which uav agent share info")
     parser.add_argument("--dist-pri-param", type=float, default=1/5, help="distance penalty priority parameter used in level 3 info exchange")
     parser.add_argument("--reward-func", type=int, default=1, help="reward func used 1-> global reward across agents, 2-> independent reward")
-    parser.add_argument("--coverage-threshold", type=int, default=75, help="if coverage threshold not satisfied, penalize reward, in percentage")
-    parser.add_argument("--coverage-penalty", type=int, default=5, help="penalty value if threshold is not satisfied")
+    parser.add_argument("--connectivity-threshold", type=int, default=75, help="if connectivity threshold not satisfied, penalize reward, in percentage")
+    parser.add_argument("--connectivity-penalty", type=int, default=5, help="penalty value if threshold is not satisfied")
 
     args = parser.parse_args()
 
@@ -677,9 +677,9 @@ if __name__ == "__main__":
             ##########################
 
             # Keeping track of covered users every time step to ensure the hard coded value is satisfied
-            writer.add_scalar("chart/covered_users_per_timestep", temp_data[6], (i_episode * max_epochs + t))
+            writer.add_scalar("chart/connected_users_per_timestep", temp_data[6], (i_episode * max_epochs + t))
             if args.wandb_track:
-                wandb.log({"covererd_users_per_timestep": temp_data[6], "timestep": (i_episode * max_epochs + t) })
+                wandb.log({"connected_users_per_timestep": temp_data[6], "timestep": (i_episode * max_epochs + t) })
             #######################################################################################################
 
             # If all UAVs are done the program_done is True
@@ -702,11 +702,17 @@ if __name__ == "__main__":
             wandb.log({"connected_users: "+ str(agent_l): user_connected[agent_l] for agent_l in range(NUM_UAV)})
         global_step += 1
         
+        
         # Keep track of hyper parameter and other valuable information in tensorboard log directory 
         # Track the params of all agent
         # Since all agents are identical only tracking one agents params
         writer.add_scalar("params/learning_rate", UAV_OB[1].learning_rate, i_episode )
         writer.add_scalar("params/epsilon", UAV_OB[1].epsilon_thres, i_episode)
+
+        # Covered user per episode 
+        writer.add_scalar("chart/connected_users_per_episode", temp_data[6], i_episode)
+        if args.wandb_track:
+            wandb.log({"covererd_users_per_episode": temp_data[6], "episode_connected": i_episode})
         #############################################################################################################################################################
 
         

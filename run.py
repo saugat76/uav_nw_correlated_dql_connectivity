@@ -8,4 +8,4 @@ for i in range(1, 5):
     p = subprocess.run(["python", "uav_env.py"])
     g = subprocess.run(["python", "main.py", "--num-episode", str(50), "--wandb-track", "True", "--learning-rate", str(2.5e-4)])
 
-# python main.py --num-episode 350 --max-steps 1000 --wandb-track True --info-exchange-lvl 6 --seed-sync True --nodes 512 --layers 3 --reward-func 1
+# python main.py --num-episode 350 --max-steps 1000 --wandb-track True --info-exchange-lvl 6 --seed-sync True --nodes 512 --layers 3 --reward-func 2
