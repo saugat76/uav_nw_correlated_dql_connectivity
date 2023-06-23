@@ -41,7 +41,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 def parse_args():
     parser = argparse.ArgumentParser()
     # Arguments for the experiments name / run / setup and Weights and Biases
-    parser.add_argument("--exp-name", type=str, default="simple_correlated_madql_uav", help="name of this experiment")
+    parser.add_argument("--exp-name", type=str, default="correlated_madql_uav_complex_cont", help="name of this experiment")
     parser.add_argument("--seed", type=int, default=1, help="seed of experiment to ensure reproducibility")
     parser.add_argument("--torch-deterministic", type= lambda x:bool(strtobool(x)), default=True, nargs="?", const=True, help="if toggeled, 'torch-backends.cudnn.deterministic=False'")
     parser.add_argument("--cuda", type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True, help="if toggled, cuda will be enabled by default")
@@ -73,7 +73,7 @@ def parse_args():
      
     # Arguments for used inside the wireless UAV based enviornment  
     parser.add_argument("--num-user", type=int, default=100, help="number of user in defined environment")
-    parser.add_argument("--num-uav", type=int, default=4, help="number of uav for the defined environment")
+    parser.add_argument("--num-uav", type=int, default=5, help="number of uav for the defined environment")
     parser.add_argument("--generate-user-distribution", type=lambda x: bool(strtobool(x)), default=False, help="if true generate a new user distribution, set true if changing number of users")
     parser.add_argument("--carrier-freq", type=int, default=2, help="set the frequency of the carrier signal in GHz")
     parser.add_argument("--coverage-xy", type=int, default=1000, help="set the length of target area (square)")
@@ -85,8 +85,8 @@ def parse_args():
     parser.add_argument("--uav-dis-th", type=int, default=1000, help="distance value that defines which uav agent share info")
     parser.add_argument("--dist-pri-param", type=float, default=1/5, help="distance penalty priority parameter used in level 3 info exchange")
     parser.add_argument("--reward-func", type=int, default=1, help="reward func used 1-> global reward across agents, 2-> independent reward")
-    parser.add_argument("--coverage-threshold", type=int, default=80, help="if coverage threshold not satisfied, penalize reward, in percentage")
-    parser.add_argument("--coverage-penalty", type=int, default=10, help="penalty value if threshold is not satisfied")
+    parser.add_argument("--coverage-threshold", type=int, default=75, help="if coverage threshold not satisfied, penalize reward, in percentage")
+    parser.add_argument("--coverage-penalty", type=int, default=5, help="penalty value if threshold is not satisfied")
 
     args = parser.parse_args()
 

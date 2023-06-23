@@ -85,6 +85,8 @@ def parse_args():
     parser.add_argument("--uav-dis-th", type=int, default=1000, help="distance value that defines which uav agent share info")
     parser.add_argument("--dist-pri-param", type=float, default=1/5, help="distance penalty priority parameter used in level 3 info exchange")
     parser.add_argument("--reward-func", type=int, default=1, help="reward func used 1-> global reward across agents, 2-> independent reward")
+    parser.add_argument("--coverage-threshold", type=int, default=75, help="if coverage threshold not satisfied, penalize reward, in percentage")
+    parser.add_argument("--coverage-penalty", type=int, default=5, help="penalty value if threshold is not satisfied")
 
     args = parser.parse_args()
 
