@@ -85,7 +85,7 @@ def parse_args():
     parser.add_argument("--uav-dis-th", type=int, default=1000, help="distance value that defines which uav agent share info")
     parser.add_argument("--dist-pri-param", type=float, default=1/5, help="distance penalty priority parameter used in level 3 info exchange")
     parser.add_argument("--reward-func", type=int, default=1, help="reward func used 1-> global reward across agents, 2-> independent reward")
-    parser.add_argument("--coverage-threshold", type=int, default=95, help="if coverage threshold not satisfied, penalize reward, in percentage")
+    parser.add_argument("--coverage-threshold", type=int, default=80, help="if coverage threshold not satisfied, penalize reward, in percentage")
     parser.add_argument("--coverage-penalty", type=int, default=10, help="penalty value if threshold is not satisfied")
 
     args = parser.parse_args()
@@ -611,7 +611,7 @@ if __name__ == "__main__":
                     next_state_local = next_states_ten_local.flatten()
                 next_state_local = next_state_local.float()
                 next_state_local = torch.unsqueeze(torch.FloatTensor(next_state_local), 0)
-                next_q_values_local = UAV_OB[k].main_network(state)
+                next_q_values_local = UAV_OB[k].target_network(next_state_local)
                 next_shared_q_values_local[k, :]= next_q_values_local.detach()
 
             #########################################################

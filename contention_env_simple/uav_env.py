@@ -93,7 +93,7 @@ class UAVenv(gym.Env):
         self.dis_penalty_pri = self.args.dist_pri_param         # Priority value for defined for the distance penalty // 
                                                                 # // Value ranges from 0 (overlapping UAV doesnot affect reward) to 1 (Prioritizes overlapping area as negative reward to full extent)
 
-        self.generate_user_distribution(self.NUM_USER, self.NUM_UAV, self.COVERAGE_XY)
+        # self.generate_user_distribution(self.NUM_USER, self.NUM_UAV, self.COVERAGE_XY)
         # self.generate_user_rb(self.NUM_USER, self.COVERAGE_XY)
 
         self.load_user_distribution()
@@ -236,7 +236,6 @@ class UAVenv(gym.Env):
                 if dist_u_uav[i, j] <= self.coverage_radius:
                     total_covered_users += 1
                     break
-        print(total_covered_users)
         
         # Need to work on the return parameter of done, info, reward, and obs
         # Calculation of reward function too i.e. total bandwidth providednew to the user
