@@ -223,7 +223,6 @@ class UAVenv(gym.Env):
         ##############################################################
         # Reward value of each individual UAV is penalized if the total coverage threshold is not achieved
         total_covered_users = 0
-        covered_user_flag = np.zeros((self.NUM_USER))
         for j in range(self.NUM_USER):
             for i in range(self.NUM_UAV): 
                 if dist_u_uav[i, j] <= self.coverage_radius:
