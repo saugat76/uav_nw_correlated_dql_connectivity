@@ -89,7 +89,7 @@ def parse_args():
     parser.add_argument("--connectivity-threshold", type=int, default=75, help="if connectivity threshold not satisfied, penalize reward, in percentage")
     parser.add_argument("--connectivity-penalty", type=int, default=5, help="penalty value if threshold is not satisfied")
 
-    parser.add_argument("--ce", type=str, default='bf', help="computation of ce 'lp'-> linear programming , 'bf'-> bruteforce")
+    parser.add_argument("--ce", type=str, default='lp', help="computation of ce 'lp'-> linear programming , 'bf'-> bruteforce")
     parser.add_argument("--ce-next-state", type=lambda x: bool(strtobool(x)), default=False, help="use ce of next state in target-q computation")
     args = parser.parse_args()
 
@@ -207,13 +207,17 @@ class DQL:
     #################################################
     ######     Bruteforce Implementation     ########
     #################################################
-
     # def correlated_equilibrium_bf(self, shared_q_values):
     #     # Considering a deterministic system where the correleted action are fixed
     #     # Bruteforcing thorugh all the available option for each UAV agent and check for constraint satisfaction4
     #     shared_q_values_np = shared_q_values.cpu().squeeze().numpy()
-    #     max_ind = np.argsort(-np.sum(shared_q_values.cpu().numpy(), axis=0))
     #     action_profile_local  = UAV_OB[0].action_profile.squeeze().cpu().numpy()
+    #     object_vec = np.zeros((UAV_OB[0].action_size ** NUM_UAV, NUM_UAV), dtype=np.float32)
+    #     for i in range(NUM_UAV):
+    #         for k in range(UAV_OB[0].action_size):
+    #             indices = np.where(action_profile[:, i] == k) 
+    #             object_vec[indices, i] = shared_q_values_np[i, k] 
+    #     max_ind = np.argsort(-np.sum(object_vec, axis=0))
     #     for k in max_ind:
     #         Q_Ai = np.zeros((NUM_UAV, UAV_OB[0].action_size))
     #         # Go over all the joint action indices which gives the max sum of Q's -> Descending order
@@ -242,132 +246,8 @@ class DQL:
     ######         LP Implementation         ########
     #################################################
 
-    # # Constraint generation to verify, agents have no incentive to unilaterally deviate form equilibirum
-    # def generate_add_constraint(self, NUM_UAV, shared_q_values, prob_weight):
-    #     add_constraint = []
-    #     shared_q_values_np = shared_q_values.cpu().numpy()
-    #     action_profile_local  = UAV_OB[0].action_profile.cpu().numpy()
-    #     combined_action_idx_local = np.arange(UAV_OB[0].combined_action_size)
-    #     ind_agent_local = np.arange(NUM_UAV)
-    #     for v in range(NUM_UAV):
-    #         q_ind = shared_q_values_np[v, :]
-    #         q_excluded = np.zeros((UAV_OB[v].combined_action_size, UAV_OB[v].action_size))
-    #         excluded_idxs = ind_agent_local[ind_agent_local != v]
-    #         for k in range(UAV_OB[0].combined_action_size):
-    #             current_complete_action = action_profile_local[k]
-    #             excluded_idx_ar = combined_action_idx_local[np.all(action_profile_local[:, excluded_idxs] == 
-    #                                                                current_complete_action[excluded_idxs], 1)]
-    #             q_excluded[k, :] = q_ind[excluded_idx_ar]
-            
-    #         Q_neg = np.array([q_ind]*UAV_OB[v].action_size).transpose() - q_excluded
-    #         temp_cumulative = (prob_weight @ Q_neg)
-    #         add_constraint.append(temp_cumulative >= 0)
-    #     return add_constraint
-
-    # def correlated_equilibrium_lp(self, shared_q_values):
-    #     # time1 = time.time()
-    #     # Joint action size = number of agents ^ action size // for a state 
-    #     # Optimizing the joint action so setting as a variable for CE optimization 
-    #     prob_weight = Variable((UAV_OB[0].action_size ** NUM_UAV), pos = True)
-
-    #     # Collect Q values for the corresponding states of each individual agents
-    #     q_complete = shared_q_values
-
-    #     # Objective function
-    #     object_vec = q_complete.transpose(0, 1)
-    #     object_func = Maximize(sum(prob_weight @ object_vec))
-
-    #     # Constraint 1: Sum of the Probabilities should be equal to 1 // should follow for all agents
-    #     sum_func_constr = cvxpy.sum(prob_weight) == 1 
-        
-    #     # Constraint 2: Each probability value should be grater than 1 // should follow for all agents
-    #     prob_constr_1 = all(prob_weight) >= 0
-    #     prob_constr_2 = all(prob_weight) <= 1
-
-    #     # Constraint 3: Total function should be less than or equal to 0
-    #     # Constraint to verify, agents have no incentive to unilaterally deviate form equilibirum
-    #     total_func_constr = self.generate_add_constraint(NUM_UAV, shared_q_values, prob_weight)
-
-    #     # Define the problem with constraints
-    #     complete_constraint = [sum_func_constr, prob_constr_1, prob_constr_2] + total_func_constr
-    #     opt_problem = Problem(object_func, complete_constraint)
-
-    #     # Solve the optimization problem using linear programming
-    #     try:
-    #         opt_problem.solve(solver = 'ECOS_BB')
-    #         # print(opt_problem.status)
-    #         if opt_problem.status == "optimal":
-    #             # print("Found solution")
-    #             weights = prob_weight.value
-    #             # print(weights)
-    #             # print('Max Weight:', np.max(weights))
-    #             # print("Best Joint Action:", np.argmax(weights))
-    #             # print(time.time() - time1)
-    #         else:
-    #             weights = None
-    #             # print("Failed to find an optimal solution")
-    #     except:
-    #         weights = None
-    #     return weights
-    ##############################################################################################################################################################
-    
-    #################################################
-    ######       New  Implementation         ########
-    #################################################
-
-    # def correlated_equilibrium_bf(self, shared_q_values):
-    #     # Define the number of players and actions
-    #     num_players = 5
-    #     num_actions = 5
-    #     num_joint_actions = num_actions ** num_players
-
-    #     # Create a list to store Q-values for each player
-    #     Q_values = shared_q_values.cpu().squeeze().numpy()
-
-    #     # The coefficients of the linear objective function to be minimized
-    #     c = []
-    #     for l in range(num_joint_actions):
-    #         actions = np.unravel_index(l, [num_actions]*num_players)
-    #         c.append(-sum(Q_values[i][actions[i]] for i in range(num_players)))
-            
-    #     # The equality constraint matrix - a single row of ones
-    #     A_eq = np.ones((1, num_joint_actions))
-
-    #     # The equality constraint vector - a single value of 1
-    #     b_eq = np.array([1])
-
-    #     # The inequality constraint matrix - for each player and each pair of actions, there is a row in the matrix
-    #     A_ub = np.zeros((num_players*num_actions*(num_actions-1), num_joint_actions))
-
-    #     # The inequality constraint vector - initially zero, will be updated later
-    #     b_ub = np.zeros(num_players*num_actions*(num_actions-1))
-
-    #     # Construct the inequality constraints
-    #     for i in range(num_players):
-    #         for j in range(num_actions):
-    #             for k in range(j+1, num_actions):
-    #                 # This corresponds to the constraint Q_i(a_j)*p(a_j) - Q_i(a_k)*p(a_k) >= 0
-    #                 for l in range(num_joint_actions):
-    #                     actions = np.unravel_index(l, [num_actions]*num_players)
-    #                     if actions[i] == j:
-    #                         A_ub[i*num_actions*(num_actions-1) + j*num_actions + k, l] = Q_values[i][j]
-    #                     elif actions[i] == k:
-    #                         A_ub[i*num_actions*(num_actions-1) + j*num_actions + k, l] = -Q_values[i][k]
-
-    #     # Each decision variable must be >= 0 (this is the default in linprog)
-    #     bounds = [(0, None)] * num_joint_actions
-
-    #     # Solve the linear programming problem
-    #     res = linprog(c, A_ub=A_ub, b_ub=b_ub, A_eq=A_eq, b_eq=b_eq, bounds=bounds, method='highs')
-
-    #     # Print the solution
-    #     print('Probability distribution over joint actions:', res.x)
-
-    #     return res.x
-    
-
-    def correlated_equilibrium_bf(self, shared_q_values):
-        time1 = time.time()
+    def correlated_equilibrium_lp(self, shared_q_values):
+        # time1 = time.time()
         # Joint action size = number of agents ^ action size // for a state 
         # Optimizing the joint action so setting as a variable for CE optimization 
         action_size = UAV_OB[0].action_size
@@ -409,7 +289,7 @@ class DQL:
                                                                    current_complete_action[excluded_idxs], 1)]
                 p_excluded[k, :] = p_ind[excluded_idx_ar]
             Q_neg = np.array([p_ind]*UAV_OB[v].action_size).transpose() - p_excluded
-            temp_cumulative = (prob_weight @ Q_neg)
+            temp_cumulative = cvxpy.multiply(cvxpy.reshape(prob_weight, (action_size ** NUM_UAV, 1)), Q_neg)
             add_constraint.append(temp_cumulative >= 0)
 
 
@@ -424,16 +304,17 @@ class DQL:
             if opt_problem.status == "optimal":
                 # print("Found solution")
                 weights = prob_weight.value
-                print(weights)
-                print('Max Weight:', np.max(weights))
-                print("Best Joint Action:", np.argmax(weights))
-                print(time.time() - time1)
+                # print(weights)
+                # print('Max Weight:', np.max(weights))
+                # print("Best Joint Action:", np.argmax(weights))
+                # print(time.time() - time1)
             else:
                 weights = None
                 # print("Failed to find an optimal solution")
         except:
             weights = None
         return weights
+    #############################################################################################################################################################
     ##############################################################################################################################################################
 
 
