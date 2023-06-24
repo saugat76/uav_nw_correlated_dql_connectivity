@@ -203,6 +203,10 @@ class DQL:
     ''' Alternate code using bruteforce for equilibirum computation // Deterministic approach
     mightnot alway find a solution '''
 
+    #################################################
+    ######     Bruteforce Implementation     ########
+    #################################################
+
     def correlated_equilibrium_bf(self, shared_q_values):
         # Considering a deterministic system where the correleted action are fixed
         # Bruteforcing thorugh all the available option for each UAV agent and check for constraint satisfaction4
@@ -230,6 +234,12 @@ class DQL:
                 correlated_probs[correlated_action_selected]  = 1
                 return correlated_probs
         return None
+    ##############################################################################################################################################################
+
+
+    #################################################
+    ######         LP Implementation         ########
+    #################################################
 
     # Constraint generation to verify, agents have no incentive to unilaterally deviate form equilibirum
     def generate_add_constraint(self, NUM_UAV, shared_q_values, prob_weight):
@@ -298,7 +308,8 @@ class DQL:
         except:
             weights = None
         return weights
-    # ##############################################################################################################################################################
+    ##############################################################################################################################################################
+    ##############################################################################################################################################################
 
 
     #######################################################
