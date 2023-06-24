@@ -67,7 +67,7 @@ def parse_args():
     parser.add_argument("--nodes", type=int, default=512, help="set the number of nodes for the target and main neural network layers")
     parser.add_argument("--seed-sync", type=lambda x: bool(strtobool(x)), default=False, help="synchronize the seed value among agents, by default set to False")
 
-    # Environment specific arguments
+    # Environment specific argumentstype=lambda x: bool(strtobool(x)), default=False, help=
     # To be consitent with previous project addition of level 5 and 6
     parser.add_argument("--info-exchange-lvl", type=int, default=6, help="information exchange level between UAVs: 5 -> individual partial q-values, 6 -> q-values and state") 
      
@@ -88,6 +88,8 @@ def parse_args():
     parser.add_argument("--connectivity-threshold", type=int, default=75, help="if connectivity threshold not satisfied, penalize reward, in percentage")
     parser.add_argument("--connectivity-penalty", type=int, default=5, help="penalty value if threshold is not satisfied")
 
+    parser.add_argument("--ce", type=str, default='lp', help="computation of ce 'lp'-> linear programming , 'bf'-> bruteforce")
+    parser.add_argument("--ce-next-state", type=lambda x: bool(strtobool(x)), default=False, help="use ce of next state in target-q computation")
     args = parser.parse_args()
 
     return args
@@ -167,8 +169,11 @@ class DQL:
         self.steps_done = 0
 
     # Storing information of individual UAV information in their respective buffer
-    def store_transition(self, state, action, reward, next_state, done, next_correlated_action):
+    def store_transition_ce_ns(self, state, action, reward, next_state, done, next_correlated_action):
         self.replay_buffer.append((state, action, reward, next_state, done, next_correlated_action))
+
+    def store_transition(self, state, action, reward, next_state, done):
+        self.replay_buffer.append((state, action, reward, next_state, done))
 
 
     #################################################
@@ -198,7 +203,7 @@ class DQL:
     ''' Alternate code using bruteforce for equilibirum computation // Deterministic approach
     mightnot alway find a solution '''
 
-    def correlated_equilibrium(self, shared_q_values):
+    def correlated_equilibrium_bf(self, shared_q_values):
         # Considering a deterministic system where the correleted action are fixed
         # Bruteforcing thorugh all the available option for each UAV agent and check for constraint satisfaction4
         shared_q_values_np = shared_q_values.cpu().squeeze().numpy()
@@ -227,72 +232,72 @@ class DQL:
         return None
 
     # Constraint generation to verify, agents have no incentive to unilaterally deviate form equilibirum
-    # def generate_add_constraint(self, NUM_UAV, shared_q_values, prob_weight):
-    #     add_constraint = []
-    #     shared_q_values_np = shared_q_values.cpu().numpy()
-    #     action_profile_local  = UAV_OB[0].action_profile.cpu().numpy()
-    #     combined_action_idx_local = np.arange(UAV_OB[0].combined_action_size)
-    #     ind_agent_local = np.arange(NUM_UAV)
-    #     for v in range(NUM_UAV):
-    #         q_ind = shared_q_values_np[v, :]
-    #         q_excluded = np.zeros((UAV_OB[v].combined_action_size, UAV_OB[v].action_size))
-    #         excluded_idxs = ind_agent_local[ind_agent_local != v]
-    #         for k in range(UAV_OB[0].combined_action_size):
-    #             current_complete_action = action_profile_local[k]
-    #             excluded_idx_ar = combined_action_idx_local[np.all(action_profile_local[:, excluded_idxs] == 
-    #                                                                current_complete_action[excluded_idxs], 1)]
-    #             q_excluded[k, :] = q_ind[excluded_idx_ar]
+    def generate_add_constraint(self, NUM_UAV, shared_q_values, prob_weight):
+        add_constraint = []
+        shared_q_values_np = shared_q_values.cpu().numpy()
+        action_profile_local  = UAV_OB[0].action_profile.cpu().numpy()
+        combined_action_idx_local = np.arange(UAV_OB[0].combined_action_size)
+        ind_agent_local = np.arange(NUM_UAV)
+        for v in range(NUM_UAV):
+            q_ind = shared_q_values_np[v, :]
+            q_excluded = np.zeros((UAV_OB[v].combined_action_size, UAV_OB[v].action_size))
+            excluded_idxs = ind_agent_local[ind_agent_local != v]
+            for k in range(UAV_OB[0].combined_action_size):
+                current_complete_action = action_profile_local[k]
+                excluded_idx_ar = combined_action_idx_local[np.all(action_profile_local[:, excluded_idxs] == 
+                                                                   current_complete_action[excluded_idxs], 1)]
+                q_excluded[k, :] = q_ind[excluded_idx_ar]
             
-    #         Q_neg = np.array([q_ind]*UAV_OB[v].action_size).transpose() - q_excluded
-    #         temp_cumulative = (prob_weight @ Q_neg)
-    #         add_constraint.append(temp_cumulative >= 0)
-    #     return add_constraint
+            Q_neg = np.array([q_ind]*UAV_OB[v].action_size).transpose() - q_excluded
+            temp_cumulative = (prob_weight @ Q_neg)
+            add_constraint.append(temp_cumulative >= 0)
+        return add_constraint
 
-    # def correlated_equilibrium(self, shared_q_values):
-    #     # time1 = time.time()
-    #     # Joint action size = number of agents ^ action size // for a state 
-    #     # Optimizing the joint action so setting as a variable for CE optimization 
-    #     prob_weight = Variable((UAV_OB[0].action_size ** NUM_UAV), pos = True)
+    def correlated_equilibrium_lp(self, shared_q_values):
+        # time1 = time.time()
+        # Joint action size = number of agents ^ action size // for a state 
+        # Optimizing the joint action so setting as a variable for CE optimization 
+        prob_weight = Variable((UAV_OB[0].action_size ** NUM_UAV), pos = True)
 
-    #     # Collect Q values for the corresponding states of each individual agents
-    #     q_complete = shared_q_values
+        # Collect Q values for the corresponding states of each individual agents
+        q_complete = shared_q_values
 
-    #     # Objective function
-    #     object_vec = q_complete.transpose(0, 1)
-    #     object_func = Maximize(sum(prob_weight @ object_vec))
+        # Objective function
+        object_vec = q_complete.transpose(0, 1)
+        object_func = Maximize(sum(prob_weight @ object_vec))
 
-    #     # Constraint 1: Sum of the Probabilities should be equal to 1 // should follow for all agents
-    #     sum_func_constr = cvxpy.sum(prob_weight) == 1 
+        # Constraint 1: Sum of the Probabilities should be equal to 1 // should follow for all agents
+        sum_func_constr = cvxpy.sum(prob_weight) == 1 
         
-    #     # Constraint 2: Each probability value should be grater than 1 // should follow for all agents
-    #     prob_constr_1 = all(prob_weight) >= 0
-    #     prob_constr_2 = all(prob_weight) <= 1
+        # Constraint 2: Each probability value should be grater than 1 // should follow for all agents
+        prob_constr_1 = all(prob_weight) >= 0
+        prob_constr_2 = all(prob_weight) <= 1
 
-    #     # Constraint 3: Total function should be less than or equal to 0
-    #     # Constraint to verify, agents have no incentive to unilaterally deviate form equilibirum
-    #     total_func_constr = self.generate_add_constraint(NUM_UAV, shared_q_values, prob_weight)
+        # Constraint 3: Total function should be less than or equal to 0
+        # Constraint to verify, agents have no incentive to unilaterally deviate form equilibirum
+        total_func_constr = self.generate_add_constraint(NUM_UAV, shared_q_values, prob_weight)
 
-    #     # Define the problem with constraints
-    #     complete_constraint = [sum_func_constr, prob_constr_1, prob_constr_2] + total_func_constr
-    #     opt_problem = Problem(object_func, complete_constraint)
+        # Define the problem with constraints
+        complete_constraint = [sum_func_constr, prob_constr_1, prob_constr_2] + total_func_constr
+        opt_problem = Problem(object_func, complete_constraint)
 
-    #     # Solve the optimization problem using linear programming
-    #     try:
-    #         opt_problem.solve(solver = 'ECOS_BB')
-    #         # print(opt_problem.status)
-    #         if opt_problem.status == "optimal":
-    #             # print("Found solution")
-    #             weights = prob_weight.value
-    #             # print(weights)
-    #             # print('Max Weight:', np.max(weights))
-    #             # print("Best Joint Action:", np.argmax(weights))
-    #             # print(time.time() - time1)
-    #         else:
-    #             weights = None
-    #             # print("Failed to find an optimal solution")
-    #     except:
-    #         weights = None
-    #     return weights
+        # Solve the optimization problem using linear programming
+        try:
+            opt_problem.solve(solver = 'ECOS_BB')
+            # print(opt_problem.status)
+            if opt_problem.status == "optimal":
+                # print("Found solution")
+                weights = prob_weight.value
+                # print(weights)
+                # print('Max Weight:', np.max(weights))
+                # print("Best Joint Action:", np.argmax(weights))
+                # print(time.time() - time1)
+            else:
+                weights = None
+                # print("Failed to find an optimal solution")
+        except:
+            weights = None
+        return weights
     ##############################################################################################################################################################
 
 
@@ -332,32 +337,34 @@ class DQL:
         for k in range(dnn_epoch):
             minibatch = random.sample(self.replay_buffer, batch_size)
             minibatch = np.vstack(minibatch)
-            minibatch = minibatch.reshape(batch_size,6)
+            if args.ce_next_state:
+                minibatch = minibatch.reshape(batch_size,6)
+            else:
+                minibatch = minibatch.reshape(batch_size,5)
             state = torch.FloatTensor(np.vstack(minibatch[:,0]))
             action = torch.LongTensor(np.vstack(minibatch[:,1]))
             reward = torch.FloatTensor(np.vstack(minibatch[:,2]))
             next_state = torch.FloatTensor(np.vstack(minibatch[:,3]))
             done = torch.Tensor(np.vstack(minibatch[:,4]))
-            next_correlated_probs = torch.Tensor(np.vstack(minibatch[:,5]))
             state = state.to(device = device)
             action = action.to(device = device)
             reward = reward.to(device = device)
             next_state = next_state.to(device = device)
             done = done.to(device = device)
             done_local = (done).any(dim=1).float().to(device)
-            next_correlated_probs = next_correlated_probs.to(device=device)
+            if args.ce_next_state:
+                next_correlated_probs = torch.Tensor(np.vstack(minibatch[:,5]))
+                next_correlated_probs = next_correlated_probs.to(device=device)
 
             # Implementation of DQL algorithm 
             Q_next = self.target_network(next_state).detach().squeeze()
+            if args.ce_next_state:
+                # Instead of utilizing the correlated next action using the value function using probs
+                value_next = torch.sum(torch.mul(Q_next, next_correlated_probs), 1)
 
-            # index_local = np.arange(batch_size)
-            # Q_next_sel = Q_next[index_local, next_correlated_action[index_local]]
-
-            # Instead of utilizing the correlated next action using the value function using probs
-            # value_next = torch.sum(torch.mul(Q_next, next_correlated_probs), 1)
-
-            # target_Q = reward.squeeze() + self.gamma * Q_next_sel.view(batch_size, 1).squeeze() * done_local
-            target_Q = reward.squeeze() + self.gamma * Q_next.max(1)[0].view(batch_size, 1).squeeze() * done_local
+                target_Q = reward.squeeze() + self.gamma * value_next.view(batch_size, 1).squeeze() * done_local
+            else:
+                target_Q = reward.squeeze() + self.gamma * Q_next.max(1)[0].view(batch_size, 1).squeeze() * done_local
 
             # Forward 
             # Loss calculation based on loss function
@@ -539,8 +546,12 @@ if __name__ == "__main__":
                 if args.seed_sync:
                     seeding_sync(seed_state, np_seed_state, torch_seed_state)
                 # Note: seed synchronization might be creating the problem as it wont allow other agents to explore separately
+                
+                if args.ce == "lp":
+                    correlated_probs = UAV_OB[k].correlated_equilibrium_lp(shared_q_values)
+                elif args.ce == "bf":
+                    correlated_probs = UAV_OB[k].correlated_equilibrium_bf(shared_q_values)
 
-                correlated_probs = UAV_OB[k].correlated_equilibrium(shared_q_values)
                 if correlated_probs is not None:
                     # Normalization // numpy issues with float precision
                     correlated_probs /= correlated_probs.sum()
@@ -591,31 +602,36 @@ if __name__ == "__main__":
             ############################################################
             # Used during the training // corresponding action for target Q value
             # Intialization of next shared_q_value variable 
-            next_shared_q_values_local = torch.zeros(NUM_UAV, UAV_OB[1].combined_action_size)
-            next_states_ten_local = torch.from_numpy(next_state)
-            shared_state_local = next_states_ten_local.numpy().flatten()
-            next_state_ten = torch.FloatTensor(next_state)
-            # To simplify is programming calculating once and sharing among UAVs
-            # Sharing of the Q-values
+            if args.ce_next_state:
+                next_shared_q_values_local = torch.zeros(NUM_UAV, UAV_OB[1].combined_action_size)
+                next_states_ten_local = torch.from_numpy(next_state)
+                shared_state_local = next_states_ten_local.numpy().flatten()
+                next_state_ten = torch.FloatTensor(next_state)
+                # To simplify is programming calculating once and sharing among UAVs
+                # Sharing of the Q-values
 
-            for k in range(NUM_UAV):
-                if args.info_exchange_lvl == 5:
-                    next_state_local = next_states_ten_local[k, :]
-                elif args.info_exchange_lvl == 6:
-                    next_state_local = next_states_ten_local.flatten()
-                next_state_local = next_state_local.float()
-                next_state_local = torch.unsqueeze(torch.FloatTensor(next_state_local), 0)
-                next_q_values_local = UAV_OB[k].target_network(next_state_local)
-                next_shared_q_values_local[k, :]= next_q_values_local.detach()
+                for k in range(NUM_UAV):
+                    if args.info_exchange_lvl == 5:
+                        next_state_local = next_states_ten_local[k, :]
+                    elif args.info_exchange_lvl == 6:
+                        next_state_local = next_states_ten_local.flatten()
+                    next_state_local = next_state_local.float()
+                    next_state_local = torch.unsqueeze(torch.FloatTensor(next_state_local), 0)
+                    next_q_values_local = UAV_OB[k].target_network(next_state_local)
+                    next_shared_q_values_local[k, :]= next_q_values_local.detach()
 
-            #########################################################
-            ## For simplicity of program computing correlated equilibrium of next state only once
-            # Only one equilibria calculation // Can change if want a actually full distributed system
-            next_correlated_probs = UAV_OB[k].correlated_equilibrium(next_shared_q_values_local)
-            if next_correlated_probs is not None:
-                next_correlated_probs /= next_correlated_probs.sum()
-            else:
-                next_correlated_probs = (1/UAV_OB[k].combined_action_size) * np.ones(UAV_OB[k].combined_action_size)
+                #########################################################
+                ## For simplicity of program computing correlated equilibrium of next state only once
+                # Only one equilibria calculation // Can change if want a actually full distributed system
+                if args.ce == "lp":
+                    next_correlated_probs  = UAV_OB[k].correlated_equilibrium_lp(next_shared_q_values_local)
+                elif args.ce == "bf":
+                    next_correlated_probs  = UAV_OB[k].correlated_equilibrium_bf(next_shared_q_values_local)
+                    
+                if next_correlated_probs is not None:
+                    next_correlated_probs /= next_correlated_probs.sum()
+                else:
+                    next_correlated_probs = (1/UAV_OB[k].combined_action_size) * np.ones(UAV_OB[k].combined_action_size)
             #########################################################
             #################################################################################################################
                 
@@ -644,7 +660,10 @@ if __name__ == "__main__":
                     reward_ind = reward
                 elif args.reward_func == 2:
                     reward_ind = reward[k]
-                UAV_OB[k].store_transition(state, action, reward_ind, next_sta, done_individual, torch.from_numpy(next_correlated_probs))
+                if args.ce_next_state:
+                    UAV_OB[k].store_transition_ce_ns(state, action, reward_ind, next_sta, done_individual, torch.from_numpy(next_correlated_probs))
+                else:
+                     UAV_OB[k].store_transition(state, action, reward_ind, next_sta, done_individual)
 
             states = next_state
 
@@ -731,8 +750,12 @@ if __name__ == "__main__":
                     state = torch.unsqueeze(torch.FloatTensor(state), 0)
                     q_values = UAV_OB[k].main_network(state)
                     shared_q_values[k, :]= q_values.detach()
-                    correlated_probs = UAV_OB[k].correlated_equilibrium(shared_q_values)
 
+                for k in range(NUM_UAV):
+                    if args.ce == "lp":
+                        correlated_probs = UAV_OB[k].correlated_equilibrium_lp(shared_q_values)
+                    elif args.ce == "bf":
+                        correlated_probs = UAV_OB[k].correlated_equilibrium_bf(shared_q_values)
                     # if correlated_probs is not None:
                     #     correlated_probs /= correlated_probs.sum()
                     #     UAV_OB[k].correlated_choice = np.random.choice(np.arange(0, UAV_OB[k].action_size ** NUM_UAV), p=correlated_probs)
