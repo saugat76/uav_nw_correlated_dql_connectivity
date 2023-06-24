@@ -354,10 +354,10 @@ class DQL:
             # Q_next_sel = Q_next[index_local, next_correlated_action[index_local]]
 
             # Instead of utilizing the correlated next action using the value function using probs
-            value_next = torch.sum(torch.mul(Q_next, next_correlated_probs), 1)
+            # value_next = torch.sum(torch.mul(Q_next, next_correlated_probs), 1)
 
             # target_Q = reward.squeeze() + self.gamma * Q_next_sel.view(batch_size, 1).squeeze() * done_local
-            target_Q = reward.squeeze() + self.gamma * value_next.view(batch_size, 1).squeeze() * done_local
+            target_Q = reward.squeeze() + self.gamma * Q_next.max(1).view(batch_size, 1).squeeze() * done_local
 
             # Forward 
             # Loss calculation based on loss function
