@@ -55,22 +55,22 @@ def parse_args():
     parser.add_argument("--num-env", type=int, default=1, help="number of parallel environment")
     parser.add_argument("--num-episode", type=int, default=351, help="number of episode, default value till the trainning is progressed")
     parser.add_argument("--max-steps", type=int, default= 100, help="max number of steps/epoch use in every episode")
-    parser.add_argument("--learning-rate", type=float, default= 3.5e-4, help="learning rate of the dql alggorithm used by every agent")
+    parser.add_argument("--learning-rate", type=float, default= 2.5e-4, help="learning rate of the dql alggorithm used by every agent")
     parser.add_argument("--gamma", type=float, default= 0.95, help="discount factor used for the calculation of q-value, can prirotize future reward if kept high")
-    parser.add_argument("--batch-size", type=int, default= 512, help="batch sample size used in a trainning batch")
+    parser.add_argument("--batch-size", type=int, default= 2, help="batch sample size used in a trainning batch")
     parser.add_argument("--epsilon", type=float, default= 0.1, help="epsilon to set the eploration vs exploitation")
     parser.add_argument("--update-rate", type=int, default= 10, help="steps at which the target network updates it's parameter from main network")
     parser.add_argument("--buffer-size", type=int, default=125000, help="size of replay buffer of each individual agent")
     parser.add_argument("--epsilon-min", type=float, default=0.1, help="maximum value of exploration-exploitation paramter, only used when epsilon deacay is set to True")
     parser.add_argument("--epsilon-decay", type=lambda x: bool(strtobool(x)), default=False, help="epsilon decay is used, explotation is prioritized at early episodes and on later epsidoe exploitation is prioritized, by default set to False")
     parser.add_argument("--epsilon-decay-steps", type=int, default=1, help="set the rate at which is the epsilon is deacyed, set value equates number of steps at which the epsilon reaches minimum")
-    parser.add_argument("--layers", type=int, default=3, help="set the number of layers for the target and main neural network")
-    parser.add_argument("--nodes", type=int, default=512, help="set the number of nodes for the target and main neural network layers")
+    parser.add_argument("--layers", type=int, default=2, help="set the number of layers for the target and main neural network")
+    parser.add_argument("--nodes", type=int, default=400, help="set the number of nodes for the target and main neural network layers")
     parser.add_argument("--seed-sync", type=lambda x: bool(strtobool(x)), default=False, help="synchronize the seed value among agents, by default set to False")
 
     # Environment specific argumentstype=lambda x: bool(strtobool(x)), default=False, help=
     # To be consitent with previous project addition of level 5 and 6
-    parser.add_argument("--info-exchange-lvl", type=int, default=6, help="information exchange level between UAVs: 5 -> individual partial q-values, 6 -> q-values and state") 
+    parser.add_argument("--info-exchange-lvl", type=int, default=5, help="information exchange level between UAVs: 5 -> individual partial q-values, 6 -> q-values and state") 
      
     # Arguments for used inside the wireless UAV based enviornment  
     parser.add_argument("--num-user", type=int, default=100, help="number of user in defined environment")
@@ -377,6 +377,7 @@ class DQL:
             Q_next = self.target_network(next_state).detach().squeeze()
             if args.ce_next_state:
                 # Instead of utilizing the correlated next action using the value function using probs
+                # Issues with using CE for next state
                 value_next = torch.sum(torch.mul(Q_next, next_correlated_probs), 1)
 
                 target_Q = reward.squeeze() + self.gamma * value_next.view(batch_size, 1).squeeze() * done_local
@@ -571,10 +572,10 @@ if __name__ == "__main__":
                     # Normalization // numpy issues with float precision
                     correlated_probs /= correlated_probs.sum()
                     UAV_OB[k].correlated_probs = correlated_probs
-                    print("solution found")
+                    # print("solution found")
                 else:
                     UAV_OB[k].correlated_probs = (1/ UAV_OB[k].action_size ** NUM_UAV) * np.ones(UAV_OB[k].action_size ** NUM_UAV)
-                    print("solution not found")
+                    # print("solution not found")
                 
                 #########################################################
                 ''' Only one equilibria calculation // Can change if want a actually full distributed system
