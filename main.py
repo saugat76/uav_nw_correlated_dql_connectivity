@@ -42,12 +42,12 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 def parse_args():
     parser = argparse.ArgumentParser()
     # Arguments for the experiments name / run / setup and Weights and Biases
-    parser.add_argument("--exp-name", type=str, default="correlated_madql_uav_complex_cont", help="name of this experiment")
+    parser.add_argument("--exp-name", type=str, default="correlated_madql_uav", help="name of this experiment")
     parser.add_argument("--seed", type=int, default=1, help="seed of experiment to ensure reproducibility")
     parser.add_argument("--torch-deterministic", type= lambda x:bool(strtobool(x)), default=True, nargs="?", const=True, help="if toggeled, 'torch-backends.cudnn.deterministic=False'")
     parser.add_argument("--cuda", type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True, help="if toggled, cuda will be enabled by default")
     parser.add_argument("--wandb-track", type=lambda x: bool(strtobool(x)), default=False, help="if toggled, this experiment will be tracked with Weights and Biases project")
-    parser.add_argument("--wandb-name", type=str, default="uav_nw_correlated_dql_connectivity", help="project name in Weight and Biases")
+    parser.add_argument("--wandb-name", type=str, default="uav_nw_correlated_dql_connectivity_no_share", help="project name in Weight and Biases")
     parser.add_argument("--wandb-entity", type=str, default= None, help="entity(team) for Weights and Biases project")
 
     # Arguments specific to the Algotithm used 
@@ -55,7 +55,7 @@ def parse_args():
     parser.add_argument("--num-env", type=int, default=1, help="number of parallel environment")
     parser.add_argument("--num-episode", type=int, default=351, help="number of episode, default value till the trainning is progressed")
     parser.add_argument("--max-steps", type=int, default= 100, help="max number of steps/epoch use in every episode")
-    parser.add_argument("--learning-rate", type=float, default= 2.5e-4, help="learning rate of the dql alggorithm used by every agent")
+    parser.add_argument("--learning-rate", type=float, default= 3.5e-4, help="learning rate of the dql alggorithm used by every agent")
     parser.add_argument("--gamma", type=float, default= 0.95, help="discount factor used for the calculation of q-value, can prirotize future reward if kept high")
     parser.add_argument("--batch-size", type=int, default= 512, help="batch sample size used in a trainning batch")
     parser.add_argument("--epsilon", type=float, default= 0.1, help="epsilon to set the eploration vs exploitation")
@@ -290,8 +290,9 @@ class DQL:
                 p_excluded[k, :] = p_ind[excluded_idx_ar]
             Q_neg = np.array([p_ind]*UAV_OB[v].action_size).transpose() - p_excluded
             temp_cumulative = cvxpy.multiply(cvxpy.reshape(prob_weight, (action_size ** NUM_UAV, 1)), Q_neg)
-            add_constraint.append(temp_cumulative >= 0)
-
+            index_vec = self.indexing(v)
+            temp_cumulative = ([cvxpy.sum(temp_cumulative[index_vec[l]], 0) >= 0 for l in range(5)])
+            add_constraint  = add_constraint + temp_cumulative
 
         # Define the problem with constraints
         complete_constraint = [sum_func_constr, prob_constr_1, prob_constr_2] + add_constraint
@@ -499,11 +500,12 @@ if __name__ == "__main__":
         UAV_OB.append(DQL())
         action_values_ind = torch.arange(UAV_OB[k].action_size)
         action_profile = torch.stack(torch.meshgrid(*([action_values_ind] * NUM_UAV)), dim=-1).reshape(-1, NUM_UAV)
-        UAV_OB[k].action_profile = action_profile           
+        UAV_OB[k].action_profile = action_profile    
         # Each joint action can be extracted using the index value from the equilibrium and 
         # Independent action can be extracted using agents index
 
     best_result = 0
+    
     #################################################################################################################
     
 
@@ -734,10 +736,6 @@ if __name__ == "__main__":
         writer.add_scalar("params/learning_rate", UAV_OB[1].learning_rate, i_episode )
         writer.add_scalar("params/epsilon", UAV_OB[1].epsilon_thres, i_episode)
 
-        # Covered user per episode 
-        writer.add_scalar("chart/connected_users_per_episode", temp_data[6], i_episode)
-        if args.wandb_track:
-            wandb.log({"covererd_users_per_episode": temp_data[6], "episode_connected": i_episode})
         #############################################################################################################################################################
 
         
