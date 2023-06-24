@@ -168,6 +168,12 @@ class DQL:
         self.optimizer = torch.optim.Adam(self.main_network.parameters(), lr = self.learning_rate)
         self.loss_func = nn.SmoothL1Loss()                      # Huber Loss // Combines MSE and MAE
         self.steps_done = 0
+    
+    def indexing(self, agent_idx):
+        indices = np.zeros((self.action_size, self.action_size ** (NUM_UAV - 1)), dtype=np.int16)
+        for k in range(self.action_size):
+            indices[k,:] = np.where(self.action_profile[:, agent_idx] == k)[0]
+        return indices
 
     # Storing information of individual UAV information in their respective buffer
     def store_transition_ce_ns(self, state, action, reward, next_state, done, next_correlated_action):

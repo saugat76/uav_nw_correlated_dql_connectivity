@@ -311,13 +311,13 @@ class DQL:
             if opt_problem.status == "optimal":
                 # print("Found solution")
                 weights = prob_weight.value
-                print(weights)
-                print('Max Weight:', np.max(weights))
-                print("Best Joint Action:", np.argmax(weights))
-                print(time.time() - time1)
+                # print(weights)
+                # print('Max Weight:', np.max(weights))
+                # print("Best Joint Action:", np.argmax(weights))
+                # print(time.time() - time1)
             else:
                 weights = None
-                print("Failed to find an optimal solution")
+                # print("Failed to find an optimal solution")
         except:
             weights = None
         return weights
