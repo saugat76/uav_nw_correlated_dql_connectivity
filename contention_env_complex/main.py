@@ -213,38 +213,36 @@ class DQL:
     #################################################
     ######     Bruteforce Implementation     ########
     #################################################
-    # def correlated_equilibrium_bf(self, shared_q_values):
-    #     # Considering a deterministic system where the correleted action are fixed
-    #     # Bruteforcing thorugh all the available option for each UAV agent and check for constraint satisfaction
-    #     shared_q_values_np = shared_q_values.cpu().squeeze().numpy()
-    #     action_profile_local  = UAV_OB[0].action_profile.squeeze().cpu().numpy()
-    #     object_vec = np.zeros((UAV_OB[0].action_size ** NUM_UAV, NUM_UAV), dtype=np.float32)
-    #     for i in range(NUM_UAV):
-    #         for k in range(UAV_OB[0].action_size):
-    #             indices = np.where(action_profile[:, i] == k) 
-    #             object_vec[indices, i] = shared_q_values_np[i, k] 
-    #     max_ind = np.argsort(-np.sum(object_vec, axis=0))
-    #     for k in max_ind:
-    #         Q_Ai = np.zeros((NUM_UAV, UAV_OB[0].action_size))
-    #         # Go over all the joint action indices which gives the max sum of Q's -> Descending order
-    #         # Joint action value in form [0, 1, 1, 2, 3] from the joint action index
-    #         current_complete_action = action_profile_local[k, :]
-    #         # Extracting indices of the others except agent_idx
-    #         for agent_idx in range(NUM_UAV):
-    #             excluded_idx = np.arange(len(current_complete_action))[np.arange(len(current_complete_action)) != agent_idx]
-    #             # Extracting the indcies where A-i matches which corresponds to the action profile index where all 
-    #             # The value of current complete action matches excpet that of agent_idx
-    #             Ai_= np.where(np.all(action_profile_local[:, excluded_idx] == current_complete_action[excluded_idx], 1))[0]
-    #             Q_Ai[agent_idx, :] = shared_q_values_np[agent_idx, :][Ai_.astype(int)]
-    #         # Vectorizing the Q-value of of a single agent
-    #         q_val_mat = shared_q_values_np[:, k] * np.ones((NUM_UAV, Ai_.shape[0]))
-    #         diff_Q = q_val_mat.transpose() - Q_Ai
-    #         if np.all(diff_Q >= 0):
-    #             correlated_action_selected = k
-    #             correlated_probs = np.zeros(3125)
-    #             correlated_probs[correlated_action_selected]  = 1
-    #             return correlated_probs
-    #     return None
+    def correlated_equilibrium_bf(self, shared_q_values):
+        # Considering a deterministic system where the correleted action are fixed
+        # Bruteforcing thorugh all the available option for each UAV agent and check for constraint satisfaction
+        shared_q_values_np = shared_q_values.cpu().squeeze().numpy()
+        action_profile_local  = UAV_OB[0].action_profile.squeeze().cpu().numpy() 
+        max_ind = np.argsort(-np.sum(shared_q_values_np, axis=0))
+        for k in max_ind:
+            Q_Ai = np.zeros((NUM_UAV, UAV_OB[0].action_size))
+            # Go over all the joint action indices which gives the max sum of Q's -> Descending order
+            # Joint action value in form [0, 1, 1, 2, 3] from the joint action index
+            current_complete_action = action_profile_local[k, :]
+            # Extracting indices of the others except agent_idx
+            for agent_idx in range(NUM_UAV):
+                excluded_idx = np.arange(len(current_complete_action))[np.arange(len(current_complete_action)) != agent_idx]
+                # Extracting the indcies where A-i matches which corresponds to the action profile index where all 
+                # The value of current complete action matches excpet that of agent_idx
+                Ai_= np.where(np.all(action_profile_local[:, excluded_idx] == current_complete_action[excluded_idx], 1))[0]
+                Q_Ai[agent_idx, :] = shared_q_values_np[agent_idx, :][Ai_.astype(int)]
+            # Vectorizing the Q-value of of a single agent
+            q_val_mat = shared_q_values_np[:, k] * np.ones((NUM_UAV, Ai_.shape[0]))
+            diff_Q = q_val_mat.transpose() - Q_Ai
+            if np.all(diff_Q >= 0):
+                correlated_action_selected = k
+                correlated_probs = np.zeros(3125)
+                correlated_probs[correlated_action_selected]  = 1
+                print(correlated_probs)
+                print("best action, ", k)
+                return correlated_probs
+        print("no solution found")
+        return None
     ##############################################################################################################################################################
 
 
