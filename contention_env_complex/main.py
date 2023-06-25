@@ -215,7 +215,7 @@ class DQL:
     #################################################
     # def correlated_equilibrium_bf(self, shared_q_values):
     #     # Considering a deterministic system where the correleted action are fixed
-    #     # Bruteforcing thorugh all the available option for each UAV agent and check for constraint satisfaction4
+    #     # Bruteforcing thorugh all the available option for each UAV agent and check for constraint satisfaction
     #     shared_q_values_np = shared_q_values.cpu().squeeze().numpy()
     #     action_profile_local  = UAV_OB[0].action_profile.squeeze().cpu().numpy()
     #     object_vec = np.zeros((UAV_OB[0].action_size ** NUM_UAV, NUM_UAV), dtype=np.float32)
@@ -257,7 +257,6 @@ class DQL:
         # Joint action size = number of agents ^ action size // for a state 
         # Optimizing the joint action so setting as a variable for CE optimization 
         action_size = UAV_OB[0].action_size
-        action_profile = UAV_OB[0].action_profile.cpu().squeeze().numpy()
         prob_weight = Variable(( action_size ** NUM_UAV), pos = True)
 
         # Collect Q values for the corresponding states of each individual agents
@@ -266,12 +265,12 @@ class DQL:
         # Computation of expected payoff matrix 
         object_vec = np.zeros((action_size ** NUM_UAV, NUM_UAV), dtype=np.float32)
         for i in range(NUM_UAV):
-            for k in range(action_size):
-                indices = np.where(action_profile[:, i] == k) 
-                object_vec[indices, i] = q_complete[i, k] 
+            indices = self.indexing(i)
+            for k in range(action_size): 
+                object_vec[indices[k, :], i] = q_complete[i, k] 
 
-         # Maximize the sum of expected payoff (objective function)
-        object_func = Maximize(sum(prob_weight @ object_vec))
+        # Maximize the sum of expected payoff (objective function)
+        object_func = Maximize(cvxpy.sum(prob_weight @ object_vec))
 
         # Constraint 1: Sum of the Probabilities should be equal to 1 // should follow for all agents
         sum_func_constr = cvxpy.sum(prob_weight) == 1 
@@ -281,24 +280,30 @@ class DQL:
         prob_constr_2 = all(prob_weight) <= 1
 
         # Constraint 3: To verify, agents have no incentive to unilaterally deviate form equilibirum
+        
+        ## Direct approach //infeasible to solve
+        # add_constraint = []
+        # for i in range(NUM_UAV):
+        #     indices_i = self.indexing(i)
+        #     for k in range(self.action_size):
+        #         for l in range(self.action_size):
+        #             if k != l:
+        #                 utility_k = cvxpy.sum(prob_weight[indices_i[k, :]]) * q_complete[i, k]
+        #                 utility_l = cvxpy.sum(prob_weight[indices_i[l, :]]) * q_complete[i, l]
+        #                 add_constraint.append(utility_k >= utility_l)
+        
+        # Negating Probabilistic Approach
         add_constraint = []
-        payoff_mat = object_vec.transpose(1, 0)
-        ind_agent_local = np.arange(NUM_UAV)
-        combined_action_idx = np.arange(action_size**NUM_UAV)
-        for v in range(NUM_UAV):
-            p_ind = payoff_mat[v, :]
-            p_excluded = np.zeros((action_size**NUM_UAV, action_size))
-            excluded_idxs = ind_agent_local[ind_agent_local != v]
-            for k in range(action_size ** NUM_UAV):
-                current_complete_action = action_profile[k]
-                excluded_idx_ar = combined_action_idx[np.all(action_profile[:, excluded_idxs] == 
-                                                                   current_complete_action[excluded_idxs], 1)]
-                p_excluded[k, :] = p_ind[excluded_idx_ar]
-            Q_neg = np.array([p_ind]*UAV_OB[v].action_size).transpose() - p_excluded
-            temp_cumulative = cvxpy.multiply(cvxpy.reshape(prob_weight, (action_size ** NUM_UAV, 1)), Q_neg)
-            index_vec = self.indexing(v)
-            temp_cumulative = ([cvxpy.sum(temp_cumulative[index_vec[l]], 0) >= 0 for l in range(5)])
-            add_constraint  = add_constraint + temp_cumulative
+        for i in range(NUM_UAV):
+            indices_i = self.indexing(i)
+            Q_neg = np.zeros((action_size, action_size))
+            temp_constr = np.zeros((action_size, action_size))
+            for k in range(action_size):
+                for l in range(action_size):
+                    Q_neg[k, l] = (q_complete[i, k] - q_complete[i, l])
+                temp_constr = cvxpy.sum(cvxpy.sum(prob_weight[indices_i[k, :]]) * Q_neg[k, :])
+                add_constraint.append(temp_constr >= 0)
+
 
         # Define the problem with constraints
         complete_constraint = [sum_func_constr, prob_constr_1, prob_constr_2] + add_constraint
@@ -306,21 +311,17 @@ class DQL:
 
         # Solve the optimization problem using linear programming
         try:
-            opt_problem.solve()
-            print(opt_problem.status)
+            opt_problem.solve(solver=cvxpy.ECOS_BB)
             if opt_problem.status == "optimal":
-                # print("Found solution")
                 weights = prob_weight.value
-                # print(weights)
-                # print('Max Weight:', np.max(weights))
-                # print("Best Joint Action:", np.argmax(weights))
-                # print(time.time() - time1)
             else:
                 weights = None
-                # print("Failed to find an optimal solution")
         except:
             weights = None
+            print("Failed")
         return weights
+
+    
     #############################################################################################################################################################
     ##############################################################################################################################################################
 
@@ -382,6 +383,7 @@ class DQL:
 
             # Implementation of DQL algorithm 
             Q_next = self.target_network(next_state).detach().squeeze()
+
             if args.ce_next_state:
                 # Instead of utilizing the correlated next action using the value function using probs
                 # Issues with using CE for next state
@@ -498,7 +500,6 @@ if __name__ == "__main__":
     fig = plt.figure()
     gs = GridSpec(1, 1, figure=fig)
     ax1 = fig.add_subplot(gs[0:1, 0:1])
-
     # Create object of each UAV agent // Each agent is equpped with it's DQL system
     # Initialize action list for each UAV agent // output from the DQN and equilibria represents the indexes
     # Array to map those indexes to a joint action profile
