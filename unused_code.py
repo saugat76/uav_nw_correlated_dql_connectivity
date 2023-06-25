@@ -239,3 +239,24 @@ def correlated_equilibrium(self, shared_q_values, agent_idx):
             # print("Solution found")
             # print(correlated_action_selected)
             return correlated_action_selected
+        
+
+
+add_constraint = []
+        payoff_mat = object_vec.transpose(1, 0)
+        ind_agent_local = np.arange(NUM_UAV)
+        combined_action_idx = np.arange(action_size**NUM_UAV)
+        for v in range(NUM_UAV):
+            p_ind = payoff_mat[v, :]
+            p_excluded = np.zeros((action_size**NUM_UAV, action_size))
+            excluded_idxs = ind_agent_local[ind_agent_local != v]
+            for k in range(action_size ** NUM_UAV):
+                current_complete_action = action_profile[k]
+                excluded_idx_ar = combined_action_idx[np.all(action_profile[:, excluded_idxs] == 
+                                                                   current_complete_action[excluded_idxs], 1)]
+                p_excluded[k, :] = p_ind[excluded_idx_ar]
+            Q_neg = np.array([p_ind]*UAV_OB[v].action_size).transpose() - p_excluded
+            temp_cumulative = cvxpy.multiply(cvxpy.reshape(prob_weight, (action_size ** NUM_UAV, 1)), Q_neg)
+            index_vec = self.indexing(v)
+            temp_cumulative = ([cvxpy.sum(temp_cumulative[index_vec[l]], 0) >= 0 for l in range(5)])
+            add_constraint  = add_constraint + temp_cumulative

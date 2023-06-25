@@ -257,6 +257,7 @@ class DQL:
         # Joint action size = number of agents ^ action size // for a state 
         # Optimizing the joint action so setting as a variable for CE optimization 
         action_size = UAV_OB[0].action_size
+        action_profile = UAV_OB[0].action_profile.cpu().squeeze().numpy()
         prob_weight = Variable(( action_size ** NUM_UAV), pos = True)
 
         # Collect Q values for the corresponding states of each individual agents
@@ -265,11 +266,11 @@ class DQL:
         # Computation of expected payoff matrix 
         object_vec = np.zeros((action_size ** NUM_UAV, NUM_UAV), dtype=np.float32)
         for i in range(NUM_UAV):
-            indices = self.indexing(i)
-            for k in range(action_size): 
-                object_vec[indices[k, :], i] = q_complete[i, k] 
+            for k in range(action_size):
+                indices = np.where(action_profile[:, i] == k) 
+                object_vec[indices, i] = q_complete[i, k] 
 
-        # Maximize the sum of expected payoff (objective function)
+         # Maximize the sum of expected payoff (objective function)
         object_func = Maximize(cvxpy.sum(prob_weight @ object_vec))
 
         # Constraint 1: Sum of the Probabilities should be equal to 1 // should follow for all agents
@@ -280,29 +281,15 @@ class DQL:
         prob_constr_2 = all(prob_weight) <= 1
 
         # Constraint 3: To verify, agents have no incentive to unilaterally deviate form equilibirum
-        
-        ## Direct approach //infeasible to solve
-        # add_constraint = []
-        # for i in range(NUM_UAV):
-        #     indices_i = self.indexing(i)
-        #     for k in range(self.action_size):
-        #         for l in range(self.action_size):
-        #             if k != l:
-        #                 utility_k = cvxpy.sum(prob_weight[indices_i[k, :]]) * q_complete[i, k]
-        #                 utility_l = cvxpy.sum(prob_weight[indices_i[l, :]]) * q_complete[i, l]
-        #                 add_constraint.append(utility_k >= utility_l)
-        
-        # Negating Probabilistic Approach
         add_constraint = []
         for i in range(NUM_UAV):
             indices_i = self.indexing(i)
-            Q_neg = np.zeros((action_size, action_size))
-            temp_constr = np.zeros((action_size, action_size))
-            for k in range(action_size):
-                for l in range(action_size):
-                    Q_neg[k, l] = (q_complete[i, k] - q_complete[i, l])
-                temp_constr = cvxpy.sum(cvxpy.sum(prob_weight[indices_i[k, :]]) * Q_neg[k, :])
-                add_constraint.append(temp_constr >= 0)
+            for l in range(action_size):
+                for k in range(action_size):
+                    if l!= k:
+                        utility_l = cvxpy.sum((prob_weight[indices_i[l, :]]) * q_complete[i, l])
+                        utility_j = cvxpy.sum((prob_weight[indices_i[k, :]]) * q_complete[i, k])
+                        add_constraint.append(utility_l >= utility_j)
 
 
         # Define the problem with constraints
@@ -311,18 +298,25 @@ class DQL:
 
         # Solve the optimization problem using linear programming
         try:
-            opt_problem.solve(solver=cvxpy.ECOS_BB)
+            opt_problem.solve(solver=cvxpy.SCIPY, scipy_options={"method": "highs"})
+            # print(opt_problem.status)
             if opt_problem.status == "optimal":
+                # print("Found solution")
                 weights = prob_weight.value
+                print(weights)
+                print('Max Weight:', np.max(weights))
+                print("Best Joint Action:", np.argmax(weights))
+                print(time.time() - time1)
+                print("sum", sum(weights))
             else:
                 weights = None
+                print("Failed to find an optimal solution")
         except:
             weights = None
-            print("Failed")
         return weights
 
-    
-    #############################################################################################################################################################
+
+        #############################################################################################################################################################
     ##############################################################################################################################################################
 
 
@@ -387,7 +381,7 @@ class DQL:
             if args.ce_next_state:
                 # Instead of utilizing the correlated next action using the value function using probs
                 # Issues with using CE for next state
-                value_next = torch.sum(torch.mul(Q_next, next_correlated_probs), 1)
+                value_next = torch.sum(Q_next @ torch.sum(next_correlated_probs[:, self.indices_lp.view(5,625)], dim=2).transpose(1, 0), dim=1)
 
                 target_Q = reward.squeeze() + self.gamma * value_next.view(batch_size, 1).squeeze() * done_local
             else:
@@ -508,7 +502,8 @@ if __name__ == "__main__":
         UAV_OB.append(DQL())
         action_values_ind = torch.arange(UAV_OB[k].action_size)
         action_profile = torch.stack(torch.meshgrid(*([action_values_ind] * NUM_UAV)), dim=-1).reshape(-1, NUM_UAV)
-        UAV_OB[k].action_profile = action_profile           
+        UAV_OB[k].action_profile = action_profile        
+        UAV_OB[k].indices_lp = torch.LongTensor(UAV_OB[k].indexing(k).astype(int))
         # Each joint action can be extracted using the index value from the equilibrium and 
         # Independent action can be extracted using agents index
 
@@ -770,7 +765,7 @@ if __name__ == "__main__":
                         state = states[k, :]
                     elif args.info_exchange_lvl == 6:
                         state = states.flatten()
-                    choices = np.arange(0, UAV_OB[k].action_size, dtype=int)
+                    choices = np.arange(0, UAV_OB[k].combined_action_size, dtype=int)
                     state = torch.unsqueeze(torch.FloatTensor(state), 0)
                     q_values = UAV_OB[k].main_network(state)
                     shared_q_values[k, :]= q_values.detach()

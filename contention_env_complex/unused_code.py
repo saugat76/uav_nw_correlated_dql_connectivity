@@ -313,3 +313,62 @@ def correlated_equilibrium(self, shared_q_values, agent_idx):
 for k in range(UAV_OB[v].combined_action_size):
                 excluded_idx_ar = action_idx_arranged[action_profile_local[:, v] != action_profile_local[k, v]]
                 q_excluded.append(q_ind[excluded_idx_ar[k]])
+
+
+
+
+
+
+
+
+
+
+
+        # Older appraoch to use with joint action
+        # add_constraint = []
+        # payoff_mat = object_vec.transpose(1, 0)
+        # ind_agent_local = np.arange(NUM_UAV)
+        # combined_action_idx = np.arange(action_size**NUM_UAV)
+        # for v in range(NUM_UAV):
+        #     p_ind = payoff_mat[v, :]
+        #     p_excluded = np.zeros((action_size**NUM_UAV, action_size))
+        #     excluded_idxs = ind_agent_local[ind_agent_local != v]
+        #     for k in range(action_size ** NUM_UAV):
+        #         current_complete_action = action_profile[k]
+        #         excluded_idx_ar = combined_action_idx[np.all(action_profile[:, excluded_idxs] == 
+        #                                                            current_complete_action[excluded_idxs], 1)]
+        #         p_excluded[k, :] = p_ind[excluded_idx_ar]
+        #     Q_neg = np.array([p_ind]*UAV_OB[v].action_size).transpose() - p_excluded
+        #     temp_cumulative = cvxpy.multiply(cvxpy.reshape(prob_weight, (action_size ** NUM_UAV, 1)), Q_neg)
+        #     index_vec = self.indexing(v)
+        #     temp_cumulative = ([cvxpy.sum(temp_cumulative[index_vec[l]], 0) >= 0 for l in range(5)])
+        #     add_constraint  = add_constraint + temp_cumulative
+
+        # add_constraint = []
+        # for i in range(NUM_UAV):
+        #     indices_i = self.indexing(i)
+        #     Q_neg = np.zeros((action_size, action_size))
+        #     temp_constr = np.zeros((action_size, action_size))
+        #     for k in range(action_size):
+        #         for l in range(action_size):
+        #             Q_neg[k, l] = (q_complete[i, k] - q_complete[i, l])
+        #         temp_constr = cvxpy.sum(cvxpy.sum(prob_weight[indices_i[k, :]]) * Q_neg[k, :])
+        #         add_constraint.append(temp_constr >= 0)
+
+
+        # add_constraint = []
+        # payoff_mat = object_vec.transpose(1, 0)
+        # ind_agent_local = np.arange(NUM_UAV)
+        # combined_action_idx = np.arange(action_size**NUM_UAV)
+        # for v in range(NUM_UAV):
+        #     p_ind = payoff_mat[v, :]
+        #     p_excluded = np.zeros((action_size**NUM_UAV, action_size))
+        #     excluded_idxs = ind_agent_local[ind_agent_local != v]
+        #     for k in range(action_size ** NUM_UAV):
+        #         current_complete_action = action_profile[k]
+        #         excluded_idx_ar = combined_action_idx[np.all(action_profile[:, excluded_idxs] == 
+        #                                                            current_complete_action[excluded_idxs], 1)]
+        #         p_excluded[k, :] = p_ind[excluded_idx_ar]
+        #     Q_neg = np.array([p_ind]*UAV_OB[v].action_size).transpose() - p_excluded
+        #     temp_cumulative = prob_weight @ Q_neg
+        #     add_constraint.append(temp_cumulative >= 0)
