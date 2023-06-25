@@ -105,17 +105,17 @@ def parse_args():
 
 class NeuralNetwork(nn.Module):
     # NN is set to have same structure for all lvl of info exchange in this setup
-    def __init__(self, state_size, action_size):
+    def __init__(self, state_size, combined_action_size):
         super(NeuralNetwork, self).__init__()
         self.state_size = state_size
-        self.action_size = action_size
+        self.combined_action_size = combined_action_size
         if args.layers == 2:
             self.linear_stack = model = nn.Sequential(
                 nn.Linear(self.state_size, args.nodes),
                 nn.ReLU(),
                 nn.Linear(args.nodes, args.nodes),
                 nn.ReLU(),
-                nn.Linear(args.nodes, self.action_size)
+                nn.Linear(args.nodes, self.combined_action_size)
             ).to(device=device)
         elif args.layers == 3:
             self.linear_stack = model = nn.Sequential(
@@ -125,7 +125,7 @@ class NeuralNetwork(nn.Module):
             nn.ReLU(),
             nn.Linear(args.nodes, args.nodes),
             nn.ReLU(),
-            nn.Linear(args.nodes, self.action_size)
+            nn.Linear(args.nodes, self.combined_action_size)
         ).to(device=device)
 
     def forward(self, x):
@@ -162,8 +162,8 @@ class DQL:
         self.epsilon_thres = epsilon
         self.epsilon_decay = epsilon_decay
         self.learning_rate = alpha
-        self.main_network = NeuralNetwork(self.state_size, self.action_size).to(device)
-        self.target_network = NeuralNetwork(self.state_size, self.action_size).to(device)
+        self.main_network = NeuralNetwork(self.state_size, self.combined_action_size).to(device)
+        self.target_network = NeuralNetwork(self.state_size, self.combined_action_size).to(device)
         self.target_network.load_state_dict(self.main_network.state_dict())
         self.optimizer = torch.optim.Adam(self.main_network.parameters(), lr = self.learning_rate)
         self.loss_func = nn.SmoothL1Loss()                      # Huber Loss // Combines MSE and MAE
@@ -257,21 +257,22 @@ class DQL:
         # Joint action size = number of agents ^ action size // for a state 
         # Optimizing the joint action so setting as a variable for CE optimization 
         action_size = UAV_OB[0].action_size
+        combined_action_size = UAV_OB[0].combined_action_size
         action_profile = UAV_OB[0].action_profile.cpu().squeeze().numpy()
         prob_weight = Variable(( action_size ** NUM_UAV), pos = True)
 
         # Collect Q values for the corresponding states of each individual agents
-        q_complete = shared_q_values.cpu().squeeze().numpy()
+        q_complete = shared_q_values.cpu().squeeze().numpy().transpose(1, 0)
 
         # Computation of expected payoff matrix 
-        object_vec = np.zeros((action_size ** NUM_UAV, NUM_UAV), dtype=np.float32)
-        for i in range(NUM_UAV):
-            for k in range(action_size):
-                indices = np.where(action_profile[:, i] == k) 
-                object_vec[indices, i] = q_complete[i, k] 
+        # object_vec = np.zeros((action_size ** NUM_UAV, NUM_UAV), dtype=np.float32)
+        # for i in range(NUM_UAV):
+        #     for k in range(action_size):
+        #         indices = np.where(action_profile[:, i] == k) 
+        #         object_vec[indices, i] = q_complete[i, k] 
 
          # Maximize the sum of expected payoff (objective function)
-        object_func = Maximize(cvxpy.sum(prob_weight @ object_vec))
+        object_func = Maximize(cvxpy.sum(prob_weight @ q_complete))
 
         # Constraint 1: Sum of the Probabilities should be equal to 1 // should follow for all agents
         sum_func_constr = cvxpy.sum(prob_weight) == 1 
@@ -287,8 +288,8 @@ class DQL:
             for l in range(action_size):
                 for k in range(action_size):
                     if l!= k:
-                        utility_l = cvxpy.sum((prob_weight[indices_i[l, :]]) * q_complete[i, l])
-                        utility_j = cvxpy.sum((prob_weight[indices_i[k, :]]) * q_complete[i, k])
+                        utility_l = cvxpy.sum((prob_weight[indices_i[l, :]] @ q_complete[indices_i[l, :], i]))
+                        utility_j = cvxpy.sum((prob_weight[indices_i[k, :]] @ q_complete[indices_i[k, :], i]))
                         add_constraint.append(utility_l >= utility_j)
 
 
@@ -381,8 +382,8 @@ class DQL:
             if args.ce_next_state:
                 # Instead of utilizing the correlated next action using the value function using probs
                 # Issues with using CE for next state
-                value_next = torch.sum(Q_next @ torch.sum(next_correlated_probs[:, self.indices_lp.view(5,625)], dim=2).transpose(1, 0), dim=1)
-
+                # value_next = torch.sum(Q_next @ torch.sum(next_correlated_probs[:, self.indices_lp.view(5,625)], dim=2).transpose(1, 0), dim=1)
+                value_next = torch.sum(Q_next @ next_correlated_probs.transpose(1, 0), dim=1)
                 target_Q = reward.squeeze() + self.gamma * value_next.view(batch_size, 1).squeeze() * done_local
             else:
                 target_Q = reward.squeeze() + self.gamma * Q_next.max(1)[0].view(batch_size, 1).squeeze() * done_local
@@ -538,7 +539,7 @@ if __name__ == "__main__":
             # Determining the actions for all drones // states are shared among UAVs
             # Sharing of Q-values is also completed in this loop
             # Intialization of shared_q_value variable 
-            shared_q_values = torch.zeros(NUM_UAV, UAV_OB[1].action_size)
+            shared_q_values = torch.zeros(NUM_UAV, UAV_OB[1].combined_action_size)
 
             states_ten = torch.from_numpy(states)
             shared_state = states_ten.numpy().flatten()
@@ -622,7 +623,7 @@ if __name__ == "__main__":
             # Used during the training // corresponding action for target Q value
             # Intialization of next shared_q_value variable 
             if args.ce_next_state:
-                next_shared_q_values_local = torch.zeros(NUM_UAV, UAV_OB[0].action_size)
+                next_shared_q_values_local = torch.zeros(NUM_UAV, UAV_OB[0].combined_action_size)
                 next_states_ten_local = torch.from_numpy(next_state)
                 shared_state_local = next_states_ten_local.numpy().flatten()
                 next_state_ten = torch.FloatTensor(next_state)
