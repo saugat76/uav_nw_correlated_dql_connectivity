@@ -64,8 +64,8 @@ def parse_args():
     parser.add_argument("--epsilon-min", type=float, default=0.1, help="maximum value of exploration-exploitation paramter, only used when epsilon deacay is set to True")
     parser.add_argument("--epsilon-decay", type=lambda x: bool(strtobool(x)), default=False, help="epsilon decay is used, explotation is prioritized at early episodes and on later epsidoe exploitation is prioritized, by default set to False")
     parser.add_argument("--epsilon-decay-steps", type=int, default=1, help="set the rate at which is the epsilon is deacyed, set value equates number of steps at which the epsilon reaches minimum")
-    parser.add_argument("--layers", type=int, default=2, help="set the number of layers for the target and main neural network")
-    parser.add_argument("--nodes", type=int, default=400, help="set the number of nodes for the target and main neural network layers")
+    parser.add_argument("--layers", type=int, default=3, help="set the number of layers for the target and main neural network")
+    parser.add_argument("--nodes", type=int, default=512, help="set the number of nodes for the target and main neural network layers")
     parser.add_argument("--seed-sync", type=lambda x: bool(strtobool(x)), default=False, help="synchronize the seed value among agents, by default set to False")
 
     # Environment specific argumentstype=lambda x: bool(strtobool(x)), default=False, help=
@@ -86,8 +86,8 @@ def parse_args():
     parser.add_argument("--uav-dis-th", type=int, default=1000, help="distance value that defines which uav agent share info")
     parser.add_argument("--dist-pri-param", type=float, default=1/5, help="distance penalty priority parameter used in level 3 info exchange")
     parser.add_argument("--reward-func", type=int, default=1, help="reward func used 1-> global reward across agents, 2-> independent reward")
-    parser.add_argument("--connectivity-threshold", type=int, default=70, help="if connectivity threshold not satisfied, penalize reward, in percentage")
-    parser.add_argument("--connectivity-penalty", type=int, default=2, help="penalty value if threshold is not satisfied")
+    parser.add_argument("--coverage-threshold", type=int, default=70, help="if coverage threshold not satisfied, penalize reward, in percentage")
+    parser.add_argument("--coverage-penalty", type=int, default=2, help="penalty value if threshold is not satisfied")
 
     parser.add_argument("--ce", type=str, default='lp', help="computation of ce 'lp'-> linear programming , 'bf'-> bruteforce")
     parser.add_argument("--ce-next-state", type=lambda x: bool(strtobool(x)), default=False, help="use ce of next state in target-q computation")
@@ -635,7 +635,7 @@ if __name__ == "__main__":
                         next_state_local = next_states_ten_local.flatten()
                     next_state_local = next_state_local.float()
                     next_state_local = torch.unsqueeze(torch.FloatTensor(next_state_local), 0)
-                    next_q_values_local = UAV_OB[k].target_network(next_state_local)
+                    next_q_values_local = UAV_OB[k].main_network(next_state_local)
                     next_shared_q_values_local[k, :]= next_q_values_local.detach()
 
                 #########################################################
@@ -881,6 +881,7 @@ if __name__ == "__main__":
     print("Best State")
     print(best_state)
     print("Total Connected User (Best Outcome)", best_result)
+
 
     writer.add_figure("images/uav_users_best", fig_4)
     writer.add_text(
