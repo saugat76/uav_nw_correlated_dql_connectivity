@@ -79,8 +79,8 @@ def parse_args():
     parser.add_argument("--uav-dis-th", type=int, default=1000, help="distance value that defines which uav agent share info")
     parser.add_argument("--dist-pri-param", type=float, default=1/5, help="distance penalty priority parameter used in level 3 info exchange")
     parser.add_argument("--reward-func", type=int, default=1, help="reward func used 1-> global reward across agents, 2-> independent reward")
-    parser.add_argument("--coverage-threshold", type=int, default=75, help="if coverage threshold not satisfied, penalize reward, in percentage")
-    parser.add_argument("--coverage-penalty", type=int, default=10, help="penalty value if threshold is not satisfied")
+    parser.add_argument("--coverage-threshold", type=int, default=70, help="if coverage threshold not satisfied, penalize reward, in percentage")
+    parser.add_argument("--coverage-penalty", type=int, default=2, help="penalty value if threshold is not satisfied")
 
 
     args = parser.parse_args()
@@ -538,9 +538,9 @@ if __name__ == "__main__":
                         wandb.log({f"loss__{k}" : UAV_OB[k].loss})
 
             # Keeping track of covered users every time step to ensure the hard coded value is satisfied
-            writer.add_scalar("chart/covered_users_per_timestep", temp_data[6], (i_episode * max_epochs + t))
+            writer.add_scalar("chart/connected_users_per_timestep", temp_data[6], (i_episode * max_epochs + t))
             if args.wandb_track:
-                wandb.log({"covererd_users_per_timestep": temp_data[6], "timestep": (i_episode * max_epochs + t) })
+                wandb.log({"connected_users_per_timestep": temp_data[6], "timestep": (i_episode * max_epochs + t) })
             
             # # If all UAVs are done the program_done is True
             done_program = all(done)
