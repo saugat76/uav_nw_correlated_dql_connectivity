@@ -60,7 +60,7 @@ def parse_args():
     parser.add_argument("--batch-size", type=int, default= 512, help="batch sample size used in a trainning batch")
     parser.add_argument("--epsilon", type=float, default= 0.1, help="epsilon to set the eploration vs exploitation")
     parser.add_argument("--update-rate", type=int, default= 10, help="steps at which the target network updates it's parameter from main network")
-    parser.add_argument("--buffer-size", type=int, default=125000, help="size of replay buffer of each individual agent")
+    parser.add_argument("--buffer-size", type=int, default=500000, help="size of replay buffer of each individual agent")
     parser.add_argument("--epsilon-min", type=float, default=0.1, help="maximum value of exploration-exploitation paramter, only used when epsilon deacay is set to True")
     parser.add_argument("--epsilon-decay", type=lambda x: bool(strtobool(x)), default=False, help="epsilon decay is used, explotation is prioritized at early episodes and on later epsidoe exploitation is prioritized, by default set to False")
     parser.add_argument("--epsilon-decay-steps", type=int, default=1, help="set the rate at which is the epsilon is deacyed, set value equates number of steps at which the epsilon reaches minimum")
@@ -86,8 +86,8 @@ def parse_args():
     parser.add_argument("--uav-dis-th", type=int, default=1000, help="distance value that defines which uav agent share info")
     parser.add_argument("--dist-pri-param", type=float, default=1/5, help="distance penalty priority parameter used in level 3 info exchange")
     parser.add_argument("--reward-func", type=int, default=1, help="reward func used 1-> global reward across agents, 2-> independent reward")
-    parser.add_argument("--connectivity-threshold", type=int, default=75, help="if connectivity threshold not satisfied, penalize reward, in percentage")
-    parser.add_argument("--connectivity-penalty", type=int, default=5, help="penalty value if threshold is not satisfied")
+    parser.add_argument("--connectivity-threshold", type=int, default=70, help="if connectivity threshold not satisfied, penalize reward, in percentage")
+    parser.add_argument("--connectivity-penalty", type=int, default=2, help="penalty value if threshold is not satisfied")
 
     parser.add_argument("--ce", type=str, default='lp', help="computation of ce 'lp'-> linear programming , 'bf'-> bruteforce")
     parser.add_argument("--ce-next-state", type=lambda x: bool(strtobool(x)), default=False, help="use ce of next state in target-q computation")
@@ -154,7 +154,7 @@ class DQL:
         self.action_size = 5
         self.combined_action_size = self.action_size ** NUM_UAV
         self.combined_state_size = NUM_UAV * self.state_size
-        self.replay_buffer = deque(maxlen = 125000)
+        self.replay_buffer = deque(maxlen = 500000)
         self.gamma = discount_factor
         self.epsilon = epsilon
         self.epsilon_min = epsilon_min
