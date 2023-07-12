@@ -57,8 +57,8 @@ def parse_args():
     parser.add_argument("--epsilon-min", type=float, default=0.1, help="maximum value of exploration-exploitation paramter, only used when epsilon deacay is set to True")
     parser.add_argument("--epsilon-decay", type=lambda x: bool(strtobool(x)), default=False, help="epsilon decay is used, explotation is prioritized at early episodes and on later epsidoe exploitation is prioritized, by default set to False")
     parser.add_argument("--epsilon-decay-steps", type=int, default=1, help="set the rate at which is the epsilon is deacyed, set value equates number of steps at which the epsilon reaches minimum")
-    parser.add_argument("--layers", type=int, default=2, help="set the number of layers for the target and main neural network")
-    parser.add_argument("--nodes", type=int, default=400, help="set the number of nodes for the target and main neural network layers")
+    parser.add_argument("--layers", type=int, default=3, help="set the number of layers for the target and main neural network")
+    parser.add_argument("--nodes", type=int, default=512, help="set the number of nodes for the target and main neural network layers")
     parser.add_argument("--seed-sync", type=lambda x: bool(strtobool(x)), default=False, help="synchronize the seed value among agents, by default set to False")
 
     # Environment specific arguments
@@ -78,7 +78,7 @@ def parse_args():
     parser.add_argument("--grid-space", type=int, default=100, help="seperating space for grid")
     parser.add_argument("--uav-dis-th", type=int, default=1000, help="distance value that defines which uav agent share info")
     parser.add_argument("--dist-pri-param", type=float, default=1/5, help="distance penalty priority parameter used in level 3 info exchange")
-    parser.add_argument("--reward-func", type=int, default=1, help="reward func used 1-> global reward across agents, 2-> independent reward")
+    parser.add_argument("--reward-func", type=int, default=2, help="reward func used 1-> global reward across agents, 2-> independent reward")
     parser.add_argument("--connectivity-threshold", type=int, default=75, help="if coverage threshold not satisfied, penalize reward, in percentage")
     parser.add_argument("--connectivity-penalty", type=int, default=5, help="penalty value if threshold is not satisfied")
 
@@ -443,6 +443,7 @@ if __name__ == "__main__":
                 drone_act_list = action_selected.tolist()
                 for k in range(NUM_UAV-1):
                     action_selected_list.append(action)
+                    UAV_OB[k].next_correlated_choice = next_correlated_choice
                 # # If removed this need to adjust the store_transition function to action = correlated_action_list[k]
                 break
                 ########################################################
