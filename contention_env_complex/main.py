@@ -80,7 +80,7 @@ def parse_args():
     parser.add_argument("--dist-pri-param", type=float, default=1/5, help="distance penalty priority parameter used in level 3 info exchange")
     parser.add_argument("--reward-func", type=int, default=1, help="reward func used 1-> global reward across agents, 2-> independent reward")
     parser.add_argument("--coverage-threshold", type=int, default=75, help="if coverage threshold not satisfied, penalize reward, in percentage")
-    parser.add_argument("--coverage-penalty", type=int, default=10, help="penalty value if threshold is not satisfied")
+    parser.add_argument("--coverage-penalty", type=int, default=5, help="penalty value if threshold is not satisfied")
 
 
     args = parser.parse_args()
@@ -88,7 +88,7 @@ def parse_args():
     return args
 
 # GPU configuration use for faster processing
-device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # DNN modeling
 class NeuralNetwork(nn.Module):
@@ -510,7 +510,7 @@ if __name__ == "__main__":
                 done_individual = done[k]
                 if args.reward_func == 1:
                     reward_ind = reward
-                elif args.reward_func == 2:
+                elif args.reward_func in  [2, 3]:
                     reward_ind = reward[k]
                 UAV_OB[k].store_transition(state, action, reward_ind, next_sta, done_individual, next_correlated_choice)
 

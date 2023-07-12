@@ -150,6 +150,31 @@ class UAVenv(gym.Env):
                                                                                         (self.state[i, 1] * self.grid_space)) ** 2)
         max_rb_num = self.ACTUAL_BW_UAV / self.BW_RB
 
+        ##############################################
+        ## UAV Buffer to Penalize the Reward Value  ##
+        ##############################################
+
+        # Calculation of the distance between the UAVs
+        # Based on these value another penalty of the reward will be condidered
+        # This is done to increase the spacing beteween the UAVs 
+        # Can be thought as the exchange of the UAVs postition information
+        # As the distance between the neighbour (in this case all) UAV is use to reduce the overlapping region
+        dist_uav_uav = np.zeros(shape=(self.NUM_UAV, self.NUM_UAV), dtype="float32")
+        for k in range(self.NUM_UAV):
+            for l in range(self.NUM_UAV):
+                dist_uav_uav[k, l] = math.sqrt(((self.state[l, 0] - self.state[k, 0]) * self.grid_space) ** 2 + ((self.state[l, 1] -
+                                                                                        self.state[k, 1]) * self.grid_space) ** 2)
+
+        penalty_overlap = np.zeros(shape=(self.NUM_UAV, 1), dtype="float32")
+        max_overlap_penalty = self.dis_penalty_pri *(self.NUM_USER / self.NUM_UAV)
+        for k in range(self.NUM_UAV):
+            temp_penalty = 0
+            for l in range(self.NUM_UAV):
+                if k != l:
+                    temp_penalty = max(0, ((2*self.coverage_radius - dist_uav_uav[k, l]) / (2*self.coverage_radius)) * max_overlap_penalty)
+                    penalty_overlap[k] += temp_penalty  
+
+
         ######################
         ## Final Algorithm  ##
         ######################
@@ -222,14 +247,7 @@ class UAVenv(gym.Env):
         #####    Penalize if coverage threshold not achieved    #####
         ##############################################################
         # Reward value of each individual UAV is penalized if the total coverage threshold is not achieved
-        total_covered_users = 0
-        covered_user_flag = np.zeros((self.NUM_USER))
-        for j in range(self.NUM_USER):
-            if covered_user_flag[j] == 0:
-                for i in range(self.NUM_UAV): 
-                     if dist_u_uav[i, j] <= self.coverage_radius:
-                        covered_user_flag[j] = 1
-                        total_covered_users += 1
+        total_covered_users = np.sum(sum_user_assoc)
         
         # Need to work on the return parameter of done, info, reward, and obs
         # Calculation of reward function too i.e. total bandwidth providednew to the user
@@ -268,6 +286,20 @@ class UAVenv(gym.Env):
                     reward_solo[k] = np.copy(sum_user_assoc[k])
                 if ((total_covered_users/self.NUM_USER)*100) <= self.args.coverage_threshold:
                     reward_solo[k] = np.copy(reward_solo[k] - self.args.coverage_penalty)
+            reward = np.copy(reward_solo)
+
+        # Performance compariosion with older level 3
+        if self.args.reward_func == 3:
+            isDone = np.full((self.NUM_UAV), False)
+            sum_user_assoc = np.sum(user_asso_flag, axis = 1)
+            reward_solo = np.zeros(np.size(sum_user_assoc), dtype = "float32")
+            penalty_overlap = penalty_overlap.flatten()
+            for k in range(self.NUM_UAV):
+                if self.flag[k] != 0:
+                    reward_solo[k] = np.copy(sum_user_assoc[k] - 2) - penalty_overlap[k]
+                else:
+                    reward_solo[k] = (sum_user_assoc[k] - penalty_overlap[k])
+            # Calculation of reward based in the change in the number of connected user
             reward = np.copy(reward_solo)
 
         # Return of obs, reward, done, info
