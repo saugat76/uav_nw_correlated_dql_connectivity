@@ -425,6 +425,8 @@ if __name__ == "__main__":
                     UAV_OB[k].correlated_choice = correlated_actions
                 else:
                     UAV_OB[k].correlated_choice = np.random.randint(0, UAV_OB[k].action_size ** NUM_UAV, dtype=int)  
+                # Action of next state for target q-computation is from this state
+                UAV_OB[k].next_correlated_choice = UAV_OB[k].correlated_choice
                 action = UAV_OB[k].epsilon_greedy(k, state)
 
                 action_selected_list.append(action)
@@ -461,34 +463,34 @@ if __name__ == "__main__":
             ############################################################
             # Used during the training // corresponding action for target Q value
             # Intialization of next shared_q_value variable 
-            next_shared_q_values_local = torch.zeros(NUM_UAV, UAV_OB[1].combined_action_size)
-            next_states_ten_local = torch.from_numpy(next_state)
-            shared_state_local = next_states_ten_local.numpy().flatten()
-            next_state_ten = torch.FloatTensor(next_state)
-            # To simplify is programming calculating once and sharing among UAVs
-            # Sharing of the Q-values
-            for k in range(NUM_UAV):
-                if args.info_exchange_lvl == 5:
-                    next_state_local = next_states_ten_local[k, :]
-                elif args.info_exchange_lvl == 6:
-                    next_state_local = next_states_ten_local.flatten()
-                next_state_local = next_state_local.float()
-                next_state_local = torch.unsqueeze(torch.FloatTensor(next_state_local), 0)
-                next_q_values_local = UAV_OB[k].main_network(state)
-                next_shared_q_values_local[k, :]= next_q_values_local.detach()
+            # Not needed as the correlated action value of the previous sate gives the best result
+            # next_shared_q_values_local = torch.zeros(NUM_UAV, UAV_OB[1].combined_action_size)
+            # next_states_ten_local = torch.from_numpy(next_state)
+            # shared_state_local = next_states_ten_local.numpy().flatten()
+            # next_state_ten = torch.FloatTensor(next_state)
+            # # To simplify is programming calculating once and sharing among UAVs
+            # # Sharing of the Q-values
+            # for k in range(NUM_UAV):
+            #     if args.info_exchange_lvl == 5:
+            #         next_state_local = next_states_ten_local[k, :]
+            #     elif args.info_exchange_lvl == 6:
+            #         next_state_local = next_states_ten_local.flatten()
+            #     next_state_local = next_state_local.float()
+            #     next_state_local = torch.unsqueeze(torch.FloatTensor(next_state_local), 0)
+            #     # Previous problem was with this line passing the original state however, this produced best result
+            #     next_q_values_local = UAV_OB[k].main_network(state)
+            #     next_shared_q_values_local[k, :]= next_q_values_local.detach()
 
-            #########################################################
-            ## For simplicity of program computing correlated equilibrium of next state only once
-            # Only one equilibria calculation // Can change if want a actually full distributed system
-            next_correlated_action = UAV_OB[k].correlated_equilibrium(next_shared_q_values_local)
-            if next_correlated_action is not None:
-                next_correlated_choice = next_correlated_action
-                next_correlated_choice = next_correlated_choice
-            else:
-                next_correlated_choice = np.random.randint(0, UAV_OB[k].action_size ** NUM_UAV, (1,), dtype =np.int16)
-            #########################################################
-
-                
+            # #########################################################
+            # ## For simplicity of program computing correlated equilibrium of next state only once
+            # # Only one equilibria calculation // Can change if want a actually full distributed system
+            # next_correlated_action = UAV_OB[k].correlated_equilibrium(next_shared_q_values_local)
+            # if next_correlated_action is not None:
+            #     next_correlated_choice = next_correlated_action
+            #     next_correlated_choice = next_correlated_choice
+            # else:
+            #     next_correlated_choice = np.random.randint(0, UAV_OB[k].action_size ** NUM_UAV, (1,), dtype =np.int16)
+            # #########################################################
 
             # This is not optimized for the actual completion of the epsiode
             # Computation of other condition for done information
@@ -508,6 +510,7 @@ if __name__ == "__main__":
                     next_sta = next_state.flatten()
                 action = action_selected_list[k]
                 done_individual = done[k]
+                next_correlated_choice = UAV_OB[k].next_correlated_choice
                 if args.reward_func == 1:
                     reward_ind = reward
                 elif args.reward_func in  [2, 3]:
