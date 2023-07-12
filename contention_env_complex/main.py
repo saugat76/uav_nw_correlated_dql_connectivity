@@ -412,6 +412,10 @@ if __name__ == "__main__":
                 seed_state = random.getstate()
                 np_seed_state = np.random.get_state()
                 torch_seed_state = torch.seed()
+            
+            # Correlated action computed once 
+            # For complete distrubuted processing initializing inside the loop
+            correlated_actions = UAV_OB[0].correlated_equilibrium(shared_q_values)
 
             for k in range(NUM_UAV):
 
@@ -419,8 +423,7 @@ if __name__ == "__main__":
                 if args.seed_sync:
                     seeding_sync(seed_state, np_seed_state, torch_seed_state)
                 # Note: seed synchronization might be creating the problem as it wont allow other agents to explore separately
-
-                correlated_actions = UAV_OB[k].correlated_equilibrium(shared_q_values)
+                
                 if correlated_actions is not None:
                     UAV_OB[k].correlated_choice = correlated_actions
                 else:
@@ -440,12 +443,7 @@ if __name__ == "__main__":
                 # Trying a shortcut // Since the correlated action selection gives same results for all agents
                 # Instead of computing in loop using the same value to see faster output
                 # There is another section before store _transition function which also needs to be commented if we want to remove this 
-                drone_act_list = action_selected.tolist()
-                for k in range(NUM_UAV-1):
-                    action_selected_list.append(action)
-                    UAV_OB[k].next_correlated_choice = next_correlated_choice
                 # # If removed this need to adjust the store_transition function to action = correlated_action_list[k]
-                break
                 ########################################################
                 
                 # Individual action from the correleted joint action
