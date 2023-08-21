@@ -85,9 +85,9 @@ def parse_args():
     parser.add_argument("--grid-space", type=int, default=100, help="seperating space for grid")
     parser.add_argument("--uav-dis-th", type=int, default=1000, help="distance value that defines which uav agent share info")
     parser.add_argument("--dist-pri-param", type=float, default=1/5, help="distance penalty priority parameter used in level 3 info exchange")
-    parser.add_argument("--reward-func", type=int, default=1, help="reward func used 1-> global reward across agents, 2-> independent reward")
-    parser.add_argument("--coverage-threshold", type=int, default=70, help="if coverage threshold not satisfied, penalize reward, in percentage")
-    parser.add_argument("--coverage-penalty", type=int, default=2, help="penalty value if threshold is not satisfied")
+    parser.add_argument("--reward-func", type=int, default=2, help="reward func used 1-> global reward across agents, 2-> independent reward")
+    parser.add_argument("--connectivity-threshold", type=int, default=75, help="if coverage threshold not satisfied, penalize reward, in percentage")
+    parser.add_argument("--connectivity-penalty", type=int, default=5, help="penalty value if threshold is not satisfied")
 
     parser.add_argument("--ce", type=str, default='lp', help="computation of ce 'lp'-> linear programming , 'bf'-> bruteforce")
     parser.add_argument("--ce-next-state", type=lambda x: bool(strtobool(x)), default=False, help="use ce of next state in target-q computation")
@@ -95,7 +95,8 @@ def parse_args():
 
     return args
 
-###############################################################################################################################################################
+# GPU configuration use for faster processing
+device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 
 
 
@@ -558,26 +559,28 @@ if __name__ == "__main__":
                 seed_state = random.getstate()
                 np_seed_state = np.random.get_state()
                 torch_seed_state = torch.seed()
+            
+            # Correlated action computed once 
+            # For complete distrubuted processing initializing inside the loop
+            correlated_actions = UAV_OB[0].correlated_equilibrium(shared_q_values)
 
             for k in range(NUM_UAV):
                 # Synchronization of seeding between agents // Synchronize randomness using same seed
                 if args.seed_sync:
                     seeding_sync(seed_state, np_seed_state, torch_seed_state)
                 # Note: seed synchronization might be creating the problem as it wont allow other agents to explore separately
-                
-                if args.ce == "lp":
-                    correlated_probs = UAV_OB[k].correlated_equilibrium_lp(shared_q_values)
-                elif args.ce == "bf":
-                    correlated_probs = UAV_OB[k].correlated_equilibrium_bf(shared_q_values)
 
-                if correlated_probs is not None:
-                    # Normalization // numpy issues with float precision
-                    correlated_probs /= correlated_probs.sum()
-                    UAV_OB[k].correlated_probs = correlated_probs
-                    # print("solution found")
+                correlated_actions = UAV_OB[k].correlated_equilibrium(shared_q_values)
+                if correlated_actions is not None:
+                    UAV_OB[k].correlated_choice = correlated_actions
                 else:
-                    UAV_OB[k].correlated_probs = (1/ UAV_OB[k].action_size ** NUM_UAV) * np.ones(UAV_OB[k].action_size ** NUM_UAV)
-                    # print("solution not found")
+                    UAV_OB[k].correlated_choice = np.random.randint(0, UAV_OB[k].action_size ** NUM_UAV, dtype=int)  
+                action = UAV_OB[k].epsilon_greedy(k, state)
+
+                action_selected_list.append(action)
+                # Action of the individual agent from the correlated action list
+                # Correlated joint action // computed by individual agent
+                action_selected = np.copy(UAV_OB[k].action_profile[action])
                 
                 #########################################################
                 ''' Only one equilibria calculation // Can change if want a actually full distributed system
@@ -591,7 +594,6 @@ if __name__ == "__main__":
                     else:
                         UAV_OB[k].correlated_probs = (1/ UAV_OB[k].action_size ** NUM_UAV) * np.ones(UAV_OB[k].action_size ** NUM_UAV)
                 # # If removed this need to adjust the store_transition function to action = correlated_action_list[k]
-                break
                 ########################################################
 
 
@@ -674,9 +676,10 @@ if __name__ == "__main__":
                 # Action stored should be the action that was taken // so either sync or compute for all
                 action = UAV_OB[k].action_profile[action_selected_list[k]][k]
                 done_individual = done[k]
+                next_correlated_choice = UAV_OB[k].next_correlated_choice
                 if args.reward_func == 1:
                     reward_ind = reward
-                elif args.reward_func == 2:
+                elif args.reward_func in  [2, 3]:
                     reward_ind = reward[k]
                 if args.ce_next_state:
                     UAV_OB[k].store_transition_ce_ns(state, action, reward_ind, next_sta, done_individual, torch.from_numpy(next_correlated_probs))
